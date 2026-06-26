@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-from utils import json_manager
+from app.utils import json_manager
 
 
 # 관련성 있는 권한은 백의 자릿수를 통일
