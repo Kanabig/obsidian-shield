@@ -9,3 +9,5 @@ KEY_MOT_DATE = "MOT_DATE"
 KEY_IS_APPROVE = "IS_APPROVE"
 KEY_PERMISSIONS = "PERMISSIONS"
 KEY_SENIOR_ID = "SENIOR_ID"
+
+# configs들 전부 app.configs.py에 옮겨서 사용하기
