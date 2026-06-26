@@ -3,9 +3,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-ACCOUNT_FILE = os.path.join(BASE_DIR, "json", "accounts.json")
-EVENT_LOGS_FILE = os.path.join(BASE_DIR, "json", "event_logs.json")
-TARGETS_FILE = os.path.join(BASE_DIR, "json", "targets_info.json")
+ACCOUNT_FILE = os.path.join(BASE_DIR, "jsons", "accounts.json")
+EVENT_LOGS_FILE = os.path.join(BASE_DIR, "jsons", "event_logs.json")
+TARGETS_FILE = os.path.join(BASE_DIR, "jsons", "targets_info.json")
 
 
 def load_json(file):
