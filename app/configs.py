@@ -1,5 +1,5 @@
-REG_DIR = "app/domains/stream/static/registered_faces"
-
+REG_DIR = "app/domains/profiler/registered_faces"
+ESP32_STREAM_URL = "http://192.168.137.159:81/stream"
 KEY_PERMISSIONS = "PERMISSIONS"
 
 KEY_ID = "ID"
