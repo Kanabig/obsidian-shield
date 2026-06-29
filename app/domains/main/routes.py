@@ -15,3 +15,7 @@ main_bp = Blueprint(
 @main_bp.route("/")
 def main():
     return render_template("main_index.html")
+
+@main_bp.route("/map")
+def map():
+    return render_template("map.html")

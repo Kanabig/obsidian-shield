@@ -8,7 +8,7 @@ from app.configs import REG_DIR
 
 camera = None
 camera_lock = threading.Lock()
-ESP32_STREAM_URL = "http://192.168.137.159:81/stream"
+ESP32_STREAM_URL = "http://192.168.137.132:81/stream"
 
 
 model = YOLO("yolov8n.pt")
