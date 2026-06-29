@@ -7,19 +7,11 @@ def format_events(events):
     cleaned_events = []
 
     for event in events:
-        place_strings = []
-
-        for p in event.get("PLACE", []):
-            place_strings.append(
-                f"{p.get('latitude')}, {p.get('longitude')}, {p.get('altitude')}"
-            )
-
-        place_text = " / ".join(place_strings)
-
+        place_text = f"{event.get('latitude')}, {event.get('longitude')}"
+            
         cleaned_events.append(
             {
                 "ID": event.get("ID"),
-                "카메라": event.get("CAMERA_ID"),
                 "시간": event.get("REG_DATE"),
                 "장소": place_text,
                 "대상": event.get("TARGET_ID"),
