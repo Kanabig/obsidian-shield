@@ -1,13 +1,23 @@
 {
-    "user1": {
-        "ID": "user1",
-        "PW": "password123!",
-        "EMAIL": "user1@naver.com",
-        "PHONE": "01012345678",
-        "REG_DATE": "2026/06/29, 09:47:04",
-        "MOT_DATE": "2026/06/29, 09:47:04",
-        "IS_APPROVE": false,
-        "PERMISSIONS": [],
-        "SENIOR_ID": "master"
-    }
+  "user1": {
+    "ID": "user1",
+    "PW": "password123!",
+    "EMAIL": "user1@naver.com",
+    "PHONE": "01012345678",
+    "REG_DATE": "2026/06/29, 09:47:04",
+    "MOT_DATE": "2026/06/29, 09:47:04",
+    "IS_APPROVE": false,
+    "PERMISSIONS": []
+  },
+  "admin": {
+    "ID": "admin",
+    "NAME": "정호띠",
+    "PW": "1234",
+    "EMAIL": "admin@obsidian.com",
+    "PHONE": "01011112222",
+    "REG_DATE": "2026/06/01, 09:00:00",
+    "MOD_DATE": "2026/06/01, 09:00:00",
+    "IS_APPROVE": true,
+    "PERMISSIONS": ["관리자"]
+  }
 }

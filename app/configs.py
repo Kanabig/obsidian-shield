@@ -1,3 +1,5 @@
+REG_DIR = "app/domains/stream/static/registered_faces"
+
 KEY_PERMISSIONS = "PERMISSIONS"
 
 KEY_ID = "ID"

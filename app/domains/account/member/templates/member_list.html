@@ -7,209 +7,161 @@
 
     <title>계정 관리</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('member.static', filename='css/member_list.css') }}">
+    <link rel="stylesheet" href="{{ url_for('member.static', filename='css/member_list.css') }}">
 
 </head>
 
 <body>
-    <div id="member_wrap">
-        <!-- 제목 -->
-        <div class="page_title">
 
-        <h1>계정 관리</h1>
+<div class="page">
 
-        <p>가입된 계정을 조회 및 관리합니다.</p>
-
+    <header class="top_header">
+        <div class="brand">
+            <div class="logo">✦</div>
+            <h1>OBSIDIAN SHIELD</h1>
         </div>
 
-        <!-- 검색 -->
-        <div class="search_box">
-
-            <input
-                type="text"
-                placeholder="ID 또는 이메일 검색">
-
-            <button>
-
-                검색
-
-            </button>
-
+        <div class="admin_box">
+            <span>관리자</span>
+            <div class="profile">👤</div>
+            <span>⌄</span>
         </div>
-
-
-        <!-- 필터 -->
-        <div class="filter_box">
-
-            <select>
-
-                <option>권한 전체</option>
-
-                <option>관리자</option>
-
-                <option>관제자</option>
-
-            </select>
-
-            <select>
-
-                <option>소속 전체</option>
-
-            </select>
-
-            <select>
-
-                <option>승인 여부</option>
-
-                <option>승인</option>
-
-                <option>미승인</option>
-
-            </select>
-
-            <select>
-
-                <option>최근 등록순</option>
-
-                <option>오래된 순</option>
-
-            </select>
-
-            <select>
-
-                <option>10개씩 보기</option>
-
-                <option>20개씩 보기</option>
-
-                <option>50개씩 보기</option>
-
-            </select>
-
-        </div>
-
-        <!-- 목록 -->
-
-        <table>
-
-            <thead>
-
-            <tr>
-
-                <th></th>
-
-                <th>ID</th>
-
-                <th>Email</th>
-
-                <th>Phone</th>
-
-                <th>권한</th>
-
-                <th>승인</th>
-
-                <th>등록일</th>
-
-                <th>관리</th>
-
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for memberId, member in account_db.items() %}
-
-            <tr>
-
-                <td>
-
-                    <input type="checkbox">
-
-                </td>
-
-                <td>
-
-                    {{ member.ID }}
-
-                </td>
-
-                <td>
-
-                    {{ member.EMAIL }}
-
-                </td>
-
-                <td>
-
-                    {{ member.PHONE }}
-
-                </td>
-
-                <td>
-
-                    {{ member.PERMISSIONS|join(', ') }}
-
-                </td>
-
-                <td>
-
-                    {% if member.IS_APPROVE %}
-
-                    승인
-
-                    {% else %}
-
-                    미승인
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    {{ member.REG_DATE }}
-
-                </td>
-
-                <td>
-
-                    <a href="/member/detail/{{ member.ID }}">
-
-                        상세
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        <!-- 페이지 -->
-
-        <div class="pagination">
-
-            <button>이전</button>
-
-            <button>1</button>
-
-            <button>2</button>
-
-            <button>3</button>
-
-            <button>다음</button>
-
-        </div>
-
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <nav>
+                <a href="#">▦ 대시보드</a>
+                <a href="#">⌖ 실시간</a>
+                <a href="#">● 탐지 대상</a>
+                <a href="#">🛡 탐지 이력</a>
+                <a href="#">📷 카메라 관리</a>
+                <a class="active" href="/member/list">👥 사용자 관리</a>
+                <a href="#">▤ 로그 조회</a>
+                <a href="#">👤 내 정보</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+
+            <div class="title_area">
+                <div>
+                    <h2>사용자 관리 및 권한</h2>
+                    <p>계정을 조회 및 관리합니다.</p>
+                </div>
+
+                <div class="breadcrumb">
+                    🏠 〉 관리자 〉 사용자 관리
+                </div>
+            </div>
+
+            <section class="filter_box">
+
+                <div class="filter_row">
+                    <div class="search_box">
+                        <input type="text" placeholder="검색어를 입력하세요">
+                        <button>🔍</button>
+                    </div>
+
+                    <label>태그</label>
+                    <select>
+                        <option>전체</option>
+                        <option>아이디</option>
+                        <option>이름</option>
+                        <option>역할</option>
+                    </select>
+                </div>
+
+                <div class="filter_row">
+                    <label>권한 선택</label>
+                    <select>
+                        <option>전체</option>
+                        <option>관리자</option>
+                        <option>관제자</option>
+                    </select>
+
+                    <label>승인 상태</label>
+                    <select>
+                        <option>전체</option>
+                        <option>승인</option>
+                        <option>미승인</option>
+                    </select>
+
+                    <label>정렬</label>
+                    <select>
+                        <option>최신등록순</option>
+                        <option>오래된순</option>
+                    </select>
+
+                    <label>보기</label>
+                    <select>
+                        <option>10개씩 보기</option>
+                        <option>20개씩 보기</option>
+                        <option>30개씩 보기</option>
+                    </select>
+                </div>
+
+            </section>
+
+            <section class="table_box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>역할</th>
+                            <th>승인 상태</th>
+                            <th>등록일</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for account in account_db %}
+                        <tr>
+                            <td>{{ account.ID }}</td>
+                            <td>{{ account.NAME if account.NAME else "-" }}</td>
+                            <td>
+                                {% if account.PERMISSIONS %}
+                                    {{ account.PERMISSIONS | join(', ') }}
+                                {% else %}
+                                    일반 사용자
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if account.IS_APPROVE %}
+                                    <span class="badge approve">승인</span>
+                                {% else %}
+                                    <span class="badge wait">미승인</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ account.REG_DATE }}</td>
+                            <td class="actions">
+                                <button class="edit">✎</button>
+                                <button class="delete">🗑</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <button>‹</button>
+                    <button class="current">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>4</button>
+                    <button>5</button>
+                    <span>...</span>
+                    <button>10</button>
+                    <button>›</button>
+                </div>
+            </section>
+
+        </main>
     </div>
-
-<script src="{{ url_for('member.static',filename='js/member_list.js') }}"></script>
+</div>
 
 </body>
-
 </html>
