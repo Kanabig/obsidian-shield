@@ -8,6 +8,7 @@ stream_bp = Blueprint(
 )
 
 
+
 @stream_bp.route("/")
 def stream():
     return render_template("index.html")

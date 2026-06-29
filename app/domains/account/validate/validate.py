@@ -1,8 +1,7 @@
 from utils.time_stamper import get_current_time_stamp_formated
 from utils import json_manager
 import string
-import delete_config
-import config
+import configs
 
 
 def load_accounts():
@@ -26,22 +25,22 @@ def is_id_exists(accounts, id):
 
 # 입력한 비밀번호가 맞는지?
 def is_pw_correct(accounts, id, pw):
-    return is_id_exists(accounts, id) and accounts[id][config.KEY_PW] == pw
+    return is_id_exists(accounts, id) and accounts[id][configs.KEY_PW] == pw
 
 
 # 승인 상태가 어떤지?
 def is_account_approve(accounts, id):
-    return accounts[id][config.KEY_IS_APPROVE]
+    return accounts[id][configs.KEY_IS_APPROVE]
 
 
 # 삭제된 아이디 목록 불러오기
 def load_deleted_ids():
-    return json_manager.load_json(delete_config.DELETED_ID_FILE)
+    return json_manager.load_json(configs.DELETED_ID_FILE)
 
 
 # 삭제된 아이디 목록 저장하기
 def save_deleted_ids(deleted_ids):
-    json_manager.save_json(delete_config.DELETED_ID_FILE, deleted_ids)
+    json_manager.save_json(configs.DELETED_ID_FILE, deleted_ids)
 
 
 """
@@ -56,18 +55,10 @@ def is_password_valid(pw):
     if len(pw) < 8:
         return False
 
-    special_chars = string.punctuation
-
-    has_special = False
-
     for ch in pw:
-        if ch in special_chars:
-            has_special = True
-            break
-
-    if not has_special:
-        return False
-    return True
+        if ch in string.punctuation:
+            return True
+    return False
 
 
 """
@@ -99,13 +90,13 @@ ACNT-006
 """
 
 
-def is_phone_vaild(p1, p2, p3):
+def is_phone_valid(p1, p2, p3):
 
     p1 = p1.replace("-", "").strip()
     p2 = p2.replace("-", "").strip()
     p3 = p3.replace("-", "").strip()
 
-    if not (p1.isdigit() and p2.isdiigit() and p3.isdigit()):
+    if not (p1.isdigit() and p2.isdigit() and p3.isdigit()):
         return False, "숫자만 입력 가능합니다."
 
     if len(p1) != 3 or len(p2) != 4 or len(p3) != 4:
@@ -122,7 +113,22 @@ ACNT-007
 """
 
 
-def create_account(accounts, id, pw, email, phone):
+def create_account(accounts, id, pw, email,phone):
+    
+    accounts[id] = {
+        configs.KEY_ID: id,
+        configs.KEY_PW: pw,
+        configs.KEY_EMAIL: email,
+        configs.KEY_PHONE: phone,
+        configs.KEY_REG_DATE: get_current_time_stamp_formated(),
+        configs.KEY_MOT_DATE: get_current_time_stamp_formated(),
+        configs.KEY_IS_APPROVE: False,
+        configs.KEY_PERMISSIONS: [],
+        configs.KEY_SENIOR_ID: "master",
+    }
+
+
+def register_user(accounts, id, pw, email, p1, p2, p3):
 
     if is_id_exists(accounts, id):
         return False, "이미 존재하는 아이디입니다."
@@ -138,24 +144,15 @@ def create_account(accounts, id, pw, email, phone):
     if not is_email_valid(email):
         return False, "올바른 이메일 형식이 아닙니다."
 
-    if not is_phone_vaild(phone):
-        return False, "전화번호 형식이 올바르지 않습니다."
+    phone_success, validated_phone = is_phone_valid(p1, p2, p3)
+    if not phone_success:
+        return False, validated_phone 
 
-    accounts[id] = {
-        config.KEY_ID: id,
-        config.KEY_PW: pw,
-        config.KEY_EMAIL: email,
-        config.KEY_PHONE: phone,
-        config.KEY_REG_DATE: get_current_time_stamp_formated(),
-        config.KEY_MOT_DATE: get_current_time_stamp_formated(),
-        config.KEY_IS_APPROVE: False,
-        config.KEY_PERMISSIONS: [],
-        config.KEY_SENIOR_ID: "master",
-    }
+    create_account(accounts, id, pw, email, validated_phone)
 
     save_accounts(accounts)
-
     return True, "회원가입이 완료되었습니다."
+
 
 
 """
@@ -195,9 +192,9 @@ def approve_update(accounts, id):
 
     request = accounts[id]["REQUEST_UPDATE"]
 
-    accounts[id][config.KEY_PW] = request[config.KEY_PW]
-    accounts[id][config.KEY_EMAIL] = request[config.KEY_EMAIL]
-    accounts[id][config.KEY_PHONE] = request[config.KEY_PHONE]
+    accounts[id][configs.KEY_PW] = request[configs.KEY_PW]
+    accounts[id][configs.KEY_EMAIL] = request[configs.KEY_EMAIL]
+    accounts[id][configs.KEY_PHONE] = request[configs.KEY_PHONE]
 
     del accounts[id]["REQUEST_UPDATE"]
 
@@ -224,3 +221,7 @@ def delete_account(accounts, id):
     save_accounts(accounts)
 
     return True, "계정이 삭제되었습니다."
+
+
+if __name__ == "__main__":
+    run_simulation()

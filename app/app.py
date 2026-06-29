@@ -1,15 +1,11 @@
 from flask import Flask
 
 from app.domains.stream import camera
-from app.domains.stream.routes import stream_bp
-from app.domains.main.routes import main_bp
+# from app.domains.stream.routes import stream_bp
+# from app.domains.main.routes import main_bp
 
 flask_app = Flask(__name__)
 
-flask_app.secret_key = "dw-aiot5th-obsidianshield"
-
-flask_app.register_blueprint(main_bp)
-flask_app.register_blueprint(stream_bp)
 
 
 def run():
