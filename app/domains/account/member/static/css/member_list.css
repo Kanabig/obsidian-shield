@@ -160,10 +160,30 @@ body {
 .search_box button {
     width: 64px;
     border: none;
-    background: #004fc8;
+    background: #005be8;
     color: white;
-    font-size: 22px;
-    border-radius: 0 8px 8px 0;
+    font-size: 26px;
+    cursor: pointer;
+    transition: all .15s ease;
+    box-shadow: 0 4px 12px rgba(0,91,232,.35);
+}
+
+.search_box button:hover{
+    background: #1976ff;
+    box-shadow: 0 8px 18px rgba(0,91,232,.45);
+    transform: translateY(-2px);
+}
+
+.search_box button:active{
+    transform: translateY(2px) scale(.96);
+    background: #0047b8;
+    box-shadow:
+        inset 0 4px 8px rgba(0,0,0,.45),
+        0 1px 3px rgba(0,0,0,.2);
+}
+
+.search_box button:focus{
+    outline: none;
 }
 
 label {
@@ -269,5 +289,29 @@ td {
 }
 
 .pagination .current {
+    background: #005be8;
+}
+
+.filter_btn,
+.pagination a {
+    width: 54px;
+    height: 48px;
+    border: 1px solid #26394f;
+    background: #07111c;
+    color: white;
+    border-radius: 7px;
+    font-size: 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter_btn {
+    width: 70px;
+    cursor: pointer;
+}
+
+.pagination a.current {
     background: #005be8;
 }
