@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  color: #07192e;
+  background: #f4f7fb;
+  overflow-x: hidden;
+}
