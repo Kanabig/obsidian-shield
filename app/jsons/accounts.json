@@ -16,8 +16,9 @@
     "EMAIL": "admin@obsidian.com",
     "PHONE": "01011112222",
     "REG_DATE": "2026/06/01, 09:00:00",
-    "MOD_DATE": "2026/06/01, 09:00:00",
+    "MOT_DATE": "2026/06/01, 09:00:00",
     "IS_APPROVE": true,
     "PERMISSIONS": ["관리자"]
   }
 }
+

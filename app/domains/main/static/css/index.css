@@ -118,3 +118,19 @@
     font-size: 58px;
   }
 }
+
+.message-box {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.message-box .ok {
+  color: green;
+  font-weight: bold;
+}
+
+.message-box .error {
+  color: red;
+  font-weight: bold;
+}
+
