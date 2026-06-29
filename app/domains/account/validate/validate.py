@@ -1,7 +1,7 @@
-from utils.time_stamper import get_current_time_stamp_formated
-from utils import json_manager
+# from utils.time_stamper import get_current_time_stamp_formated
+from app.utils import json_manager
 import string
-import configs
+from app import configs
 
 
 def load_accounts():
@@ -165,16 +165,20 @@ def login(id, pw):
 
     accounts = load_accounts()
 
-    if not is_id_exists(accounts, id):
-        return False, "존재하지 않는 아이디입니다."
+    # 1. 아이디 없음
+    if id not in accounts:
+        return False, "없는 회원입니다."
 
-    if not is_pw_correct(accounts, id, pw):
+    # 2. 비밀번호 틀림
+    if accounts[id]["PW"] != pw:
         return False, "비밀번호가 틀렸습니다."
 
-    if not is_account_approve(accounts, id):
+    # 3. 승인 여부
+    if not accounts[id].get("approve", False):
         return False, "관리자 승인 대기 중입니다."
 
     return True, "로그인 성공"
+
 
 
 """
