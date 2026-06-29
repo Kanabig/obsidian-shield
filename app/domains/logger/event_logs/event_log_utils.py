@@ -1,12 +1,19 @@
 from flask import send_file
+from app.utils.json_manager import load_json, TARGETS_FILE
 import pandas as pd
 import io
 
 
 def format_events(events):
+    targets = load_json(TARGETS_FILE)
+
     cleaned_events = []
 
     for event in events:
+
+        target_id = event.get("TARGET_ID")
+        target = targets.get(target_id, {})
+
         place_text = f"{event.get('latitude')}, {event.get('longitude')}"
             
         cleaned_events.append(
@@ -14,7 +21,7 @@ def format_events(events):
                 "ID": event.get("ID"),
                 "시간": event.get("REG_DATE"),
                 "장소": place_text,
-                "대상": event.get("TARGET_ID"),
+                "대상ID": target_id
             }
         )
     return cleaned_events
