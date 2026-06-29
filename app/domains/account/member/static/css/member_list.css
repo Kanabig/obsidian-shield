@@ -1,134 +1,273 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "맑은 고딕", sans-serif;
 }
 
-body{
-    background: #edf2f7;
+body {
+    background: #050b12;
+    color: #f5f7fb;
+    font-family: Arial, sans-serif;
 }
 
-#member_wrap{
-    width: 1400px;
-    margin: 40px auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.1);
-    padding: 30px;
+.page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(0, 102, 255, 0.18), transparent 30%),
+        linear-gradient(135deg, #050b12, #07111c);
 }
 
-.page_title{
-    margin-bottom: 30px;
+.top_header {
+    height: 90px;
+    padding: 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(120, 150, 180, 0.2);
 }
 
-.page_title h1{
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo {
+    color: #006fff;
     font-size: 34px;
-    color: #1f2937;
+    font-weight: bold;
 }
 
-.page_title p{
-    margin-top: 8px;
-    color: #6b7280;
+.brand h1 {
+    font-size: 30px;
+    letter-spacing: 1px;
 }
 
-.search_box{
+.admin_box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+}
+
+.profile {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid #3b536f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layout {
+    display: flex;
+    gap: 22px;
+    padding: 20px 16px;
+}
+
+.sidebar {
+    width: 270px;
+    min-height: calc(100vh - 120px);
+    padding: 28px 14px;
+    border: 1px solid rgba(120, 150, 180, 0.25);
+    border-radius: 14px;
+    background: rgba(8, 18, 30, 0.9);
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sidebar a {
+    padding: 18px 24px;
+    color: #e9eef7;
+    text-decoration: none;
+    font-size: 22px;
+    border-radius: 8px;
+}
+
+.sidebar a.active {
+    background: linear-gradient(90deg, #0058d8, #00348a);
+    box-shadow: 0 0 18px rgba(0, 102, 255, 0.45);
+}
+
+.content {
+    flex: 1;
+    padding: 28px;
+    border: 1px solid rgba(120, 150, 180, 0.22);
+    border-radius: 14px;
+    background: rgba(7, 16, 27, 0.88);
+}
+
+.title_area {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: flex-start;
 }
 
-.search_box input{
-    width: 500px;
-    height: 45px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding-left: 15px;
-    font-size: 15px;
+.title_area h2 {
+    font-size: 34px;
+    margin-bottom: 10px;
 }
 
-.search_box button{
-    width: 120px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
+.title_area p {
+    color: #b5c0cf;
+    font-size: 19px;
 }
 
-.search_box button:hover{
-    background: #1d4ed8;
+.breadcrumb {
+    color: #b7c5d6;
+    font-size: 17px;
 }
 
-.filter_box{
+.filter_box {
+    margin-top: 26px;
+    padding: 16px;
+    border: 1px solid rgba(120, 150, 180, 0.18);
+    border-radius: 10px;
+}
+
+.filter_row {
     display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
 }
 
-.filter_box select{
-    width: 180px;
-    height: 42px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    padding-left: 10px;
+.filter_row:last-child {
+    margin-bottom: 0;
 }
 
-table{
+.search_box {
+    flex: 1;
+    display: flex;
+}
+
+.search_box input {
+    flex: 1;
+    height: 56px;
+    padding: 0 20px;
+    background: #07111c;
+    border: 1px solid #26394f;
+    color: white;
+    font-size: 17px;
+    border-radius: 8px 0 0 8px;
+}
+
+.search_box button {
+    width: 64px;
+    border: none;
+    background: #004fc8;
+    color: white;
+    font-size: 22px;
+    border-radius: 0 8px 8px 0;
+}
+
+label {
+    color: #0091ff;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+select {
+    height: 48px;
+    min-width: 160px;
+    padding: 0 16px;
+    background: #07111c;
+    border: 1px solid #26394f;
+    border-radius: 7px;
+    color: white;
+    font-size: 16px;
+}
+
+.table_box {
+    margin-top: 18px;
+    border: 1px solid rgba(120, 150, 180, 0.22);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table {
     width: 100%;
     border-collapse: collapse;
 }
 
-thead{
-    background: #1f2937;
-    color: white;
+th, td {
+    height: 72px;
+    padding: 0 34px;
+    text-align: left;
+    border-bottom: 1px solid rgba(120, 150, 180, 0.16);
+    font-size: 20px;
 }
 
-thead th{
-    padding: 18px;
+th {
+    font-weight: bold;
+    color: #ffffff;
+    background: rgba(8, 18, 30, 0.9);
 }
 
-tbody td{
-    text-align: center;
-    padding: 18px;
-    border-bottom: 1px solid #e5e7eb;
+td {
+    color: #eef3fb;
 }
 
-tbody tr{
-    transition: .2s;
-}
-
-tbody tr:hover{
-    background: #f8fafc;
-}
-
-tbody a{
-    text-decoration: none;
-    color: #2563eb;
+.badge {
+    padding: 8px 18px;
+    border-radius: 10px;
     font-weight: bold;
 }
 
-tbody a:hover{
-    text-decoration: underline;
+.badge.approve {
+    color: #00ffc8;
+    background: rgba(0, 150, 110, 0.25);
 }
 
-.pagination{
-    margin-top: 30px;
+.badge.wait {
+    color: #ffd400;
+    background: rgba(160, 120, 0, 0.25);
+}
+
+.actions {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    gap: 20px;
+    align-items: center;
 }
 
-.pagination button{
-    width: 40px;
-    height: 40px;
+.actions button {
+    background: none;
     border: none;
-    border-radius: 8px;
-    background: #e5e7eb;
+    font-size: 24px;
     cursor: pointer;
 }
 
-.pagination button:hover{
-    background: #2563eb;
+.edit {
+    color: #008cff;
+}
+
+.delete {
+    color: #ff3333;
+}
+
+.pagination {
+    height: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.pagination button {
+    width: 54px;
+    height: 54px;
+    border: 1px solid #26394f;
+    background: #07111c;
     color: white;
+    border-radius: 7px;
+    font-size: 20px;
+}
+
+.pagination .current {
+    background: #005be8;
 }
