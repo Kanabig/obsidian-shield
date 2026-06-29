@@ -4,21 +4,16 @@ import cv2
 import numpy as np
 from insightface.app import FaceAnalysis
 from ultralytics import YOLO
-
+from app.configs import REG_DIR
 
 camera = None
 camera_lock = threading.Lock()
 ESP32_STREAM_URL = "http://192.168.137.159:81/stream"
 
-# ==========================================
-# 1. AI 모델 및 데이터베이스 초기화
-# ==========================================
-# 1) YOLOv8 모델 (ByteTrack 사용을 위한 모델)
-model = YOLO("yolov8n.pt")
 
-# 2) InsightFace 모델 초기화 (얼굴 탐지 및 512차원 특징 추출용)
-# 저사양 환경을 고려해 기본 det_size를 작게(320x320) 설정합니다.
+model = YOLO("yolov8n.pt")
 face_app = FaceAnalysis(name="buffalo_l", providers=["CPUExecutionProvider"])
+# 저사양 환경을 고려(320x320)
 face_app.prepare(ctx_id=0, det_size=(320, 320))
 
 # 3) 신원 데이터베이스 및 트래킹 변수
@@ -26,39 +21,26 @@ known_face_encodings = []
 known_face_names = []
 tracked_identities = {}  # {track_id: "이름"}
 
-REG_DIR = "app/domains/stream/static/registered_faces"
-
 
 def init_camera():
     global camera
+
     if camera is None:
-        print("camera connecting...")
         camera = cv2.VideoCapture(ESP32_STREAM_URL)
-        print("camera connected")
-        # 서버 기동 시점에 얼굴 DB도 같이 빌드합니다.
         build_face_db()
 
 
 def build_face_db():
-    """
-    등록된 폴더 구조를 읽어 얼굴 특징점(Embedding) DB를 구축하는 함수
-    구조: REG_DIR/사람이름폴더/사진들.jpg
-    """
     global known_face_encodings, known_face_names
-    print(">> 등록된 신원 데이터를 로딩 중입니다...")
 
     if not os.path.exists(REG_DIR):
         os.makedirs(REG_DIR)
-        print(
-            f"'{REG_DIR}' 폴더가 생성되었습니다. 사람 이름으로 폴더를 만들고 사진들을 넣은 후 다시 실행하세요."
-        )
+        print(f"'{REG_DIR}'폴더가 없어 새로 생성되었습니다.")
         return
 
-    # 1단계: 하위 폴더(사람 이름) 루프
     for person_name in os.listdir(REG_DIR):
         person_dir = os.path.join(REG_DIR, person_name)
 
-        # 폴더가 아닌 파일은 건너뜁니다.
         if not os.path.isdir(person_dir):
             continue
 
@@ -70,6 +52,7 @@ def build_face_db():
             if filename.lower().endswith((".jpg", ".jpeg", ".png")):
                 path = os.path.join(person_dir, filename)
                 img = cv2.imread(path)
+
                 if img is None:
                     continue
 
@@ -94,45 +77,16 @@ def build_face_db():
     )
 
 
-# def build_face_db():
-#     """등록된 사진 폴더를 읽어 얼굴 특징점(Embedding) DB를 구축하는 함수"""
-#     global known_face_encodings, known_face_names
-#     print(">> 등록된 신원 데이터를 로딩 중입니다...")
-
-#     if not os.path.exists(REG_DIR):
-#         os.makedirs(REG_DIR)
-#         print(f"'{REG_DIR}' 폴더가 생성되었습니다. 증명사진을 넣고 다시 실행하세요.")
-#         return
-
-#     for filename in os.listdir(REG_DIR):
-#         if filename.endswith((".jpg", ".jpeg", ".png")):
-#             path = os.path.join(REG_DIR, filename)
-#             img = cv2.imread(path)
-#             if img is None:
-#                 continue
-
-#             # InsightFace로 얼굴 분석
-#             faces = face_app.get(img)
-
-#             if len(faces) > 0:
-#                 # 첫 번째로 발견된 얼굴의 512차원 임베딩 저장
-#                 known_face_encodings.append(faces[0].normed_embedding)
-#                 known_face_names.append(os.path.splitext(filename)[0])
-#                 print(f" 등록 완료: {os.path.splitext(filename)[0]}")
-#             else:
-#                 print(f" 실패 (얼굴 인식 불가): {filename}")
-
-#     print(f">> 총 {len(known_face_names)}명의 신원 DB 구축 완료.\n")
-
-
 def reconnect_camera():
     global camera
-    print("camera reconnecting...")
+
     try:
         if camera is not None:
             camera.release()
+
     except Exception as e:
         print(e)
+
     camera = cv2.VideoCapture(ESP32_STREAM_URL)
     print("camera reconnected")
 
