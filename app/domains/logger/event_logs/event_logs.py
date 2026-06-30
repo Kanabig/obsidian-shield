@@ -1,8 +1,8 @@
-from app.utils.json_manager import load_json, save_json
 from app.utils.time_stamper import (
     get_current_time_stamp_formated)
 from app.utils.json_manager import (
-    load_json, EVENT_LOGS_FILE, TARGETS_FILE)
+    load_json, save_json, EVENT_LOGS_FILE, 
+    TARGETS_PROFILES_FILE)
 
 
 def get_event_list():
@@ -28,7 +28,7 @@ def add_event(data):
 
 
 def format_events(events):
-    targets = load_json(TARGETS_FILE)
+    targets = load_json(TARGETS_PROFILES_FILE)
 
     cleaned_events = []
 
