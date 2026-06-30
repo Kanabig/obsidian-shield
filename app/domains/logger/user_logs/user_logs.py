@@ -3,5 +3,5 @@ from app.utils.time_stamper import get_current_time_stamp_formated
 from app.utils.json_manager import ACCOUNT_LOG_FILE
 
 
-def format_accounts(account_logs):
+def format_user_account(account_logs):
     pass

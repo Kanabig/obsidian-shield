@@ -1,0 +1,32 @@
+{
+  "user_001" : {
+    "EVENT_LOG_ID" : "log_id001",
+    "VIEWER_ID" : "user1",
+    "IS_CHECKED" : false,
+    "REG_DATE" : "2026/06/30, 09:12:00"
+    },
+  "user_002" : {
+    "EVENT_LOG_ID" : "log_id002",
+    "VIEWER_ID" : "user1",
+    "IS_CHECKED" : false,
+    "REG_DATE" : "2026/06/30, 09:18:00"
+    },
+  "user_003" : {
+    "EVENT_LOG_ID" : "log_id003",
+    "VIEWER_ID" : "user1",
+    "IS_CHECKED" : false,
+    "REG_DATE" : "2026/06/30, 09:23:00"
+    },
+  "user_004" : {
+    "EVENT_LOG_ID" : "log_id004",
+    "VIEWER_ID" : "user1",
+    "IS_CHECKED" : false,
+    "REG_DATE" : "2026/06/30, 09:26:00"
+    },
+  "user_005" : {
+    "EVENT_LOG_ID" : "log_id005",
+    "VIEWER_ID" : "user1",
+    "IS_CHECKED" : false,
+    "REG_DATE" : "2026/06/30, 09:32:00"
+    }
+}
