@@ -1,0 +1,152 @@
+/* ===== 전체 ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f4f6f9;
+    font-family: "Malgun Gothic", sans-serif;
+    color: #333;
+}
+
+
+/* ===== 컨테이너 ===== */
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+
+/* ===== 헤더 ===== */
+
+.page_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page_header h2 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+/* ===== 다운로드 버튼 ===== */
+
+.btn_download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #4f8cff, #2563eb);
+    color: white;
+
+    font-weight: 600;
+    font-size: 14px;
+
+    border-radius: 8px;
+    text-decoration: none;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn_download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.btn_download:active {
+    transform: translateY(0px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+
+/* ===== 테이블 ===== */
+
+.table_wrap {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.log_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.log_table thead {
+    background: #343a40;
+    color: white;
+}
+
+.log_table th,
+.log_table td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.log_table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.log_table tbody tr:hover {
+    background: #eef5ff;
+}
+
+
+/* ===== 상태 ===== */
+
+.checked {
+    color: #198754;
+    font-weight: bold;
+}
+
+.unchecked {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+
+/* ===== 데이터 없음 ===== */
+
+.empty {
+    padding: 25px;
+    color: #888;
+    text-align: center;
+}
+
+
+/* ===== 반응형 ===== */
+
+@media screen and (max-width: 768px) {
+
+    .page_header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .download_btn {
+        text-align: center;
+    }
+
+    .table_wrap {
+        overflow-x: auto;
+    }
+
+    .log_table {
+        min-width: 700px;
+    }
+
+}
