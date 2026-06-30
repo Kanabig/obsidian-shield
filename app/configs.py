@@ -1,4 +1,3 @@
-FACES_DIR = "tests/registered_faces"
 ESP32_STREAM_URL = "http://192.168.137.159:81/stream"
 KEY_PERMISSIONS = "PERMISSIONS"
 
