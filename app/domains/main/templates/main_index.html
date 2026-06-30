@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('main.static', filename='css/index.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('main.static', filename='css/main_index.css') }}" />
   </head>
 
 
@@ -47,6 +47,22 @@
               </div>
             {% endif %}
 
+         
+
+            {% if session.get("login_fail",0) >= 5 %}
+
+              <div class="captcha-box">
+
+                  <img src="{{ url_for('static', filename='captcha.png') }}">
+                  <input
+                        type="text"
+                        name="captcha"
+                        placeholder="보이는 문자를 입력하세요">
+
+              </div>
+
+            {% endif %}
+
             <button type="button" onclick="login()">로그인</button>
 
           </form>
@@ -55,6 +71,8 @@
     </main>
 
     {% include "includes/footer.html" %}
+
+ 
 
     <script>
       function login() {
@@ -68,5 +86,7 @@
         form.submit();
       }
     </script>
+
+    
   </body>
 </html>

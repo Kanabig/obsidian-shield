@@ -1,12 +1,11 @@
 from flask import Blueprint, Response, render_template
-from app.domains.stream import camera
+from app.domains.stream import cam_temp
 import time
 import cv2
 
 stream_bp = Blueprint(
     "stream", __name__, url_prefix="/stream", template_folder="templates"
 )
-
 
 
 @stream_bp.route("/")
@@ -24,7 +23,7 @@ def video_feed():
 
 def generate_frames():
     while True:
-        frame = camera.get_frame()
+        frame = cam_temp.get_frame()
 
         if frame is None:
             time.sleep(0.1)
