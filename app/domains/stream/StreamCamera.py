@@ -44,7 +44,7 @@ class StreamCamera:
 if __name__ == "__main__":
     import cv2
 
-    cam = StreamCamera("test.mp4")
+    cam = StreamCamera("tests/test.mp4")
     success, frame = cam.read_frame()
     cv2.imshow("frame", frame)
     cv2.waitKey(0)
