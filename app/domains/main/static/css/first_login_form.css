@@ -1,10 +1,4 @@
 /* 기본 초기화 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Noto Sans KR', sans-serif;
-}
 
 body {
     background-color: #f4f6f9;
@@ -14,38 +8,6 @@ body {
     overflow-x: hidden;
 }
 
-/* 상단 헤더 바 */
-.header-bar {
-    background-color: #06152d; /* 깊은 네이비 톤 */
-    color: #ffffff;
-    padding: 15px 40px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.logo-img {
-    width: 35px;
-    height: 35px;
-}
-
-.logo-text h1 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.logo-text p {
-    font-size: 0.75rem;
-    color: #a0aec0;
-    margin-top: 2px;
-}
 
 /* 메인 영역 및 배경 요소 */
 .main-container {
@@ -54,9 +16,11 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-    padding: 40px 20px;
-    background: radial-gradient(circle at center, #ffffff 0%, #f0f4f8 100%);
-}
+    padding: 40px 20px;    
+    min-height: calc(100vh - 140px); 
+    overflow: hidden;
+    background: radial-gradient(circle at 55% 40%, rgba(255, 255, 255, 0.95), rgba(248, 251, 255, 0.86) 43%, rgba(238, 243, 249, 0.78) 72%), linear-gradient(120deg, #ffffff, #eef3f9);
+        }
 
 .bg-element {
     position: absolute;
@@ -64,29 +28,6 @@ body {
     z-index: 1;
 }
 
-/* CCTV 좌측 배치 */
-.cctv-image {
-    left: 0;
-    bottom: 0;
-    width: 25%;
-    max-width: 350px;
-}
-.cctv-image img {
-    width: 100%;
-    display: block;
-}
-
-/* 드론 우상단 배치 */
-.drone-image {
-    right: 5%;
-    top: 10%;
-    width: 20%;
-    max-width: 280px;
-}
-.drone-image img {
-    width: 100%;
-    display: block;
-}
 
 /* 중앙 카드 스타일 */
 .setup-card {
@@ -259,4 +200,16 @@ body {
 
 .submit-btn:hover {
     background-color: #0c2347;
+}
+
+.message-box {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 35px;
+}
+
+.message-box p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
 }
