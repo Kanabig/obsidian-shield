@@ -2,12 +2,31 @@ import os
 import json
 import math
 from app.utils.json_manager import ACCOUNT_FILE
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect
+from app.utils.time_stamper import get_current_time_stamp_formated
 
 member_bp = Blueprint(
     "member", __name__, template_folder="templates", static_folder="static", static_url_path="/member/static"
 )
 
+@member_bp.route("/member/update/<member_id>", methods=["POST"])
+def member_update(member_id):
+
+    with open(ACCOUNT_FILE, "r", encoding="utf-8") as f:
+        account_db = json.load(f)
+
+    if member_id in account_db:
+        permission = request.form.get("permission")
+        approve = request.form.get("approve")
+
+        account_db[member_id]["PERMISSIONS"] = [permission]
+        account_db[member_id]["IS_APPROVE"] = True if approve == "승인" else False
+        account_db[member_id]["MOT_DATE"] = get_current_time_stamp_formated()
+
+        with open(ACCOUNT_FILE, "w", encoding="utf-8") as f:
+            json.dump(account_db, f, ensure_ascii=False, indent=4)
+
+    return redirect("/member/list")
 
 @member_bp.route("/member/list")
 def member_list():
@@ -24,6 +43,8 @@ def member_list():
     sort = request.args.get("sort", "최신등록순")
     per_page = int(request.args.get("per_page", 10))
     page = int(request.args.get("page", 1))
+    edit_id = request.args.get("edit_id", "")
+    mode = request.args.get("mode", "list")
 
     # 검색
     if keyword:
@@ -85,5 +106,29 @@ def member_list():
         sort=sort,
         per_page=per_page,
         page=page,
-        total_pages=total_pages
+        total_pages=total_pages,
+        edit_id=edit_id,
+        mode=mode
     )
+
+@member_bp.route("/member/add", methods=["GET", "POST"])
+def member_add():
+
+    if request.method == "GET":
+        return render_template("member_add.html")
+
+    return redirect("/member/list")
+
+@member_bp.route("/member/delete/<member_id>")
+def member_delete(member_id):
+
+    with open(ACCOUNT_FILE, "r", encoding="utf-8") as f:
+        account_db = json.load(f)
+
+    if member_id in account_db:
+        del account_db[member_id]
+
+    with open(ACCOUNT_FILE, "w", encoding="utf-8") as f:
+        json.dump(account_db, f, ensure_ascii=False, indent=4)
+
+    return redirect("/member/list")

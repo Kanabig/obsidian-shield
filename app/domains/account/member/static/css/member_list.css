@@ -4,104 +4,6 @@
     box-sizing: border-box;
 }
 
-body {
-    background: #050b12;
-    color: #f5f7fb;
-    font-family: Arial, sans-serif;
-}
-
-.page {
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at top left, rgba(0, 102, 255, 0.18), transparent 30%),
-        linear-gradient(135deg, #050b12, #07111c);
-}
-
-.top_header {
-    height: 90px;
-    padding: 0 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(120, 150, 180, 0.2);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.logo {
-    color: #006fff;
-    font-size: 34px;
-    font-weight: bold;
-}
-
-.brand h1 {
-    font-size: 30px;
-    letter-spacing: 1px;
-}
-
-.admin_box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 20px;
-}
-
-.profile {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid #3b536f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.layout {
-    display: flex;
-    gap: 22px;
-    padding: 20px 16px;
-}
-
-.sidebar {
-    width: 270px;
-    min-height: calc(100vh - 120px);
-    padding: 28px 14px;
-    border: 1px solid rgba(120, 150, 180, 0.25);
-    border-radius: 14px;
-    background: rgba(8, 18, 30, 0.9);
-}
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.sidebar a {
-    padding: 18px 24px;
-    color: #e9eef7;
-    text-decoration: none;
-    font-size: 22px;
-    border-radius: 8px;
-}
-
-.sidebar a.active {
-    background: linear-gradient(90deg, #0058d8, #00348a);
-    box-shadow: 0 0 18px rgba(0, 102, 255, 0.45);
-}
-
-.content {
-    flex: 1;
-    padding: 28px;
-    border: 1px solid rgba(120, 150, 180, 0.22);
-    border-radius: 14px;
-    background: rgba(7, 16, 27, 0.88);
-}
-
 .title_area {
     display: flex;
     justify-content: space-between;
@@ -268,6 +170,9 @@ td {
 
 .delete {
     color: #ff3333;
+    text-decoration: none;
+    font-size: 24px;
+    cursor: pointer;
 }
 
 .pagination {
@@ -314,4 +219,119 @@ td {
 
 .pagination a.current {
     background: #005be8;
+}
+
+.add_member_btn {
+    height: 48px;
+    padding: 0 22px;
+    border: 1px solid #005be8;
+    background: #005be8;
+    color: white;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add_member_btn:hover {
+    background: #1976ff;
+}
+
+.add_member_btn:active {
+    transform: translateY(2px) scale(.96);
+    background: #0047b8;
+}
+
+.right_btn{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.member_add_box {
+    margin-top: 20px;
+    padding: 30px;
+    border: 1px solid rgba(120, 150, 180, 0.22);
+    border-radius: 10px;
+    background: rgba(7, 16, 27, 0.88);
+}
+
+.add_row {
+    margin-bottom: 22px;
+}
+
+.add_row label {
+    display: block;
+    margin-bottom: 8px;
+    color: #0091ff;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.add_row input,
+.add_row select {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    background: #07111c;
+    border: 1px solid #26394f;
+    border-radius: 7px;
+    color: white;
+    font-size: 16px;
+}
+
+.btn_area {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.save_btn {
+    width: 120px;
+    height: 46px;
+    border: none;
+    border-radius: 7px;
+    background: #005be8;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.save_btn:hover {
+    background: #1976ff;
+}
+
+.save_btn:active {
+    transform: scale(.96);
+}
+
+.cancel_btn {
+    width: 120px;
+    height: 46px;
+    border: 1px solid #2e4259;
+    border-radius: 7px;
+    background: #07111c;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .2s;
+}
+
+.cancel_btn:hover {
+    background: #122033;
+}
+
+.cancel_btn:active {
+    transform: scale(.96);
 }
