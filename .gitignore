@@ -3,3 +3,4 @@
 **/static/registered_faces/
 **/yolov8n.pt
 **/.vscode/
+**/tests/
