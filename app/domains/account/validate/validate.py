@@ -1,4 +1,7 @@
-# from utils.time_stamper import get_current_time_stamp_formated
+from app.utils.time_stamper import get_current_time_stamp_formated
+from captcha.image import ImageCaptcha
+from flask import session
+import random
 from app.utils import json_manager
 import string
 from app import configs
@@ -161,7 +164,12 @@ ACNT-008
 """
 
 
-def login(id, pw):
+def login(id, pw, captcha=""):
+
+    if session.get("login_fail",0) >= 5:
+
+        if captcha != session.get("captcha", ""):
+            return False, "자동입력 방지 문자가 틀렸습니다."
 
     accounts = load_accounts()
 
@@ -170,14 +178,19 @@ def login(id, pw):
         return False, "없는 회원입니다."
 
     # 2. 비밀번호 틀림
-    if accounts[id]["PW"] != pw:
+    if not accounts[id]["PW"] == pw:
         return False, "비밀번호가 틀렸습니다."
 
     # 3. 승인 여부
-    if not accounts[id].get("approve", False):
+    if not accounts[id].get(configs.KEY_IS_APPROVE):
         return False, "관리자 승인 대기 중입니다."
-
+    
+    # 4. 최초 로그인 여부
     return True, "로그인 성공"
+
+
+
+    
 
 
 
@@ -227,5 +240,61 @@ def delete_account(accounts, id):
     return True, "계정이 삭제되었습니다."
 
 
-if __name__ == "__main__":
-    run_simulation()
+def change_password(id, oPw, nPw, new_pw_check):
+
+    accounts = load_accounts()
+
+    # 아이디 존재 여부
+    if id not in accounts:
+        return False, "없는 회원입니다."
+
+    # 현재 비밀번호 확인
+    if accounts[id][configs.KEY_PW] != oPw:
+        return False, "현재 임시 비밀번호가 일치하지 않습니다."
+
+    # 새 비밀번호 확인
+    if nPw != new_pw_check:
+        return False, "새 비밀번호가 서로 일치하지 않습니다."
+
+    # 새 비밀번호 규칙 검사
+    if not is_password_valid(nPw):
+        return False, "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다."
+
+    # 기존 비밀번호와 동일한지
+    if oPw == nPw:
+        return False, "기존 비밀번호와 다르게 설정해야 합니다."
+
+    # 비밀번호 변경
+    accounts[id][configs.KEY_PW] = nPw
+
+    # 최초 로그인 해체 
+    accounts[id][configs.KEY_IS_FIRST_LOGIN] = False
+
+    # 수정 날짜 변경
+    accounts[id][configs.KEY_MOT_DATE] = get_current_time_stamp_formated()
+
+
+    json_manager.save_json(json_manager.ACCOUNT_FILE, accounts)
+
+    return True, "비밀번호가 변경되었습니다."
+
+
+
+def make_captcha():
+
+    text = ""
+
+    for i in range(5):
+        text += random.choice(
+            string.ascii_uppercase +
+            string.digits
+        )
+
+    session["captcha"] = text
+
+    image = ImageCaptcha()
+
+    image.write(
+        text,
+        "app/static/captcha.png"
+    )
