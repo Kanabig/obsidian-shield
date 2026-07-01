@@ -116,9 +116,10 @@ ACNT-007
 """
 
 
-def create_account(accounts, id, pw, email,phone):
+def create_account(accounts, name, id, pw, email,phone):
     
     accounts[id] = {
+        configs.KEY_NAME: name,
         configs.KEY_ID: id,
         configs.KEY_PW: pw,
         configs.KEY_EMAIL: email,
@@ -126,6 +127,7 @@ def create_account(accounts, id, pw, email,phone):
         configs.KEY_REG_DATE: get_current_time_stamp_formated(),
         configs.KEY_MOT_DATE: get_current_time_stamp_formated(),
         configs.KEY_IS_APPROVE: False,
+        configs.KEY_IS_FIRST_LOGIN: True,
         configs.KEY_PERMISSIONS: [],
         configs.KEY_SENIOR_ID: "master",
     }
