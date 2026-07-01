@@ -12,6 +12,8 @@ UNKNOWN = "UNKNOWN"
 model = YOLO("yolov8n.pt")
 # camera.add_camera(ESP32_STREAM_URL)
 # camera.get_camera(ESP32_STREAM_URL).read_frame()
+
+# FIXME: 초기화
 tracked_identities = []
 
 
@@ -139,19 +141,3 @@ if __name__ == "__main__":
         cv2.imshow("img", img)
         cv2.waitKey()
         cv2.destroyAllWindows()
-
-
-# pipeline = None
-
-
-# def get_frame():
-#     global pipeline
-#     if pipeline is None:
-#         pipeline = TrackingPipeline()
-#     return pipeline.process_frame()
-
-
-# def init_camera():
-#     global pipeline
-#     if pipeline is None:
-#         pipeline = TrackingPipeline()
