@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 from app.domains.logger.user_logs.user_logs import (
-    get_user_log_list, add_user, 
-    check_user_log, format_user_logs)
+    get_user_log_list, add_user, checked_user_log, 
+    get_checked_user_logs, checked_select_user_log, format_user_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
 
@@ -59,6 +59,26 @@ def add_user_log():
 @user_log_bp.route("/check/<user_log_id>", methods=["POST"])
 def check(user_log_id):
 
-    check_user_log(user_log_id)
+    checked_user_log(user_log_id)
+
+    return {"result": "success"}, 200
+
+
+@user_log_bp.route("/get_checked", methods=["POST"])
+def get_checked():
+
+    data = request.get_json()
+
+    get_checked_user_logs(data["ids"])
+
+    return {"result": "success"}, 200
+
+
+@user_log_bp.route("/checked_all", methods=["POST"])
+def checked_select():
+
+    data = request.get_json()
+
+    checked_select_user_log(data["ids"])
 
     return {"result": "success"}, 200
