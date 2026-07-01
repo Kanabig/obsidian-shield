@@ -6,7 +6,17 @@ def get_user_log_list():
 
     logs = load_json(USER_LOGS_FILE)
 
-    return list(logs.values())
+    result = []
+
+    for key, value in logs.items():
+
+        log = value.copy()
+        log["ID"] = key
+
+        result.append(log)
+
+    return result
+    # return list(logs.values())
 
 
 def add_user(data):
@@ -15,18 +25,42 @@ def add_user(data):
     logs[data["ID"]] = {
         "EVENT_LOG_ID" : data["EVENT_LOG_ID"],
         "VIEWER_ID" : data["VIEWER_ID"],
-        "IS_CHECKED" : data["IS_CHECKED"]
+        "IS_READ" : data["IS_READ"]
     }
 
     save_json(USER_LOGS_FILE, logs)
 
 
-def check_user_log(user_log_id):
+def checked_user_log(user_log_id):
     logs = load_json(USER_LOGS_FILE)
 
     if user_log_id in logs:
-        logs[user_log_id]["IS_CHECKED"] = True
+        logs[user_log_id]["IS_READ"] = True
         save_json(USER_LOGS_FILE, logs)
+
+
+def get_checked_user_logs(user_log_ids):
+    logs = load_json(USER_LOGS_FILE)
+
+    for user_log_id in user_log_ids:
+        if user_log_id in logs:
+            logs[user_log_id]["IS_READ"] = True
+
+    save_json(USER_LOGS_FILE, logs)
+
+
+def checked_select_user_log(user_log_ids):
+    logs = load_json(USER_LOGS_FILE)
+
+    # for log in logs.values():
+    #     log["IS_READ"] = True
+    for user_log_id in user_log_ids:
+
+        if user_log_id in logs:
+            logs[user_log_id]["IS_READ"] = True
+
+    save_json(USER_LOGS_FILE, logs)
+
 
 
 def format_user_logs(user_logs):
@@ -37,7 +71,7 @@ def format_user_logs(user_logs):
             {
                 "이벤트ID": user_log.get("EVENT_LOG_ID"),
                 "사용자": user_log.get("VIEWER_ID"),
-                "확인여부": user_log.get("IS_CHECKED")
+                "확인여부": user_log.get("IS_READ")
             }
         )
 
