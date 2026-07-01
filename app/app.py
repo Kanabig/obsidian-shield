@@ -5,12 +5,16 @@ from flask import Flask
 from app.domains.main.routes import main_bp
 from app.domains.map.routes import map_bp
 from app.domains.account.member.routes import member_bp
+from app.domains.logger.event_logs.routes import event_log_bp
+from app.domains.logger.user_logs.routes import user_log_bp
 
 flask_app = Flask(__name__)
 flask_app.secret_key = "your-secret-key"
 flask_app.register_blueprint(main_bp)
 flask_app.register_blueprint(map_bp)
 flask_app.register_blueprint(member_bp)
+flask_app.register_blueprint(event_log_bp)
+flask_app.register_blueprint(user_log_bp)
 
 
 def run():
