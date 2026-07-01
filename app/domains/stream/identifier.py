@@ -6,9 +6,6 @@ from app.configs import IDENTIFY_THREASHOLD
 
 # FIXME: Thread safe하게 변경
 
-UNKNOWN = ""
-NOT_MATCHED = -1.0
-
 
 def identify_face(person_img_croped) -> str:
     """
@@ -17,15 +14,16 @@ def identify_face(person_img_croped) -> str:
     유사도가 임계값 이하인 경우 반환: ("":str, -1.0:float)
     """
 
-    best_match_face_id = UNKNOWN
-    best_match_ratio = NOT_MATCHED
+    NO_MATCH = ("", -1.0)
 
     faces = face_app.get(person_img_croped)
     if len(faces) == 0:
-        return (UNKNOWN, NOT_MATCHED)
+        return NO_MATCH
 
     recognized_embeddings = load_face_embeddings()
     current_embedding = faces[0].normed_embedding
+
+    best_match_face_id, best_match_ratio = NO_MATCH
 
     for face_id in recognized_embeddings:
         similarities = np.dot(recognized_embeddings[face_id], current_embedding)
@@ -41,7 +39,7 @@ def identify_face(person_img_croped) -> str:
     if best_match_ratio > IDENTIFY_THREASHOLD:
         return (best_match_face_id, best_match_ratio)
 
-    return (UNKNOWN, NOT_MATCHED)
+    return NO_MATCH
 
 
 if __name__ == "__main__":

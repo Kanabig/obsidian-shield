@@ -13,12 +13,12 @@ model = YOLO("yolov8n.pt")
 # camera.add_camera(ESP32_STREAM_URL)
 # camera.get_camera(ESP32_STREAM_URL).read_frame()
 
-# FIXME: 초기화
+# TODO: 초기화 주기 정하기
 tracked_identities = []
 
 
 # FIXME: thread_safe
-def get_tracked_frame(frame_origin):
+def make_tracked_frame(frame_origin):
     if frame_origin is None:
         return
 
@@ -102,6 +102,49 @@ def find_people_and_cropped(frame):
     return people_cropped
 
 
+def find_person_box_generator(result):
+    already_tracked_ids = []
+
+    if result.boxes is not None and result.boxes.id is not None:
+        boxes = result.boxes.xyxy.int().cpu().tolist()
+        track_ids = result.boxes.id.int().cpu().tolist()
+
+        for box, track_id in zip(boxes, track_ids):
+            if track_id in already_tracked_ids:
+                continue
+
+            already_tracked_ids.append(track_id)
+            yield box
+
+
+def find_people(frame):
+    results = model.track(
+        frame, persist=True, classes=[0], conf=CONFIDENCE, verbose=False
+    )
+
+    return results[0]
+
+
+def clamp_boundary(boundary_origin, boundary_clamper):
+    x1, y1, x2, y2 = boundary_origin
+    c_x1, c_y1, c_x2, c_y2 = boundary_clamper
+
+    y1, y2 = max(c_y1, y1), min(c_y2, y2)
+    x1, x2 = max(c_x1, x1), min(c_x2, x2)
+    # y1, y2 = max(0, y1), min(boundary_clamper.shape[0], y2)
+    # x1, x2 = max(0, x1), min(boundary_clamper.shape[1], x2)
+
+    return (x1, y1, x2, y2)
+
+
+def crop_frame(frame, boundary):
+    if frame is None:
+        return None
+
+    x1, y1, x2, y2 = boundary
+    return frame[y1:y2, x1:x2]
+
+
 def draw_boundary(frame, boundary):
     x1, y1, x2, y2 = boundary
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
@@ -134,7 +177,7 @@ if __name__ == "__main__":
 
     elif 2 == TEST_CASE:
         img = cv2.imread("app/domains/stream/tests/two.jpg")
-        img = get_tracked_frame(img)
+        img = make_tracked_frame(img)
         img = cv2.resize(
             img, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
         )
