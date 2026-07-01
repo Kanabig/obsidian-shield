@@ -1,4 +1,5 @@
 blinker==1.9.0
+captcha==0.7.1
 certifi==2026.6.17
 charset-normalizer==3.4.7
 click==8.4.1
@@ -28,6 +29,7 @@ onnx==1.22.0
 onnxruntime==1.27.0
 opencv-python==4.13.0.92
 packaging==26.2
+pandas==3.0.3
 pillow==12.2.0
 polars==1.41.2
 polars-runtime-32==1.41.2
@@ -47,8 +49,8 @@ torch==2.12.1
 torchvision==0.27.1
 tqdm==4.68.3
 typing_extensions==4.15.0
+tzdata==2026.2
 ultralytics==8.4.75
 ultralytics-thop==2.0.20
 urllib3==2.7.0
 Werkzeug==3.1.8
-    
