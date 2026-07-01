@@ -41,6 +41,17 @@ class StreamCamera:
         return True, frame
 
 
+cameras = {}
+
+
+def add_camera(url):
+    cameras[url] = StreamCamera(url)
+
+
+def get_camera(url):
+    return cameras.get(url)
+
+
 if __name__ == "__main__":
     import cv2
 
