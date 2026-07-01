@@ -20,3 +20,17 @@ KEY_SENIOR_ID = "SENIOR_ID"
 KEY_IS_FIRST_LOGIN = "IS_FIRST_LOGIN"
 
 DELETED_ID_FILE = "deleted_id.json"
+
+
+# Login
+
+LOGIN_FAIL_LIMIT = 3
+PASSWORD_MIN_LENGTH = 8
+CAPTCHA_LENGTH = 5
+
+# Email Domains
+ALLOW_EMAIL_DOMAINS = [
+    "gmail.com",
+    "naver.com",
+    "daum.net"
+]

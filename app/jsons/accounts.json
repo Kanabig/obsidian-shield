@@ -1,16 +1,4 @@
 {
-  "user1": {
-    "NAME": "아아아",
-    "ID": "user1",
-    "PW": "password123!",
-    "EMAIL": "user1@naver.com",
-    "PHONE": "01012345678",
-    "REG_DATE": "2026/06/29, 09:47:04",
-    "MOT_DATE": "2026/06/29, 09:47:04",
-    "IS_APPROVE": false,
-    "IS_FIRST_LOGIN": true,
-    "PERMISSIONS": []
-  },
   "admin": {
     "NAME": "정호띠",
     "ID": "admin",
@@ -20,6 +8,20 @@
     "REG_DATE": "2026/06/01, 09:00:00",
     "MOT_DATE": "2026/06/30, 14:59:50",
     "IS_APPROVE": true,
+    "IS_FIRST_LOGIN": false,
+    "PERMISSIONS": [
+      "관리자"
+    ]
+  },
+  "mina": {
+    "NAME": "아아아",
+    "ID": "mina",
+    "PW": "11111111@",
+    "EMAIL": "admin@obsidian.com",
+    "PHONE": "01011112222",
+    "REG_DATE": "2026/06/01, 09:00:00",
+    "MOT_DATE": "2026/06/30, 14:59:50",
+    "IS_APPROVE": false,
     "IS_FIRST_LOGIN": false,
     "PERMISSIONS": [
       "관리자"
