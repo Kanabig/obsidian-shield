@@ -10,3 +10,9 @@ body {
     height: 600px;
 
 }
+
+/* 팝업 */
+#div {
+    padding: 10px;
+    width: 220px;
+}
