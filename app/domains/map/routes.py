@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, render_template
-from .map import getmap_data
+from .map import get_map_data
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,8 +15,7 @@ map_bp = Blueprint(
 
 @map_bp.route("/map")
 def map_page():
-    maps = getmap_data()
-    return render_template("map.html", maps=map)
-
+    maps = get_map_data()
+    return render_template("map.html", maps=maps)
 def load_maps():
-    return getmap_data()
+    return get_map_data()
