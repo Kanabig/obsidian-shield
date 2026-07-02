@@ -45,17 +45,46 @@ cameras = {}
 
 
 def add_camera(url):
+    if url in cameras:
+        print("이미 등록된 카메라입니다.")
+        return
+
     cameras[url] = StreamCamera(url)
 
 
-def get_camera(url):
-    return cameras.get(url)
+def get_frame(url):
+    has_frame, frame = cameras[url].read_frame()
+
+    if not has_frame:
+        return None
+
+    return frame
+
+
+def get_frames(*urls):
+    frames = {}
+
+    for url in urls:
+        frames[url] = get_frame(url)
+
+    return frames
 
 
 if __name__ == "__main__":
     import cv2
 
-    cam = StreamCamera("tests/test.mp4")
-    success, frame = cam.read_frame()
-    cv2.imshow("frame", frame)
-    cv2.waitKey(0)
+    URL1 = "app/domains/stream/tests/dessert.mp4"
+    URL2 = "app/domains/stream/tests/grassland.mp4"
+
+    add_camera(URL1)
+    add_camera(URL2)
+
+    frames = get_frames(URL1, URL2)
+
+    if len(frames) != 0:
+        for frame in frames.values():
+            if frame is None:
+                continue
+
+            cv2.imshow("frame", frame)
+            cv2.waitKey(0)

@@ -1,5 +1,6 @@
 from flask import Blueprint, Response, render_template
-from app.domains.stream import cam_temp
+from app.domains.stream import camera
+from app.domains.stream import tracker
 import time
 import cv2
 
@@ -23,7 +24,9 @@ def video_feed():
 
 def generate_frames():
     while True:
-        frame = cam_temp.get_frame()
+        frame = tracker.track_all(
+            camera.get_frame("app/domains/stream/tests/tokyo_street_long.mp4")
+        )
 
         if frame is None:
             time.sleep(0.1)
