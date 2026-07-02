@@ -4,6 +4,7 @@ from app.domains.logger.event_logs.event_logs import (
     checked_event_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
+from app.utils.pagination import paginate
 
 
 event_log_bp = Blueprint(
@@ -19,9 +20,20 @@ def event_list():
 
     events = get_event_list()
 
+    per_page = request.args.get("per_page", default=10, type=int)
+    page = request.args.get("page", default=1, type=int)
+
+    events, total_pages = paginate(
+        events, 
+        page, 
+        per_page)
+
     return render_template(
         "event_log_list.html", 
-        events = events)
+        events = events,
+        per_page = per_page,
+        page = page,
+        total_pages = total_pages)
     
 
 @event_log_bp.route("/export_event_data")
