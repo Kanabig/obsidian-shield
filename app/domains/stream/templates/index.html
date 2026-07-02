@@ -7,8 +7,12 @@
   </head>
   <body>
     <article>
-      <div class="camera_view">
-        <img id="video_img" src="{{ url_for('stream.video_feed') }}" width="640px" height="480px" />
+      <div class="camera-grid">
+        <img src="{{ url_for('stream.video_feed', cam_id=0) }}" width="300" height="200" alt="Camera 1" />
+        <img src="{{ url_for('stream.video_feed', cam_id=1) }}" width="300" height="200" alt="Camera 2" />
+        <img src="{{ url_for('stream.video_feed', cam_id=2) }}" width="300" height="200" alt="Camera 3" />
+        <!-- <img src="{{ url_for('stream.video_feed', cam_id=2) }}" alt="Camera 3" /> -->
+        <!-- <img src="{{ url_for('stream.video_feed', cam_id=3) }}" alt="Camera 4" /> -->
       </div>
     </article>
   </body>

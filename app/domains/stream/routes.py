@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, render_template
+from flask import Blueprint, Response, render_template, request
 from app.domains.stream import camera
 from app.domains.stream import tracker
 import time
@@ -16,23 +16,29 @@ def stream():
 
 @stream_bp.route("/video_feed/")
 def video_feed():
+
+    cam_id = request.args.get("cam_id", "0", type=int)
+
     return Response(
-        generate_frames(),
+        generate_frames(cam_id),
         mimetype="multipart/x-mixed-replace; boundary=frame",
     )
 
 
-def generate_frames():
+def generate_frames(cam_id):
     while True:
-        frame = tracker.track_all(
-            camera.get_frame("app/domains/stream/tests/newyork_street_01.mp4")
-        )
+        frame = camera.get_frame_by_id(cam_id)
 
         if frame is None:
+            continue
+
+        tracked_frame = tracker.track_all(frame)
+
+        if tracked_frame is None:
             time.sleep(0.1)
             continue
 
-        ret, buffer = cv2.imencode(".jpg", frame)
+        ret, buffer = cv2.imencode(".jpg", tracked_frame)
 
         if not ret:
             time.sleep(0.1)
