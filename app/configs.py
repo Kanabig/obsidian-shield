@@ -1,6 +1,10 @@
-ESP32_STREAM_URL = "http://192.168.137.159:81/stream"
-IDENTIFY_THREASHOLD = 0.5
+CAM01_URL = "http://192.168.137.159:81/stream"
+IDENTIFY_THREASHOLD = 0.45
 FACE_DETECTION_SIZE = (640, 640)
+
+KEY_MATCH_RATIO = "FACE_MATCH_RATIO"
+KEY_CROP = "PERSON_CROP"
+KEY_BOX = "PERSON_BOX_IN_FRAME"
 
 KEY_PERMISSIONS = "PERMISSIONS"
 
@@ -29,8 +33,4 @@ PASSWORD_MIN_LENGTH = 8
 CAPTCHA_LENGTH = 5
 
 # Email Domains
-ALLOW_EMAIL_DOMAINS = [
-    "gmail.com",
-    "naver.com",
-    "daum.net"
-]
+ALLOW_EMAIL_DOMAINS = ["gmail.com", "naver.com", "daum.net"]

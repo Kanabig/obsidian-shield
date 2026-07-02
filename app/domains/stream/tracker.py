@@ -2,118 +2,85 @@ import cv2
 from ultralytics import YOLO
 
 
-from app.domains.stream import camera
 from app.domains.stream.identifier import identify_face
-from app.configs import ESP32_STREAM_URL
+from app.configs import KEY_MATCH_RATIO, KEY_BOX, KEY_CROP
 
-CONFIDENCE = 0.5
-UNKNOWN = "UNKNOWN"
+CONFIDENCE = 0.4
+BOX_COLOR = (0, 0, 255)
+THICKNESS = 5
 
 model = YOLO("yolov8n.pt")
-# camera.add_camera(ESP32_STREAM_URL)
-# camera.get_camera(ESP32_STREAM_URL).read_frame()
 
 # TODO: 초기화 주기 정하기
-tracked_identities = []
-
+already_tracked_ids = []
 
 # FIXME: thread_safe
-def make_tracked_frame(frame_origin):
-    if frame_origin is None:
-        return
 
-    # 사람 찾기
-    people_cropped = find_people_and_cropped(frame_origin)
 
-    if people_cropped is None or len(people_cropped) == 0:
-        return
+def track_all(FRAME_ORIGIN):
+    frame_modified = FRAME_ORIGIN.copy()
 
-    print("people count: ", len(people_cropped))
+    for box in generate_person_box(find_people(frame_modified)):
+        height, width, _ = frame_modified.shape
+        clamper = (0, 0, width, height)
+        clamped_box = clamp_box(box, clamper)
 
-    # 등록된 사람 crop
-    identified_people = {}
-    matched_ratios = {}
-
-    for person_cropped in people_cropped:
-        person_img, _ = person_cropped
-        person_id, match_ratio = identify_face(person_img)
-
-        if person_id == "":
-            continue
-
-        print(person_id)
-
-        # 이미 감지된 대상이면 신뢰도가 더 높은 대상만 crop
-        if person_id in matched_ratios:
-            if matched_ratios[person_id] >= match_ratio:
-                continue
-
-            identified_people[person_id] = person_cropped
-            matched_ratios[person_id] = match_ratio
-
-        identified_people[person_id] = person_cropped
-        matched_ratios[person_id] = match_ratio
-
-    print("identified people: ", len(identified_people))
-    # 전체 프레임에서 crop된 사람 위치에 바운더리 그리기
-    frame_modified = frame_origin
-
-    for person in identified_people.values():
-        _, boundary = person
-        frame_modified = draw_boundary(frame_modified, boundary)
+        frame_modified = draw_box_in_frame(frame_modified, clamped_box)
 
     return frame_modified
 
 
-def find_people_and_cropped(frame):
-    if frame is None:
-        return None
+def track(FRAME_ORIGIN):
+    if FRAME_ORIGIN is None:
+        return
 
-    results = model.track(
-        frame, persist=True, classes=[0], conf=CONFIDENCE, verbose=False
-    )
+    frame_modified = FRAME_ORIGIN.copy()
 
-    result = results[0]
-    people_cropped = []
+    height, width, _ = frame_modified.shape
+    clamper = (0, 0, width, height)
 
+    person_datas = {}
+
+    for box in generate_person_box(find_people(frame_modified)):
+        clamped = clamp_box(box, clamper)
+
+        crop = crop_frame(frame_modified, clamped)
+
+        person_id, match_ratio = identify_face(crop)
+
+        if crop is None:
+            continue
+
+        if person_id == "":
+            continue
+
+        if person_id in person_datas:
+            if person_datas[person_id][KEY_MATCH_RATIO] > match_ratio:
+                continue
+
+        person_datas[person_id] = {
+            KEY_CROP: crop,
+            KEY_MATCH_RATIO: match_ratio,
+            KEY_BOX: clamped,
+        }
+
+    # 골라낸 사람 객체에 바운더리 그리기
+    for data in person_datas.values():
+        frame_modified = draw_box_in_frame(frame_modified, data[KEY_BOX])
+
+    return frame_modified
+
+
+def generate_person_box(result):
     if result.boxes is not None and result.boxes.id is not None:
         boxes = result.boxes.xyxy.int().cpu().tolist()
         track_ids = result.boxes.id.int().cpu().tolist()
 
         for box, track_id in zip(boxes, track_ids):
-            x1, y1, x2, y2 = box
+            # if track_id in already_tracked_ids:
+            #     continue
 
-            # boundary 처리
-            y1, y2 = max(0, y1), min(frame.shape[0], y2)
-            x1, x2 = max(0, x1), min(frame.shape[1], x2)
-
-            # 프레임에 처음 등장한 대상만 등록
-            if track_id in tracked_identities:
-                continue
-
-            tracked_identities.append(track_id)
-            person_crop = frame[y1:y2, x1:x2]
-
-            if person_crop.size <= 0:
-                continue
-
-            people_cropped.append((person_crop, (x1, y1, x2, y2)))
-
-    return people_cropped
-
-
-def find_person_box_generator(result):
-    already_tracked_ids = []
-
-    if result.boxes is not None and result.boxes.id is not None:
-        boxes = result.boxes.xyxy.int().cpu().tolist()
-        track_ids = result.boxes.id.int().cpu().tolist()
-
-        for box, track_id in zip(boxes, track_ids):
-            if track_id in already_tracked_ids:
-                continue
-
-            already_tracked_ids.append(track_id)
+            # already_tracked_ids.append(track_id)
             yield box
 
 
@@ -125,14 +92,12 @@ def find_people(frame):
     return results[0]
 
 
-def clamp_boundary(boundary_origin, boundary_clamper):
+def clamp_box(boundary_origin, clamper):
     x1, y1, x2, y2 = boundary_origin
-    c_x1, c_y1, c_x2, c_y2 = boundary_clamper
+    c_x1, c_y1, c_x2, c_y2 = clamper
 
     y1, y2 = max(c_y1, y1), min(c_y2, y2)
     x1, x2 = max(c_x1, x1), min(c_x2, x2)
-    # y1, y2 = max(0, y1), min(boundary_clamper.shape[0], y2)
-    # x1, x2 = max(0, x1), min(boundary_clamper.shape[1], x2)
 
     return (x1, y1, x2, y2)
 
@@ -145,42 +110,93 @@ def crop_frame(frame, boundary):
     return frame[y1:y2, x1:x2]
 
 
-def draw_boundary(frame, boundary):
+def draw_box_in_frame(frame, boundary):
     x1, y1, x2, y2 = boundary
-    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    cv2.rectangle(frame, (x1, y1), (x2, y2), BOX_COLOR, THICKNESS)
 
-    center_x = (x1 + x2) // 2
-    center_y = (y1 + y2) // 2
-    cv2.circle(frame, (center_x, center_y), 4, (255, 0, 0), -1)
+    # center_x = (x1 + x2) // 2
+    # center_y = (y1 + y2) // 2
+    # cv2.circle(frame, (center_x, center_y), 4, (255, 0, 0), -1)
 
     return frame
 
 
 if __name__ == "__main__":
-    TEST_CASE = 2
+    TEST_CASE = 4
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
 
     if 1 == TEST_CASE:
-        img = cv2.imread("app/domains/stream/tests/monster.png")
-        people_cropped = find_people_and_cropped(img)
+        frame_origin = cv2.imread("app/domains/stream/tests/people2.jpg")
+        frame_modified = cv2.resize(
+            frame_origin, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
+        )
+        result = find_people(frame_modified)
+        person_box_gen = generate_person_box(result)
 
-        for person_cropped in people_cropped:
-            person_img, _ = person_cropped
-            cv2.imshow("img", person_img)
-            person_img = cv2.resize(
-                person_img, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
-            )
-            cv2.waitKey()
-            cv2.destroyAllWindows()
+        for box in person_box_gen:
+            height, width, _ = frame_modified.shape
+            clamper = (0, 0, width, height)
+            clamped_box = clamp_box(box, clamper)
+
+            frame_modified = draw_box_in_frame(frame_modified, box)
+
+        cv2.imshow("title", frame_modified)
+        cv2.waitKey()
 
     elif 2 == TEST_CASE:
-        img = cv2.imread("app/domains/stream/tests/two.jpg")
-        img = make_tracked_frame(img)
-        img = cv2.resize(
-            img, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
+        frame_origin = cv2.imread("app/domains/stream/tests/people2.jpg")
+        frame_modified = cv2.resize(
+            frame_origin, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
         )
-        cv2.imshow("img", img)
+        result = find_people(frame_modified)
+        person_box_gen = generate_person_box(result)
+        person_crops = []
+
+        for box in person_box_gen:
+            height, width, _ = frame_modified.shape
+            clamper = (0, 0, width, height)
+            clamped_box = clamp_box(box, clamper)
+
+            person_crops.append(crop_frame(frame_modified, clamped_box))
+
+        for person_crop in person_crops:
+            cv2.imshow("person", person_crop)
+            cv2.waitKey()
+
+    elif 3 == TEST_CASE:
+        frame_origin = cv2.imread("app/domains/stream/tests/two.jpg")
+        modified = frame_origin.copy()
+        modified = track(modified)
+        modified = cv2.resize(
+            modified,
+            dsize=(0, 0),
+            fx=0.2,
+            fy=0.2,
+            interpolation=cv2.INTER_AREA,
+        )
+        cv2.imshow("title", modified)
         cv2.waitKey()
-        cv2.destroyAllWindows()
+
+    elif 4 == TEST_CASE:
+        from app.domains.stream.camera import StreamCamera
+
+        path = "app/domains/stream/tests/newyork_street_01.mp4"
+
+        cam = StreamCamera(path)
+
+        while cam.is_opened():
+            has_frame, frame = cam.read_frame()
+            frame = track_all(frame)
+            frame = cv2.resize(
+                frame, dsize=(0, 0), fx=0.7, fy=0.7, interpolation=cv2.INTER_AREA
+            )
+
+            if not has_frame:
+                continue
+
+            cv2.imshow("Video", frame)
+
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
