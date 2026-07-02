@@ -12,6 +12,7 @@ python version 3.12.0
 4. insightface
 5. captcha
 6. pandas
+7. openpyxl
 
 ### Entry point ------
 
