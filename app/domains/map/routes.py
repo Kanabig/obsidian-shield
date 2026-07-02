@@ -1,10 +1,6 @@
 import os
-from flask import Blueprint, render_template, request
-from app.utils.json_manager import (
-    load_json, 
-    EVENT_LOGS_FILE, 
-    TARGETS_PROFILES_FILE
-)
+from flask import Blueprint, render_template
+from .map import getmap_data
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,11 +15,8 @@ map_bp = Blueprint(
 
 @map_bp.route("/map")
 def map_page():
-    event_logs = load_json(EVENT_LOGS_FILE)
-    return render_template("map.html", maps=maps)
+    maps = getmap_data()
+    return render_template("map.html", maps=map)
 
 def load_maps():
-    return load_json(MAPS_FILE)
-
-def save_maps(data):
-    return save_json(MAPS_FILE, data)
+    return getmap_data()
