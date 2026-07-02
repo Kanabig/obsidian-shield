@@ -4,6 +4,10 @@ body {
     padding: 0;
 }
 
+h2 {
+    text-align: left;
+}
+
 /* 지도 영역 */
 #map {
     width: 100%;
@@ -15,4 +19,12 @@ body {
 #div {
     padding: 10px;
     width: 220px;
+}
+
+.info-window img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    image-rendering: -webkit-optimize-contrast;
 }
