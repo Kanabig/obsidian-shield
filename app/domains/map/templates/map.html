@@ -23,9 +23,11 @@
     
     <script>
         const maps = {{ maps | tojson }};
+        const imageBaseUrl = "{{ url_for('map.static', filename= 'images/') }}";
     </script>
 
     <script src="{{ url_for('map.static', filename='js/map.js') }}"></script>
 
+    
 </body>
 </html>
