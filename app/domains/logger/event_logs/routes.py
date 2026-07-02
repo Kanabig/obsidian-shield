@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from app.domains.logger.event_logs.event_logs import (
-    get_event_list,add_event,format_events)
+    get_event_list,add_event,format_events,
+    checked_event_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
 
@@ -53,3 +54,16 @@ def add_event_log():
     add_event(data)
 
     return {"result": "success"}, 201
+
+
+@event_log_bp.route("/checked_event_log", methods=["POST"])
+def checked_event():
+
+    data = request.get_json()
+
+    checked_event_logs(
+        data["ids"],
+        data["viewer_id"]
+    )
+
+    return {"result": "success"}
