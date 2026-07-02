@@ -25,7 +25,7 @@ def video_feed():
 def generate_frames():
     while True:
         frame = tracker.track_all(
-            camera.get_frame("app/domains/stream/tests/tokyo_street_long.mp4")
+            camera.get_frame("app/domains/stream/tests/newyork_street_01.mp4")
         )
 
         if frame is None:

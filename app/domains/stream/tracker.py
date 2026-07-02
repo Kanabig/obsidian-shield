@@ -35,14 +35,17 @@ def track(FRAME_ORIGIN):
         return
 
     frame_modified = FRAME_ORIGIN.copy()
+
+    height, width, _ = frame_modified.shape
+    clamper = (0, 0, width, height)
+
     person_datas = {}
 
     for box in generate_person_box(find_people(frame_modified)):
-        height, width, _ = frame_modified.shape
-        clamper = (0, 0, width, height)
         clamped = clamp_box(box, clamper)
 
         crop = crop_frame(frame_modified, clamped)
+
         person_id, match_ratio = identify_face(crop)
 
         if crop is None:
