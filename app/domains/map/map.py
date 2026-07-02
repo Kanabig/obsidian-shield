@@ -34,6 +34,7 @@ def get_map_data():
                 "short_description" : target["SHORT_DESCRIPTION"], 
                 "description" : target["DESCRIPTION"], 
                 "image" : target.get("IMAGE", "human.jpg"), 
+                # "body-image" : target.get("IMAGE", "human.jpg"), 
                 "latitude" : latest_log["latitude"], 
                 "longitude" : latest_log["longitude"],
                 "reg_date" : latest_log["REG_DATE"],

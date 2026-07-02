@@ -14,20 +14,34 @@ var container = document.getElementById("map");
 var map = new kakao.maps.Map(container, options);
 
 
+
+
 //4. 마커 객체 생성
 let openedInfoWindow = null;
 
 maps.forEach(function(target){
+        
+        // MarkerImage 생성
+        const imageSrc = `${imageBaseUrl}${target.image}`;
+        
+        const imageSize = new kakao.maps.Size(60, 60);
+        
+        const markerImage = new kakao.maps.MarkerImage(
+                imageSrc,
+                imageSize
+        );
+
         const marker = new kakao.maps.Marker({
                 map: map,
                 position: new kakao.maps.LatLng(
                         target.latitude,
                         target.longitude
-                )
+                ),
+                image: markerImage
         });
 
 
-        //5. Infowindow 내용
+        //6. Infowindow 내용
         const content = `
         
         <div class = "info-window">
@@ -40,11 +54,11 @@ maps.forEach(function(target){
         
         `;
         
-        //6. InfoWindow 생성
+        //7. InfoWindow 생성
         const infoWindow = new kakao.maps.InfoWindow({
                 content: content
         });
-        //7. 마커 클릭시 열고닫기
+        //8. 마커 클릭시 열고닫기
         kakao.maps.event.addListener(marker, 'click', function() {
                 
                 // 이미 해당 마커의 InfoWindow가 열려있다면 닫기
