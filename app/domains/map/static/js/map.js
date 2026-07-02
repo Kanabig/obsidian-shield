@@ -15,6 +15,8 @@ var map = new kakao.maps.Map(container, options);
 
 
 //3. 마커 객체 생성
+let openedInfoWindow = null;
+
 maps.forEach(function(target){
         const marker = new kakao.maps.Marker({
                 map: map,
@@ -29,7 +31,7 @@ maps.forEach(function(target){
         const content = `
         
         <div class = "info-window">
-            <img src="/static/images/${target.images}">
+            <img src="/static/images/${target.image}">
             <h3>${target.name}</h3>
             <p>나이: ${target.age}</p>
             <p>${target.short_description}</p>
@@ -42,9 +44,22 @@ maps.forEach(function(target){
         const infoWindow = new kakao.maps.InfoWindow({
                 content: content
         });
-        //6. 마커 클릭시 열기
+        //6. 마커 클릭시 열고닫기
         kakao.maps.event.addListener(marker, 'click', function() {
+                
+                // 이미 해당 마커의 InfoWindow가 열려있다면 닫기
+                if(openedInfoWindow === infoWindow){
+                        infoWindow.close();
+                        openedInfoWindow = null;
+                        return;
+                }
+                // 다른 InfoWindow가 열려있다면 닫기
+                if (openedInfoWindow) {
+                    openedInfoWindow.close();
+                }
+                // 현재 InfoWindow 열기
                 infoWindow.open(map, marker);
+                openedInfoWindow = infoWindow;
         });
 });
 
