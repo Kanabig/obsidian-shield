@@ -1,35 +1,35 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Member Page Title */
 .title_area {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
 }
 
 .title_area h2 {
-    font-size: 34px;
     margin-bottom: 10px;
+    font-size: 34px;
+    color: var(--system-text);
 }
 
 .title_area p {
-    color: #b5c0cf;
+    color: var(--system-sub-text);
     font-size: 19px;
 }
 
 .breadcrumb {
-    color: #b7c5d6;
+    color: var(--system-sub-text);
     font-size: 17px;
+    white-space: nowrap;
 }
 
+/* Filter Area */
 .filter_box {
     margin-top: 26px;
     padding: 16px;
-    border: 1px solid rgba(120, 150, 180, 0.18);
+    border: 1px solid var(--system-panel-border);
     border-radius: 10px;
+    background: var(--system-panel-light);
 }
 
 .filter_row {
@@ -46,93 +46,151 @@
 .search_box {
     flex: 1;
     display: flex;
+    min-width: 280px;
 }
 
 .search_box input {
     flex: 1;
     height: 56px;
     padding: 0 20px;
-    background: #07111c;
-    border: 1px solid #26394f;
-    color: white;
-    font-size: 17px;
+    border: 1px solid var(--system-input-border);
     border-radius: 8px 0 0 8px;
+    background: var(--system-input-bg);
+    color: var(--system-text);
+    font-size: 17px;
 }
 
 .search_box button {
     width: 64px;
     border: none;
-    background: #005be8;
-    color: white;
+    border-radius: 0 8px 8px 0;
+    background: var(--system-blue);
+    color: #ffffff;
     font-size: 26px;
-    cursor: pointer;
-    transition: all .15s ease;
-    box-shadow: 0 4px 12px rgba(0,91,232,.35);
+    box-shadow: 0 4px 12px rgba(0, 91, 232, 0.35);
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.search_box button:hover{
-    background: #1976ff;
-    box-shadow: 0 8px 18px rgba(0,91,232,.45);
+.search_box button:hover {
+    background: var(--system-blue-light);
+    box-shadow: 0 8px 18px rgba(0, 91, 232, 0.45);
     transform: translateY(-2px);
 }
 
-.search_box button:active{
-    transform: translateY(2px) scale(.96);
-    background: #0047b8;
+.search_box button:active {
+    background: var(--system-blue);
     box-shadow:
-        inset 0 4px 8px rgba(0,0,0,.45),
-        0 1px 3px rgba(0,0,0,.2);
+        inset 0 4px 8px rgba(0, 0, 0, 0.45),
+        0 1px 3px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px) scale(0.96);
 }
 
-.search_box button:focus{
+.search_box button:focus {
     outline: none;
 }
 
-label {
-    color: #0091ff;
+.filter_box label,
+.member_add_box label {
+    color: var(--system-blue);
     font-weight: bold;
     font-size: 17px;
 }
 
-select {
+.filter_box select,
+.table_box select,
+.member_add_box select {
     height: 48px;
     min-width: 160px;
     padding: 0 16px;
-    background: #07111c;
-    border: 1px solid #26394f;
+    border: 1px solid var(--system-input-border);
     border-radius: 7px;
-    color: white;
+    background: var(--system-input-bg);
+    color: var(--system-text);
     font-size: 16px;
 }
 
-.table_box {
-    margin-top: 18px;
-    border: 1px solid rgba(120, 150, 180, 0.22);
-    border-radius: 10px;
-    overflow: hidden;
+.right_btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
-table {
+/* Buttons */
+.filter_btn,
+.pagination a {
+    width: 54px;
+    height: 48px;
+    border: 1px solid var(--system-input-border);
+    border-radius: 7px;
+    background: var(--system-input-bg);
+    color: var(--system-text);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter_btn {
+    width: 70px;
+}
+
+.add_member_btn {
+    height: 48px;
+    padding: 0 22px;
+    border: 1px solid var(--system-blue);
+    border-radius: 7px;
+    background: var(--system-blue);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add_member_btn:hover,
+.save_btn:hover {
+    background: var(--system-blue-light);
+}
+
+.add_member_btn:active,
+.save_btn:active,
+.cancel_btn:active {
+    transform: scale(0.96);
+}
+
+/* Member Table */
+.table_box {
+    margin-top: 18px;
+    border: 1px solid var(--system-panel-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--system-panel);
+}
+
+.table_box table {
     width: 100%;
     border-collapse: collapse;
 }
 
-th, td {
+.table_box th,
+.table_box td {
     height: 72px;
     padding: 0 34px;
     text-align: left;
-    border-bottom: 1px solid rgba(120, 150, 180, 0.16);
+    border-bottom: 1px solid var(--system-panel-border);
     font-size: 20px;
 }
 
-th {
+.table_box th {
+    color: var(--system-text);
     font-weight: bold;
-    color: #ffffff;
-    background: rgba(8, 18, 30, 0.9);
+    background: var(--system-panel-light);
 }
 
-td {
-    color: #eef3fb;
+.table_box td {
+    color: var(--system-text);
 }
 
 .badge {
@@ -142,13 +200,13 @@ td {
 }
 
 .badge.approve {
-    color: #00ffc8;
-    background: rgba(0, 150, 110, 0.25);
+    color: #00b894;
+    background: rgba(0, 184, 148, 0.16);
 }
 
 .badge.wait {
-    color: #ffd400;
-    background: rgba(160, 120, 0, 0.25);
+    color: #d99a00;
+    background: rgba(255, 193, 7, 0.18);
 }
 
 .actions {
@@ -158,107 +216,46 @@ td {
 }
 
 .actions button {
-    background: none;
     border: none;
+    background: none;
     font-size: 24px;
-    cursor: pointer;
 }
 
 .edit {
-    color: #008cff;
+    color: var(--system-blue);
 }
 
 .delete {
-    color: #ff3333;
-    text-decoration: none;
+    color: #ff4d4d;
     font-size: 24px;
-    cursor: pointer;
 }
 
+/* Pagination */
 .pagination {
-    height: 92px;
+    min-height: 92px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 16px;
 }
 
-.pagination button {
-    width: 54px;
-    height: 54px;
-    border: 1px solid #26394f;
-    background: #07111c;
-    color: white;
-    border-radius: 7px;
-    font-size: 20px;
-}
-
-.pagination .current {
-    background: #005be8;
-}
-
-.filter_btn,
-.pagination a {
-    width: 54px;
-    height: 48px;
-    border: 1px solid #26394f;
-    background: #07111c;
-    color: white;
-    border-radius: 7px;
-    font-size: 16px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.filter_btn {
-    width: 70px;
-    cursor: pointer;
-}
-
 .pagination a.current {
-    background: #005be8;
+    background: var(--system-blue);
+    color: #ffffff;
 }
 
-.add_member_btn {
-    height: 48px;
-    padding: 0 22px;
-    border: 1px solid #005be8;
-    background: #005be8;
-    color: white;
-    border-radius: 7px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.add_member_btn:hover {
-    background: #1976ff;
-}
-
-.add_member_btn:active {
-    transform: translateY(2px) scale(.96);
-    background: #0047b8;
-}
-
-.right_btn{
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
+/* Add Member Form */
 .member_add_box {
     margin-top: 20px;
     padding: 30px;
-    border: 1px solid rgba(120, 150, 180, 0.22);
+    border: 1px solid var(--system-panel-border);
     border-radius: 10px;
-    background: rgba(7, 16, 27, 0.88);
+    background: var(--system-panel);
+}
+
+.member_add_box h2 {
+    margin-bottom: 24px;
+    color: var(--system-text);
 }
 
 .add_row {
@@ -268,9 +265,6 @@ td {
 .add_row label {
     display: block;
     margin-bottom: 8px;
-    color: #0091ff;
-    font-weight: bold;
-    font-size: 17px;
 }
 
 .add_row input,
@@ -278,10 +272,10 @@ td {
     width: 100%;
     height: 50px;
     padding: 0 16px;
-    background: #07111c;
-    border: 1px solid #26394f;
+    border: 1px solid var(--system-input-border);
     border-radius: 7px;
-    color: white;
+    background: var(--system-input-bg);
+    color: var(--system-text);
     font-size: 16px;
 }
 
@@ -293,45 +287,31 @@ td {
     margin-top: 35px;
 }
 
-.save_btn {
-    width: 120px;
-    height: 46px;
-    border: none;
-    border-radius: 7px;
-    background: #005be8;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.save_btn:hover {
-    background: #1976ff;
-}
-
-.save_btn:active {
-    transform: scale(.96);
-}
-
+.save_btn,
 .cancel_btn {
     width: 120px;
     height: 46px;
-    border: 1px solid #2e4259;
     border-radius: 7px;
-    background: #07111c;
-    color: white;
-    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: .2s;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.save_btn {
+    border: none;
+    background: var(--system-blue);
+    font-weight: bold;
+}
+
+.cancel_btn {
+    border: 1px solid var(--system-input-border);
+    background: var(--system-input-bg);
+    color: var(--system-text);
 }
 
 .cancel_btn:hover {
-    background: #122033;
-}
-
-.cancel_btn:active {
-    transform: scale(.96);
+    background: var(--system-panel-light);
 }
