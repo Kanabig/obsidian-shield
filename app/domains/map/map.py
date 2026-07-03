@@ -26,6 +26,10 @@ def get_map_data():
     for target_id, latest_log in Latest_logs.items():
         target = target_profiles.get(target_id)
 
+        print("========================")
+        print(target_id)
+        print(target)
+
         if target:
             map_data.append({
                 "id" : target["ID"],
@@ -33,8 +37,8 @@ def get_map_data():
                 "age" : target["AGE"], 
                 "short_description" : target["SHORT_DESCRIPTION"], 
                 "description" : target["DESCRIPTION"], 
-                "image" : target.get("IMAGE", "human.jpg"), 
-                # "body-image" : target.get("IMAGE", "human.jpg"), 
+                "image" : target.get("IMAGE"), 
+                "full_image" : target.get("FULL_IMAGE"), 
                 "latitude" : latest_log["latitude"], 
                 "longitude" : latest_log["longitude"],
                 "reg_date" : latest_log["REG_DATE"],
