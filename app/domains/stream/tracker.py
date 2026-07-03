@@ -17,23 +17,37 @@ already_tracked_ids = []
 # FIXME: thread_safe
 
 
-def track_all(FRAME_ORIGIN):
-    frame_modified = FRAME_ORIGIN.copy()
+def track_all(*FRAME_ORIGINS):
 
-    for box in generate_person_box(find_people(frame_modified)):
-        height, width, _ = frame_modified.shape
-        clamper = (0, 0, width, height)
-        clamped_box = clamp_box(box, clamper)
+    height, width, _ = FRAME_ORIGINS[0].shape
+    clamper = (0, 0, width, height)
 
-        frame_modified = draw_box_in_frame(frame_modified, clamped_box)
+    frames = [frame.copy() for frame in FRAME_ORIGINS]
 
-    return frame_modified
+    results = find_people(frames)
+    person_box_generaters = [generate_person_box(r) for r in results]
+
+    boxes = []
+    index = 0
+    for generator in person_box_generaters:
+        boxes.append([])
+
+        for person_box in generator:
+            boxes[index].append(clamp_box(person_box, clamper))
+
+        index += 1
+
+    index = 0
+    for frame in frames:
+        for box in boxes[index]:
+            draw_box_in_frame(frame, box)
+
+        index += 1
+
+    return frames
 
 
 def track(FRAME_ORIGIN):
-    if FRAME_ORIGIN is None:
-        return
-
     frame_modified = FRAME_ORIGIN.copy()
 
     height, width, _ = frame_modified.shape
@@ -84,12 +98,15 @@ def generate_person_box(result):
             yield box
 
 
-def find_people(frame):
+def find_people(*frames):
+    if len(frames) == 1:
+        frames = frames[0]
+
     results = model.track(
-        frame, persist=True, classes=[0], conf=CONFIDENCE, verbose=False
+        frames, persist=True, classes=[0], conf=CONFIDENCE, verbose=False, iou=0.5
     )
 
-    return results[0]
+    return results
 
 
 def clamp_box(boundary_origin, clamper):
@@ -122,73 +139,39 @@ def draw_box_in_frame(frame, boundary):
 
 
 if __name__ == "__main__":
-    TEST_CASE = 4
+    TEST_CASE = 0
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
 
+    img = cv2.imread("app/domains/stream/tests/people2.jpg")
+    img02 = cv2.imread("app/domains/stream/tests/two2.jpg")
+
+    imgs = track_all(img, img02)
+
+    for img in imgs:
+        img = cv2.resize(
+            img, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
+        )
+        cv2.imshow(f"{img}", img)
+
+    cv2.waitKey()
+
     if 1 == TEST_CASE:
-        frame_origin = cv2.imread("app/domains/stream/tests/people2.jpg")
-        frame_modified = cv2.resize(
-            frame_origin, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
-        )
-        result = find_people(frame_modified)
-        person_box_gen = generate_person_box(result)
-
-        for box in person_box_gen:
-            height, width, _ = frame_modified.shape
-            clamper = (0, 0, width, height)
-            clamped_box = clamp_box(box, clamper)
-
-            frame_modified = draw_box_in_frame(frame_modified, box)
-
-        cv2.imshow("title", frame_modified)
-        cv2.waitKey()
-
-    elif 2 == TEST_CASE:
-        frame_origin = cv2.imread("app/domains/stream/tests/people2.jpg")
-        frame_modified = cv2.resize(
-            frame_origin, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
-        )
-        result = find_people(frame_modified)
-        person_box_gen = generate_person_box(result)
-        person_crops = []
-
-        for box in person_box_gen:
-            height, width, _ = frame_modified.shape
-            clamper = (0, 0, width, height)
-            clamped_box = clamp_box(box, clamper)
-
-            person_crops.append(crop_frame(frame_modified, clamped_box))
-
-        for person_crop in person_crops:
-            cv2.imshow("person", person_crop)
-            cv2.waitKey()
-
-    elif 3 == TEST_CASE:
-        frame_origin = cv2.imread("app/domains/stream/tests/two.jpg")
-        modified = frame_origin.copy()
-        modified = track(modified)
-        modified = cv2.resize(
-            modified,
-            dsize=(0, 0),
-            fx=0.2,
-            fy=0.2,
-            interpolation=cv2.INTER_AREA,
-        )
-        cv2.imshow("title", modified)
-        cv2.waitKey()
-
-    elif 4 == TEST_CASE:
         from app.domains.stream.camera import StreamCamera
 
         path = "app/domains/stream/tests/newyork_street_01.mp4"
 
         cam = StreamCamera(path)
 
-        while cam.is_opened():
+        while True:
             has_frame, frame = cam.read_frame()
+
+            if frame is None:
+                continue
+
             frame = track_all(frame)
+
             frame = cv2.resize(
                 frame, dsize=(0, 0), fx=0.7, fy=0.7, interpolation=cv2.INTER_AREA
             )
