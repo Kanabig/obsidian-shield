@@ -37,3 +37,12 @@
     justify-content: flex-end;
     margin-top: 20px;
 }
+
+
+/* ===== 데이터 없음 ===== */
+
+.empty {
+    padding: 25px;
+    color: #888;
+    text-align: center;
+}
