@@ -26,26 +26,27 @@ def video_feed():
 
 
 def generate_frames(cam_id):
-    while True:
-        frame = camera.get_frame_by_id(cam_id)
+    pass
+    # while True:
+    #     frame = camera.get_frame_by_id(cam_id)
 
-        if frame is None:
-            continue
+    #     if frame is None:
+    #         continue
 
-        tracked_frame = tracker.track_all(frame)
+    #     tracked_frame = tracker.track_all(frame)
 
-        if tracked_frame is None:
-            time.sleep(0.1)
-            continue
+    #     if tracked_frame is None:
+    #         time.sleep(0.1)
+    #         continue
 
-        ret, buffer = cv2.imencode(".jpg", tracked_frame)
+    #     ret, buffer = cv2.imencode(".jpg", tracked_frame)
 
-        if not ret:
-            time.sleep(0.1)
-            continue
+    #     if not ret:
+    #         time.sleep(0.1)
+    #         continue
 
-        frame_bytes = buffer.tobytes()
+    #     frame_bytes = buffer.tobytes()
 
-        yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
+    #     yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
 
-        time.sleep(0.03)
+    #     time.sleep(0.03)
