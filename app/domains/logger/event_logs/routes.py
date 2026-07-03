@@ -15,7 +15,7 @@ event_log_bp = Blueprint(
     static_folder="../static"
 )
 
-@event_log_bp.route("/event_log_list")
+@event_log_bp.route("/log_list_event")
 def event_list():
 
     events = get_event_list()
@@ -29,7 +29,7 @@ def event_list():
         per_page)
 
     return render_template(
-        "event_log_list.html", 
+        "log_list_event.html", 
         events = events,
         per_page = per_page,
         page = page,

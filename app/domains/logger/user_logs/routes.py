@@ -14,7 +14,7 @@ user_log_bp = Blueprint(
     static_folder="../static"
 )
 
-@user_log_bp.route("/user_log_list")
+@user_log_bp.route("/log_list_user")
 def user_log_list():
 
     logs = get_user_log_list()
@@ -28,7 +28,7 @@ def user_log_list():
         per_page)
 
     return render_template(
-        "user_log_list.html",
+        "log_list_user.html",
         logs = logs,
         per_page = per_page,
         page = page,
