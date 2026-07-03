@@ -21,12 +21,30 @@ h2 {
     width: 220px;
 }
 
+.info-window {
+    width: 170px;
+    padding: 8px;
+    text-align: center;
+}
+
 
 
 .info-window img {
-    width: 100px;
-    height: 50%;
-    object-fit: cover;
-    border-radius: 4px;
+    width: 110px;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 5px;
     image-rendering: auto;
+    display: block;
+    margin: 0 auto 8px;
+}
+
+.info-window h3{
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+.info-window p{
+    font-size: 14px;
+    margin: 2px 0;
 }

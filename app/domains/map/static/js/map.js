@@ -40,18 +40,25 @@ maps.forEach(function(target){
                 image: markerImage
         });
 
+        // REG_DATE 분리>>날짜/시간
+        const[date, time] = target.reg_date.split(",");
 
         //6. Infowindow 내용
         const content = `
         
-        <div class = "info-window">
-            <img src="${imageBaseUrl}${target.image}">
-            <h3>${target.name}</h3>
-            <p>나이: ${target.age}</p>
-            <p>${target.short_description}</p>
-            <p>탐지시간: ${target.reg_date}</p>
-        </div>
-        
+            <div class = "info-window">
+                <img class="full_image"
+                src="${imageBaseUrl}${target.full_image}">
+                <h3>${target.name}</h3>
+                <p>나이: ${target.age}</p>
+                <p><strong>${target.short_description}</strong></p>
+                
+                <p>탐지일</p>
+                <p>${date}</p>
+                
+                <p>탐지시간</p>
+                <p>${time}</p>
+            </div>
         `;
         
         //7. InfoWindow 생성
