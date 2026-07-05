@@ -2,12 +2,13 @@ import threading
 import time
 import numpy as np
 from cv2 import VideoCapture
-from cv2 import CAP_PROP_FPS
+from cv2 import CAP_PROP_POS_FRAMES
+from collections import deque
 
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 60
+FRAME_DEFAULT = 24
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -21,16 +22,17 @@ class Camera:
     최초 생성시 아무런 프레임도 확보하지 못하면 검은 화면 반환
     """
 
-    def __init__(self, src_path, src_type=VIDEO):
+    def __init__(self, src_path, src_type):
         self.src_path = src_path
         self.is_video = src_type == VIDEO
         self.camera = None
 
+        self.frame_queue = deque(maxlen=3)
+        self.frame_queue.append(BLACK_SCREEN.copy())
+
         self.on_running = False
         self.thread = None
         self.lock = threading.Lock()
-
-        self.latest_frame = BLACK_SCREEN.copy()
 
         self.connect()
         self.start()
@@ -48,38 +50,46 @@ class Camera:
             self.thread.start()
 
     def _capture_loop(self):
-        fps = self.camera.get(CAP_PROP_FPS) if self.is_video else FRAME_DEFAULT
-        fps = fps if fps != 0 else FRAME_DEFAULT
-
-        # framerate or cpu 과점유 딜레이
-        frame_delay = 1.0 / fps if self.is_video else CPU_USAGE_DELAY
+        frame_delay = 1.0 / FRAME_DEFAULT
 
         while self.on_running:
             if self.camera is None or not self.camera.isOpened():
                 self.connect()
-                # 무한 재연결 시도 예방 딜레이
                 time.sleep(CONNECT_DELAY)
                 continue
 
+            start_time = time.time()
             success, frame = self.camera.read()
 
             if success and frame is not None:
                 with self.lock:
-                    self.latest_frame = frame
+                    self.frame_queue.append(frame)
 
-                time.sleep(frame_delay)
+                processing_time = time.time() - start_time
+                sleep_time = frame_delay - processing_time
 
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                else:
+                    time.sleep(CPU_USAGE_DELAY)
+
+            # 동영상이 끝났거나, 스트리밍에서 프레임을 가져오지 못한 경우
             else:
                 if self.is_video:
-                    # 동영상 시작 지점으로 되감기
-                    self.camera.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    self.camera.set(CAP_PROP_POS_FRAMES, 0)
                 else:
-                    # 스트리밍 불안정시 프레임 확보용 딜레이
                     time.sleep(UNSTABLE_STREAMING_DELAY)
 
     def read_frame(self):
         with self.lock:
-            return self.latest_frame.copy()
+            frame = None
+
+            if len(self.frame_queue) > 1:
+                frame = self.frame_queue.popleft()
+            else:
+                frame = self.frame_queue[0]
+
+            return frame.copy()
 
     def release(self):
         self.on_running = False
@@ -87,7 +97,7 @@ class Camera:
         if self.thread is not None:
             self.thread.join()
 
-        if self.camera.isOpened():
+        if self.camera and self.camera.isOpened():
             self.camera.release()
 
 
@@ -96,12 +106,12 @@ class Camera:
 # ================================================================
 
 
-def add_camera(source, id):
+def add_camera(src_path, id, src_type=VIDEO):
     if id in _instances:
         print("이미 등록된 카메라입니다.")
         return
 
-    _instances[id] = Camera(source)
+    _instances[id] = Camera(src_path, src_type)
 
 
 def delete_camera(id):
@@ -116,7 +126,7 @@ def delete_camera(id):
 
 
 def clear():
-    for camera in _instances():
+    for id in tuple(_instances.keys()):
         delete_camera(id)
 
 

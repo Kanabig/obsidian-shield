@@ -1,5 +1,6 @@
 import cv2
 from ultralytics import YOLO
+from ultralytics.utils.plotting import Annotator, colors
 from app.domains.stream import face_profiler
 
 KEY_MATCH_RATIO = "FACE_MATCH_RATIO"
@@ -13,39 +14,32 @@ THICKNESS = 5
 _model = YOLO("yolov8n.pt")
 
 
-# FIXME: thread_safe
-
-
 def track_all(frames: list) -> list:
-    """프레임 리스트를 받아 배치 처리하고 yolo모델로 분석시킨 프레임들을 반환"""
+    """프레임을 리스트로 받아서 각 프레임들을 분석 후 발견한 사람 모두에게 주석을 달아서 반환"""
     frames_modified = [frame.copy() for frame in frames]
     results = find_people(frames_modified)
 
-    for frame, result in zip(frames_modified, results):
-        height, width, _ = frame.shape
-        clamper = (0, 0, width, height)
-
-        person_boxes = get_person_boxes(result)
-
-        for box in person_boxes:
-            clamped = clamp_box(box, clamper)
-            draw_box_in_frame(frame, clamped)
-
-    return frames_modified
+    return [r.plot() for r in results]
 
 
 def track_identify(frames: list) -> list:
-    """프레임 리스트를 받아 배치 처리하고 DB에 등록된 사람만 바운딩 박스를 쳐서 반환"""
+    """프레임을 리스트로 받아서 각 프레임들을 분석 후 db에 등록된 사람에게만 주석을 달아서 반환"""
     frames_modified = [frame.copy() for frame in frames]
     results = find_people(frames_modified)
 
     for frame, result in zip(frames_modified, results):
+        if result.boxes is None or result.boxes.id is None:
+            continue
+
+        annotator = Annotator(frame, line_width=2)
+
+        boxes = result.boxes.xyxy.int().cpu().tolist()
+        track_ids = result.boxes.id.int().cpu().tolist()
+
         height, width, _ = frame.shape
         clamper = (0, 0, width, height)
 
-        person_boxes = get_person_boxes(result)
-
-        for box in person_boxes:
+        for box, track_id in zip(boxes, track_ids):
             clamped = clamp_box(box, clamper)
             crop = crop_frame(frame, clamped)
 
@@ -54,16 +48,10 @@ def track_identify(frames: list) -> list:
             if user_id == "":
                 continue
 
-            draw_box_in_frame(frame, clamped)
+            label = f"{user_id} ({match_ratio:.2f})"
+            annotator.box_label(box, label, color=colors(track_id, True))
 
     return frames_modified
-
-
-def get_person_boxes(result):
-    if result.boxes is None and result.boxes.id is None:
-        return []
-
-    return result.boxes.xyxy.int().cpu().tolist()
 
 
 def find_people(frames: list):
@@ -98,19 +86,8 @@ def crop_frame(frame, boundary):
     return frame[y1:y2, x1:x2]
 
 
-def draw_box_in_frame(frame, boundary):
-    x1, y1, x2, y2 = boundary
-    cv2.rectangle(frame, (x1, y1), (x2, y2), BOX_COLOR, THICKNESS)
-
-    # center_x = (x1 + x2) // 2
-    # center_y = (y1 + y2) // 2
-    # cv2.circle(frame, (center_x, center_y), 4, (255, 0, 0), -1)
-
-    return frame
-
-
 if __name__ == "__main__":
-    TEST_CASE = 1
+    TEST_CASE = 2
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
@@ -137,14 +114,14 @@ if __name__ == "__main__":
 
     elif 2 == TEST_CASE:
         face_profiler.init_load_all_embeddings()
-        camera.add_camera(0, 0)
+        camera.add_camera(0, 0, "stream")
 
         while True:
             frame = camera.get_frame_by_id(0)
             # cv2.imshow("show", frame)
 
-            # frames = track_identify([frame])
-            frames = track_all([frame])
+            frames = track_identify([frame])
+            # frames = track_all([frame])
             cv2.imshow("show", frames[0])
 
             if cv2.waitKey(1) & 0xFF == ord("q"):

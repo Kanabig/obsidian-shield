@@ -1,8 +1,4 @@
 from flask import Blueprint, Response, render_template, request
-from app.domains.stream import camera
-from app.domains.stream import tracker
-import time
-import cv2
 
 stream_bp = Blueprint(
     "stream", __name__, url_prefix="/stream", template_folder="templates"
