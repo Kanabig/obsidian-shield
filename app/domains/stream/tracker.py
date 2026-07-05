@@ -60,20 +60,10 @@ def track_identify(frames: list) -> list:
 
 
 def get_person_boxes(result):
-    if result.boxes is None:
+    if result.boxes is None and result.boxes.id is None:
         return []
 
     return result.boxes.xyxy.int().cpu().tolist()
-
-
-def get_person_boxes_with_ids(result) -> list[tuple]:
-    if result.boxes is None:
-        return []
-
-    boxes = result.boxes.xyxy.int().cpu().tolist()
-    ids = result.boxes.id.int().cpu().tolist()
-
-    return list(zip(boxes, ids))
 
 
 def find_people(frames: list):
@@ -120,7 +110,7 @@ def draw_box_in_frame(frame, boundary):
 
 
 if __name__ == "__main__":
-    TEST_CASE = 0
+    TEST_CASE = 1
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
@@ -129,20 +119,6 @@ if __name__ == "__main__":
 
     URL1 = "tests/newyork_street_01.mp4"
     URL2 = "tests/sibuya_street_01.mp4"
-
-    face_profiler.init_load_all_embeddings()
-    camera.add_camera(0, 0)
-
-    while True:
-        frame = camera.get_frame_by_id(0)
-        # cv2.imshow("show", frame)
-
-        # frames = track_identify([frame])
-        frames = track_all([frame])
-        cv2.imshow("show", frames[0])
-
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
 
     if 1 == TEST_CASE:
         camera.add_camera(URL1, 0)
@@ -155,6 +131,21 @@ if __name__ == "__main__":
 
             for idx, frame in enumerate(frames):
                 cv2.imshow(str(idx), frame)
+
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+
+    elif 2 == TEST_CASE:
+        face_profiler.init_load_all_embeddings()
+        camera.add_camera(0, 0)
+
+        while True:
+            frame = camera.get_frame_by_id(0)
+            # cv2.imshow("show", frame)
+
+            # frames = track_identify([frame])
+            frames = track_all([frame])
+            cv2.imshow("show", frames[0])
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break

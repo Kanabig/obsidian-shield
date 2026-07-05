@@ -149,6 +149,8 @@ def identify(person_img) -> tuple[str, float]:
     current_embedding = faces[0].normed_embedding
 
     similarities = np.dot(_embedding_matrix_cache, current_embedding)
+    if len(similarities) == 0:
+        return NO_MATCH
 
     best_idx = np.argmax(similarities)
     best_match_ratio = float(similarities[best_idx])
