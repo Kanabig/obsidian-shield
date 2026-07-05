@@ -1,5 +1,6 @@
 import cv2
 from ultralytics import YOLO
+from app.domains.stream import face_profiler
 
 KEY_MATCH_RATIO = "FACE_MATCH_RATIO"
 KEY_CROP = "PERSON_CROP"
@@ -11,8 +12,6 @@ THICKNESS = 5
 
 _model = YOLO("yolov8n.pt")
 
-# TODO: 초기화 주기 정하기
-already_tracked_ids = []
 
 # FIXME: thread_safe
 
@@ -35,11 +34,46 @@ def track_all(frames: list) -> list:
     return frames_modified
 
 
+def track_identify(frames: list) -> list:
+    """프레임 리스트를 받아 배치 처리하고 DB에 등록된 사람만 바운딩 박스를 쳐서 반환"""
+    frames_modified = [frame.copy() for frame in frames]
+    results = find_people(frames_modified)
+
+    for frame, result in zip(frames_modified, results):
+        height, width, _ = frame.shape
+        clamper = (0, 0, width, height)
+
+        person_boxes = get_person_boxes(result)
+
+        for box in person_boxes:
+            clamped = clamp_box(box, clamper)
+            crop = crop_frame(frame, clamped)
+
+            user_id, match_ratio = face_profiler.identify(crop)
+
+            if user_id == "":
+                continue
+
+            draw_box_in_frame(frame, clamped)
+
+    return frames_modified
+
+
 def get_person_boxes(result):
     if result.boxes is None:
         return []
 
     return result.boxes.xyxy.int().cpu().tolist()
+
+
+def get_person_boxes_with_ids(result) -> list[tuple]:
+    if result.boxes is None:
+        return []
+
+    boxes = result.boxes.xyxy.int().cpu().tolist()
+    ids = result.boxes.id.int().cpu().tolist()
+
+    return list(zip(boxes, ids))
 
 
 def find_people(frames: list):
@@ -86,14 +120,29 @@ def draw_box_in_frame(frame, boundary):
 
 
 if __name__ == "__main__":
-    TEST_CASE = 1
+    TEST_CASE = 0
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
     from app.domains.stream import camera
+    from app.domains.stream import face_profiler
 
     URL1 = "tests/newyork_street_01.mp4"
     URL2 = "tests/sibuya_street_01.mp4"
+
+    face_profiler.init_load_all_embeddings()
+    camera.add_camera(0, 0)
+
+    while True:
+        frame = camera.get_frame_by_id(0)
+        # cv2.imshow("show", frame)
+
+        # frames = track_identify([frame])
+        frames = track_all([frame])
+        cv2.imshow("show", frames[0])
+
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
 
     if 1 == TEST_CASE:
         camera.add_camera(URL1, 0)
