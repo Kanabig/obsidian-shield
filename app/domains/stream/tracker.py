@@ -1,15 +1,15 @@
 import cv2
 from ultralytics import YOLO
 
-
-from app.domains.stream.identifier import identify_face
-from app.configs import KEY_MATCH_RATIO, KEY_BOX, KEY_CROP
+KEY_MATCH_RATIO = "FACE_MATCH_RATIO"
+KEY_CROP = "PERSON_CROP"
+KEY_BOX = "PERSON_BOX_IN_FRAME"
 
 CONFIDENCE = 0.4
 BOX_COLOR = (0, 0, 255)
 THICKNESS = 5
 
-model = YOLO("yolov8n.pt")
+_model = YOLO("yolov8n.pt")
 
 # TODO: 초기화 주기 정하기
 already_tracked_ids = []
@@ -17,93 +17,41 @@ already_tracked_ids = []
 # FIXME: thread_safe
 
 
-def track_all(*FRAME_ORIGINS):
+def track_all(frames: list) -> list:
+    """프레임 리스트를 받아 배치 처리하고 yolo모델로 분석시킨 프레임들을 반환"""
+    frames_modified = [frame.copy() for frame in frames]
+    results = find_people(frames_modified)
 
-    height, width, _ = FRAME_ORIGINS[0].shape
-    clamper = (0, 0, width, height)
+    for frame, result in zip(frames_modified, results):
+        height, width, _ = frame.shape
+        clamper = (0, 0, width, height)
 
-    frames = [frame.copy() for frame in FRAME_ORIGINS]
+        person_boxes = get_person_boxes(result)
 
-    results = find_people(frames)
-    person_box_generaters = [generate_person_box(r) for r in results]
+        for box in person_boxes:
+            clamped = clamp_box(box, clamper)
+            draw_box_in_frame(frame, clamped)
 
-    boxes = []
-    index = 0
-    for generator in person_box_generaters:
-        boxes.append([])
-
-        for person_box in generator:
-            boxes[index].append(clamp_box(person_box, clamper))
-
-        index += 1
-
-    index = 0
-    for frame in frames:
-        for box in boxes[index]:
-            draw_box_in_frame(frame, box)
-
-        index += 1
-
-    return frames
+    return frames_modified
 
 
-def track(FRAME_ORIGIN):
-    frame_modified = FRAME_ORIGIN.copy()
+def get_person_boxes(result):
+    if result.boxes is None:
+        return []
 
-    height, width, _ = frame_modified.shape
-    clamper = (0, 0, width, height)
-
-    person_datas = {}
-
-    for box in generate_person_box(find_people(frame_modified)):
-        clamped = clamp_box(box, clamper)
-
-        crop = crop_frame(frame_modified, clamped)
-
-        person_id, match_ratio = identify_face(crop)
-
-        if crop is None:
-            continue
-
-        if person_id == "":
-            continue
-
-        if person_id in person_datas:
-            if person_datas[person_id][KEY_MATCH_RATIO] > match_ratio:
-                continue
-
-        person_datas[person_id] = {
-            KEY_CROP: crop,
-            KEY_MATCH_RATIO: match_ratio,
-            KEY_BOX: clamped,
-        }
-
-    # 골라낸 사람 객체에 바운더리 그리기
-    for data in person_datas.values():
-        frame_modified = draw_box_in_frame(frame_modified, data[KEY_BOX])
-
-    return frame_modified
+    return result.boxes.xyxy.int().cpu().tolist()
 
 
-def generate_person_box(result):
-    if result.boxes is not None and result.boxes.id is not None:
-        boxes = result.boxes.xyxy.int().cpu().tolist()
-        track_ids = result.boxes.id.int().cpu().tolist()
-
-        for box, track_id in zip(boxes, track_ids):
-            # if track_id in already_tracked_ids:
-            #     continue
-
-            # already_tracked_ids.append(track_id)
-            yield box
-
-
-def find_people(*frames):
-    if len(frames) == 1:
-        frames = frames[0]
-
-    results = model.track(
-        frames, persist=True, classes=[0], conf=CONFIDENCE, verbose=False, iou=0.5
+def find_people(frames: list):
+    # batch_frames = stack(frames, axis=0)
+    results = _model.track(
+        frames,
+        persist=True,
+        classes=[0],
+        conf=CONFIDENCE,
+        verbose=False,
+        iou=0.5,
+        tracker="botsort.yaml",
     )
 
     return results
@@ -138,48 +86,65 @@ def draw_box_in_frame(frame, boundary):
     return frame
 
 
+# def track(FRAME_ORIGIN):
+#     frame_modified = FRAME_ORIGIN.copy()
+
+#     height, width, _ = frame_modified.shape
+#     clamper = (0, 0, width, height)
+
+#     person_datas = {}
+
+#     for box in get_person_boxes(find_people(frame_modified)):
+#         clamped = clamp_box(box, clamper)
+
+#         crop = crop_frame(frame_modified, clamped)
+
+#         person_id, match_ratio = identify_face(crop)
+
+#         if crop is None:
+#             continue
+
+#         if person_id == "":
+#             continue
+
+#         if person_id in person_datas:
+#             if person_datas[person_id][KEY_MATCH_RATIO] > match_ratio:
+#                 continue
+
+#         person_datas[person_id] = {
+#             KEY_CROP: crop,
+#             KEY_MATCH_RATIO: match_ratio,
+#             KEY_BOX: clamped,
+#         }
+
+#     # 골라낸 사람 객체에 바운더리 그리기
+#     for data in person_datas.values():
+#         frame_modified = draw_box_in_frame(frame_modified, data[KEY_BOX])
+
+#     return frame_modified
+
+
 if __name__ == "__main__":
-    TEST_CASE = 0
+    TEST_CASE = 1
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
+    from app.domains.stream import camera
 
-    img = cv2.imread("app/domains/stream/tests/people2.jpg")
-    img02 = cv2.imread("app/domains/stream/tests/two2.jpg")
-
-    imgs = track_all(img, img02)
-
-    for img in imgs:
-        img = cv2.resize(
-            img, dsize=(0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA
-        )
-        cv2.imshow(f"{img}", img)
-
-    cv2.waitKey()
+    URL1 = "tests/newyork_street_01.mp4"
+    URL2 = "tests/sibuya_street_01.mp4"
 
     if 1 == TEST_CASE:
-        from app.domains.stream.camera import StreamCamera
-
-        path = "app/domains/stream/tests/newyork_street_01.mp4"
-
-        cam = StreamCamera(path)
+        camera.add_camera(URL1, 0)
+        camera.add_camera(URL2, 1)
 
         while True:
-            has_frame, frame = cam.read_frame()
+            ids = camera.get_all_camera_ids()
+            frames = [camera.get_frame_by_id(id) for id in ids]
+            frames = track_all(frames)
 
-            if frame is None:
-                continue
-
-            frame = track_all(frame)
-
-            frame = cv2.resize(
-                frame, dsize=(0, 0), fx=0.7, fy=0.7, interpolation=cv2.INTER_AREA
-            )
-
-            if not has_frame:
-                continue
-
-            cv2.imshow("Video", frame)
+            for idx, frame in enumerate(frames):
+                cv2.imshow(str(idx), frame)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break

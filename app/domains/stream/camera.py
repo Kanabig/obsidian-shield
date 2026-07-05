@@ -2,34 +2,44 @@ import threading
 import time
 import numpy as np
 from cv2 import VideoCapture
+from cv2 import CAP_PROP_FPS
+
+VIDEO = "video"
+BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
+
+FRAME_DEFAULT = 60
+CONNECT_DELAY = 0.5
+UNSTABLE_STREAMING_DELAY = 0.1
+CPU_USAGE_DELAY = 0.001
+
+_instances = {}
 
 
-class StreamCamera:
-    """백그라운드(thread)에서 카메라의 프레임을 확보 및 제공하는 클래스"""
+class Camera:
+    """
+    백그라운드(thread)에서 카메라의 최신 프레임을 확보 및 제공하는 클래스.
+    최초 생성시 아무런 프레임도 확보하지 못하면 검은 화면 반환
+    """
 
-    def __init__(self, source):
-        self.source = source
+    def __init__(self, src_path, src_type=VIDEO):
+        self.src_path = src_path
+        self.src_type = src_type
         self.camera = None
 
-        self.lock = threading.Lock()
         self.on_running = False
         self.thread = None
+        self.lock = threading.Lock()
 
-        # 최초에 아무런 프레임도 습득하지 못했을 때 검은 화면 송출
-        self.latest_frame = np.zeros((1080, 1920, 3), np.uint8)
+        self.latest_frame = BLACK_SCREEN.copy()
 
         self.connect()
         self.start()
 
     def connect(self):
         if self.camera is not None:
-            try:
-                self.camera.release()
+            self.camera.release()
 
-            except Exception as e:
-                print(f"카메라 해제 중 예외 발생: {e}")
-
-        self.camera = VideoCapture(self.source)
+        self.camera = VideoCapture(self.src_path)
 
     def start(self):
         if not self.on_running:
@@ -38,9 +48,20 @@ class StreamCamera:
             self.thread.start()
 
     def _capture_loop(self):
+
+        is_video = self.src_type == VIDEO
+
+        fps = self.camera.get(CAP_PROP_FPS) if is_video else FRAME_DEFAULT
+        fps = fps if fps != 0 else FRAME_DEFAULT
+
+        # framerate or cpu 과점유 딜레이
+        frame_delay = 1.0 / fps if is_video else CPU_USAGE_DELAY
+
         while self.on_running:
             if self.camera is None or not self.camera.isOpened():
                 self.connect()
+                # 무한 재연결 시도 예방 딜레이
+                time.sleep(CONNECT_DELAY)
                 continue
 
             success, frame = self.camera.read()
@@ -49,12 +70,19 @@ class StreamCamera:
                 with self.lock:
                     self.latest_frame = frame
 
-            # CPU 과점유 방지(framerate 설정)
-            time.sleep(0.0416)
+                time.sleep(frame_delay)
+
+            else:
+                if is_video:
+                    # 동영상 시작 지점으로 되감기
+                    self.camera.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                else:
+                    # 스트리밍 불안정시 프레임 확보용 딜레이
+                    time.sleep(UNSTABLE_STREAMING_DELAY)
 
     def read_frame(self):
-        with self.lock():
-            return self.latest_frame
+        with self.lock:
+            return self.latest_frame.copy()
 
     def release(self):
         self.on_running = False
@@ -69,39 +97,41 @@ class StreamCamera:
 # ================
 # 카메라 관리 함수들
 # ================
-cameras = {}
 
 
 def add_camera(source, id):
-    if id in cameras:
+    if id in _instances:
         print("이미 등록된 카메라입니다.")
         return
 
-    cameras[id] = StreamCamera(source)
+    _instances[id] = Camera(source)
 
 
 def delete_camera(id):
-    if id not in cameras:
+    if id not in _instances:
         return
 
-    cam = cameras[id]
-    del cameras[id]
+    cam = _instances[id]
+    del _instances[id]
 
     # 안전 release
     threading.Thread(target=cam.release, daemon=True).start()
 
 
+def clear():
+    for camera in _instances():
+        delete_camera(id)
+
+
 def get_frame_by_id(id):
-    if id not in cameras:
-        return None
+    if id not in _instances:
+        return BLACK_SCREEN.copy()
 
-    frame = cameras[id].read_frame()
-
-    return frame
+    return _instances[id].read_frame()
 
 
 def get_all_camera_ids():
-    return cameras.keys()
+    return tuple(_instances.keys())
 
 
 if __name__ == "__main__":
@@ -109,8 +139,8 @@ if __name__ == "__main__":
 
     TEST_CASE = 1
 
-    URL1 = "app/domains/stream/tests/newyork_street_01.mp4"
-    URL2 = "app/domains/stream/tests/sibuya_street_01.mp4"
+    URL1 = "tests/newyork_street_01.mp4"
+    URL2 = "tests/sibuya_street_01.mp4"
 
     add_camera(URL1, 0)
     add_camera(URL2, 1)
@@ -128,25 +158,4 @@ if __name__ == "__main__":
                 cv2.imshow(str(id), frame)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-    elif TEST_CASE == 2:
-        step = 0
-
-        while True:
-            frame01 = get_frame_by_id(0)
-            frame02 = get_frame_by_id(1)
-
-            if frame01 is not None:
-                cv2.imshow("Video01", frame01)
-
-            if frame02 is not None:
-                cv2.imshow("Video02", frame02)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                if step == 0:
-                    delete_camera(0)
-                    step += 1
-                    continue
-
                 break
