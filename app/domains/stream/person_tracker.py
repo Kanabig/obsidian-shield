@@ -87,7 +87,7 @@ def crop_frame(frame, boundary):
 
 
 if __name__ == "__main__":
-    TEST_CASE = 2
+    TEST_CASE = 1
 
     # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
     # build_and_save_face_embeddings()
@@ -108,21 +108,6 @@ if __name__ == "__main__":
 
             for idx, frame in enumerate(frames):
                 cv2.imshow(str(idx), frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-    elif 2 == TEST_CASE:
-        face_profiler.init_load_all_embeddings()
-        camera.add_camera(0, 0, "stream")
-
-        while True:
-            frame = camera.get_frame_by_id(0)
-            # cv2.imshow("show", frame)
-
-            frames = track_identify([frame])
-            # frames = track_all([frame])
-            cv2.imshow("show", frames[0])
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break

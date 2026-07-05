@@ -1,5 +1,5 @@
 from app.domains.stream import camera
-from app.domains.stream import tracker
+from app.domains.stream import person_tracker
 import threading
 import time
 
@@ -28,7 +28,7 @@ class FrameAnalyzer:
                 time.sleep(0.1)
 
             frames = [camera.get_frame_by_id(id) for id in camera_ids]
-            tracked_frames = tracker.track_all(frames)
+            tracked_frames = person_tracker.track_all(frames)
 
             temp = {}
             for id, frame in zip(camera_ids, tracked_frames):
