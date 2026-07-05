@@ -9,9 +9,9 @@ DELETED_ID_FILE = os.path.join(BASE_DIR, "jsons", "deleted_id.json")
 EVENT_LOGS_FILE = os.path.join(BASE_DIR, "jsons", "event_logs.json")
 USER_LOGS_FILE = os.path.join(BASE_DIR, "jsons", "user_logs.json")
 
-FACES_ENCODINGS_FILE = os.path.join(BASE_DIR, "jsons", "face_encodings.json")
 TARGETS_PROFILES_FILE = os.path.join(BASE_DIR, "jsons", "target_profiles.json")
 MAPS_FILE = os.path.join(BASE_DIR, "jsons", "maps.json")
+
 
 def load_json(file):
     try:

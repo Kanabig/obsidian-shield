@@ -23,7 +23,7 @@ class Camera:
 
     def __init__(self, src_path, src_type=VIDEO):
         self.src_path = src_path
-        self.src_type = src_type
+        self.is_video = src_type == VIDEO
         self.camera = None
 
         self.on_running = False
@@ -48,14 +48,11 @@ class Camera:
             self.thread.start()
 
     def _capture_loop(self):
-
-        is_video = self.src_type == VIDEO
-
-        fps = self.camera.get(CAP_PROP_FPS) if is_video else FRAME_DEFAULT
+        fps = self.camera.get(CAP_PROP_FPS) if self.is_video else FRAME_DEFAULT
         fps = fps if fps != 0 else FRAME_DEFAULT
 
         # framerate or cpu 과점유 딜레이
-        frame_delay = 1.0 / fps if is_video else CPU_USAGE_DELAY
+        frame_delay = 1.0 / fps if self.is_video else CPU_USAGE_DELAY
 
         while self.on_running:
             if self.camera is None or not self.camera.isOpened():
@@ -66,14 +63,14 @@ class Camera:
 
             success, frame = self.camera.read()
 
-            if success:
+            if success and frame is not None:
                 with self.lock:
                     self.latest_frame = frame
 
                 time.sleep(frame_delay)
 
             else:
-                if is_video:
+                if self.is_video:
                     # 동영상 시작 지점으로 되감기
                     self.camera.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 else:

@@ -43,7 +43,6 @@ def get_person_boxes(result):
 
 
 def find_people(frames: list):
-    # batch_frames = stack(frames, axis=0)
     results = _model.track(
         frames,
         persist=True,
@@ -84,44 +83,6 @@ def draw_box_in_frame(frame, boundary):
     # cv2.circle(frame, (center_x, center_y), 4, (255, 0, 0), -1)
 
     return frame
-
-
-# def track(FRAME_ORIGIN):
-#     frame_modified = FRAME_ORIGIN.copy()
-
-#     height, width, _ = frame_modified.shape
-#     clamper = (0, 0, width, height)
-
-#     person_datas = {}
-
-#     for box in get_person_boxes(find_people(frame_modified)):
-#         clamped = clamp_box(box, clamper)
-
-#         crop = crop_frame(frame_modified, clamped)
-
-#         person_id, match_ratio = identify_face(crop)
-
-#         if crop is None:
-#             continue
-
-#         if person_id == "":
-#             continue
-
-#         if person_id in person_datas:
-#             if person_datas[person_id][KEY_MATCH_RATIO] > match_ratio:
-#                 continue
-
-#         person_datas[person_id] = {
-#             KEY_CROP: crop,
-#             KEY_MATCH_RATIO: match_ratio,
-#             KEY_BOX: clamped,
-#         }
-
-#     # 골라낸 사람 객체에 바운더리 그리기
-#     for data in person_datas.values():
-#         frame_modified = draw_box_in_frame(frame_modified, data[KEY_BOX])
-
-#     return frame_modified
 
 
 if __name__ == "__main__":

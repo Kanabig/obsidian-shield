@@ -1,9 +1,23 @@
-from insightface.app import FaceAnalysis
 import threading
-import numpy as np
-from app.domains.stream.embedding_manager import load_face_embeddings
-from app.utils.mute_print_and_warnings import mute_print_and_warnings
+import os
+import warnings
 
+import numpy as np
+from cv2 import imread
+
+
+from app.utils.mute_print_and_warnings import mute_print_and_warnings
+from app.utils.json_manager import BASE_DIR
+
+# library 워닝 지우기(deprecated)
+warnings.filterwarnings("ignore", category=FutureWarning, module="insightface")
+from insightface.app import FaceAnalysis  # noqa: E402
+
+# ================================================================
+# InsightFace: Lazy allocation
+# ================================================================
+
+FACE_DETECTION_SIZE = (640, 640)
 _instance = None
 _lock = threading.Lock()
 
@@ -16,7 +30,7 @@ def _create_face_app():
     return app
 
 
-def _get_face_app():
+def get_face_app():
     global _instance
 
     # 병목 방지
@@ -28,53 +42,129 @@ def _get_face_app():
     return _instance
 
 
-FACE_DETECTION_SIZE = (640, 640)
+# ================================================================
+# Face 임베딩 저장/로딩/캐싱
+# ================================================================
+
+EMBEDDINGS_DIR = os.path.join(BASE_DIR, "face_embeddings")
+
+_embedding_matrix_cache: np.ndarray = np.empty((0, 512))
+_face_ids_cache: np.ndarray = np.array([])
+
+
+def extract_embedding(face_img) -> np.ndarray | None:
+    if face_img is None:
+        return None
+
+    faces = get_face_app().get(face_img)
+
+    return None if not faces else faces[0].normed_embedding
+
+
+def add_or_update_face(face_id: str, img_path: str) -> bool:
+    img = imread(img_path)
+    new_embedding = extract_embedding(img)
+
+    if new_embedding is None:
+        print(f"[{face_id}] 얼굴 인식 실패: {img_path}")
+        return False
+
+    user_file_path = os.path.join(EMBEDDINGS_DIR, f"{face_id}.npz")
+
+    new_vector_sum = None
+    new_count = 0
+
+    if os.path.exists(user_file_path):
+        with np.load(user_file_path) as data:
+            current_vector_sum = data["vector_sum"]
+            current_count = data["count"]
+
+        new_vector_sum = current_vector_sum + new_embedding
+        new_count = current_count + 1
+
+    else:
+        new_vector_sum = new_embedding
+        new_count = 1
+
+    mean_vector = new_vector_sum / new_count
+    new_norm_embedding = mean_vector / np.linalg.norm(mean_vector)
+
+    np.savez_compressed(
+        user_file_path,
+        norm_embedding=new_norm_embedding,
+        vector_sum=new_vector_sum,
+        count=new_count,
+    )
+
+    init_load_all_embeddings()
+    print(f"[{face_id}] 임베딩 업데이트 완료 (총 {new_count}장)")
+    return True
+
+
+def init_load_all_embeddings():
+    global _embedding_matrix_cache, _face_ids_cache
+
+    embeddings = []
+    ids = []
+
+    if not os.path.exists(EMBEDDINGS_DIR):
+        return
+
+    print("--- 메모리에 얼굴 임베딩 로드 시작 ---")
+    for filename in os.listdir(EMBEDDINGS_DIR):
+        if filename.endswith(".npz"):
+            face_id = filename.replace(".npz", "")
+            file_path = os.path.join(EMBEDDINGS_DIR, filename)
+
+            with np.load(file_path) as data:
+                embeddings.append(data["norm_embedding"])
+                ids.append(face_id)
+
+    if embeddings:
+        _embedding_matrix_cache = np.array(embeddings)
+        _face_ids_cache = np.array(ids)
+
+    print(f"--- 총 {len(_embedding_matrix_cache)}명의 임베딩(평균값) 로드 완료 ---")
+
+
+# ================================================================
+# Face 임베딩 비교
+# ================================================================
+
 IDENTIFY_THREASHOLD = 0.45
 NO_MATCH = ("", -1.0)
 
 
 def identify(person_img) -> tuple[str, float]:
     """
-    입력받은 사람 이미지와 db에 등록된 검색 대상들과의 얼굴 특징점 비교
-    유사도가 임계값 이상인 경우 반환: (target_id:str, match_ratio:float)
+    입력받은 사람 이미지와 db에 등록된 검색 대상들과의 얼굴 특징점 비교\n
+    유사도가 임계값 이상인 경우 반환: (target_id:str, match_ratio:float)\n
     유사도가 임계값 이하인 경우 반환: ("", -1.0)
     """
-    app = _get_face_app()
-    faces = app.get(person_img)
+    faces = get_face_app().get(person_img)
 
     if not faces:
         return NO_MATCH
 
     current_embedding = faces[0].normed_embedding
-    # TODO: 캐싱
-    recognized_embeddings = load_face_embeddings()
 
-    if not recognized_embeddings:
+    similarities = np.dot(_embedding_matrix_cache, current_embedding)
+
+    best_idx = np.argmax(similarities)
+    best_match_ratio = float(similarities[best_idx])
+
+    if IDENTIFY_THREASHOLD > best_match_ratio:
         return NO_MATCH
 
-    best_match_face_id, best_match_ratio = NO_MATCH
-
-    for face_id in recognized_embeddings:
-        similarities = np.dot(recognized_embeddings[face_id], current_embedding)
-        max_similarity = np.max(similarities)
-
-        # 평균 유사도 판단
-        # average_score = np.mean(similarities)
-
-        if max_similarity > best_match_ratio:
-            best_match_ratio = max_similarity
-            best_match_face_id = face_id
-
-    if best_match_ratio < IDENTIFY_THREASHOLD:
-        return NO_MATCH
-
-    return (best_match_face_id, best_match_ratio)
+    return (_face_ids_cache[best_idx], best_match_ratio)
 
 
 if __name__ == "__main__":
-    import cv2
+    # add_or_update_face("jungho001", "tests/jungho1.jpg")
+    # add_or_update_face("jungho001", "tests/jungho2.jpg")
+    # add_or_update_face("jungho001", "tests/jungho3.jpg")
+    # add_or_update_face("jungho001", "tests/jungho4.jpg")
 
-    print("=====테스트 시작=====")
-    img = cv2.imread("app/domains/stream/tests/face_01.jpg")
-    print(f"best_match: {identify(img)}")
-    print("=====테스트 종료=====")
+    init_load_all_embeddings()
+    id, ratio = identify(imread("tests/jungho.jpg"))
+    print(f"{id}, {ratio}")
