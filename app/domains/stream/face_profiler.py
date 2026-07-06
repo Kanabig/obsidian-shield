@@ -17,14 +17,18 @@ from insightface.app import FaceAnalysis  # noqa: E402
 # InsightFace: Lazy allocation
 # ================================================================
 
-FACE_DETECTION_SIZE = (640, 640)
+FACE_DETECTION_SIZE = (128, 128)
 _instance = None
 _lock = threading.Lock()
 
 
 @mute_print_and_warnings
 def _create_face_app():
-    app = FaceAnalysis(name="buffalo_l")
+    app = FaceAnalysis(
+        name="buffalo_l",
+        providers=["CUDAExecutionProvider", "CPUExecutionProvider"],
+        allowed_modules=["detection", "recognition"],
+    )
     app.prepare(ctx_id=0, det_size=FACE_DETECTION_SIZE)
 
     return app

@@ -1,74 +1,152 @@
+import time
+from concurrent.futures import ThreadPoolExecutor
+
 import cv2
 from ultralytics import YOLO
+from ultralytics.utils import YAML
+from ultralytics.utils.checks import check_yaml
+from ultralytics.utils import IterableSimpleNamespace
+from ultralytics.trackers.byte_tracker import BYTETracker
 from ultralytics.utils.plotting import Annotator, colors
+
+# from ultralytics.trackers.bot_sort import BOTSORT
+
 from app.domains.stream import face_profiler
 
-KEY_MATCH_RATIO = "FACE_MATCH_RATIO"
-KEY_CROP = "PERSON_CROP"
-KEY_BOX = "PERSON_BOX_IN_FRAME"
-
-CONFIDENCE = 0.4
-BOX_COLOR = (0, 0, 255)
-THICKNESS = 5
-
 _model = YOLO("yolov8n.pt")
+_trackers = {}  # camera_id: tracker
+_tracker_caches = {}  # camera_id: { track_id: time.time(), ...}
+
+# predictor 강제 생성
+_model.overrides["conf"] = 0.3
+_model.overrides["iou"] = 0.7
+_model.overrides["imgsz"] = 640
+_model.overrides["verbose"] = False
+_model.overrides["classes"] = [0]
+
+IDENTIFY_RETRY_INTERVAL = 1
+
+_executor = ThreadPoolExecutor(max_workers=2)
 
 
-def track_all(frames: list) -> list:
-    """프레임을 리스트로 받아서 각 프레임들을 분석 후 발견한 사람 모두에게 주석을 달아서 반환"""
-    frames_modified = [frame.copy() for frame in frames]
-    results = find_people(frames_modified)
+def get_or_create_tracker(camera_id):
+    if camera_id not in _trackers:
+        # tracker_yaml = check_yaml("botsort.yaml")
+        tracker_yaml = check_yaml("bytetrack.yaml")
+        tracker_data = YAML.load(tracker_yaml)  # 딕셔너리로 변환됨
+        tracker_data.update(_model.overrides)
+        cfg = IterableSimpleNamespace(**tracker_data)
 
-    return [r.plot() for r in results]
+        # _trackers[camera_id] = BOTSORT(args=cfg)
+        _trackers[camera_id] = BYTETracker(args=cfg)
+        _tracker_caches[camera_id] = {}
+
+    return _trackers[camera_id]
 
 
-def track_identify(frames: list) -> list:
-    """프레임을 리스트로 받아서 각 프레임들을 분석 후 db에 등록된 사람에게만 주석을 달아서 반환"""
-    frames_modified = [frame.copy() for frame in frames]
-    results = find_people(frames_modified)
+def track_all(frames: list, camera_ids):
+    results = _model.predict(frames)
 
-    for frame, result in zip(frames_modified, results):
-        if result.boxes is None or result.boxes.id is None:
+    for frame, result, camera_id in zip(frames, results, camera_ids):
+        tracker = get_or_create_tracker(camera_id)
+
+        # 탐지된 객체가 없는 경우
+        if result.boxes is None or len(result.boxes) == 0:
+            tracker.update(result.boxes, frame)
             continue
 
+        # tracks: [[x1, y1, x2, y2, track_id, conf, cls_id], ...]
+        tracks = tracker.update(result.boxes, frame)
         annotator = Annotator(frame, line_width=2)
 
-        boxes = result.boxes.xyxy.int().cpu().tolist()
-        track_ids = result.boxes.id.int().cpu().tolist()
+        for track in tracks:
+            x1, y1, x2, y2, track_id, conf, cls_id = track[:7]
+            box = [int(x1), int(y1), int(x2), int(y2)]
 
-        height, width, _ = frame.shape
+            annotator.box_label(box, "", color=colors(int(track_id), True))
+
+    return frames
+
+
+def _async_identify(camera_id, track_id, person_img):
+    user_id, match_ratio = face_profiler.identify(person_img)
+
+    if camera_id not in _tracker_caches:
+        return
+
+    if track_id not in _tracker_caches[camera_id]:
+        return
+
+    _tracker_caches[camera_id][track_id]["user_id"] = user_id
+    _tracker_caches[camera_id][track_id]["match_ratio"] = match_ratio
+
+
+def track_identified(frames: list, camera_ids) -> list:
+    """프레임을 리스트로 받아서 각 프레임들을 분석 후 db에 등록된 사람에게만 주석을 달아서 반환"""
+    results = _model.predict(frames, stream=True)
+    frames_output = []
+
+    for frame, result, camera_id in zip(frames, results, camera_ids):
+        annotated_frame = frame.copy()
+
+        tracker = get_or_create_tracker(camera_id)
+        cache = _tracker_caches[camera_id]
+        current_time = time.time()
+
+        # 탐지된 객체가 없는 경우
+        if result.boxes is None or len(result.boxes) == 0:
+            tracker.update(result.boxes, annotated_frame)
+            frames_output.append(annotated_frame)
+            continue
+
+        tracks = tracker.update(result.boxes, annotated_frame)
+        annotator = Annotator(annotated_frame, line_width=2)
+
+        height, width, _ = annotated_frame.shape
         clamper = (0, 0, width, height)
 
-        for box, track_id in zip(boxes, track_ids):
-            clamped = clamp_box(box, clamper)
-            crop = crop_frame(frame, clamped)
+        # active_track_ids = set()
 
-            user_id, match_ratio = face_profiler.identify(crop)
+        for track in tracks:
+            x1, y1, x2, y2, track_id, _, _ = track[:7]
 
-            if user_id == "":
-                continue
+            box = [int(x1), int(y1), int(x2), int(y2)]
+            track_id = int(track_id)
+            # active_track_ids.add(track_id)
 
-            label = f"{user_id} ({match_ratio:.2f})"
-            annotator.box_label(box, label, color=colors(track_id, True))
+            if track_id not in cache:
+                cache[track_id] = {
+                    "user_id": "",
+                    "match_ratio": -1.0,
+                    "last_requested": 0.0,
+                }
 
-    return frames_modified
+            user_cache = cache[track_id]
+
+            if current_time - user_cache["last_requested"] > IDENTIFY_RETRY_INTERVAL:
+                user_cache["last_requested"] = current_time
+
+                clamped = clamp_boundary(box, clamper)
+                crop = crop_frame(frame, clamped)
+
+                if crop is not None and crop.size > 0:
+                    _executor.submit(_async_identify, camera_id, track_id, crop)
+
+                if user_cache["user_id"] != "":
+                    label = f"{user_cache['user_id']} ({user_cache['match_ratio']:.2f})"
+                    annotator.box_label(box, label, color=colors(track_id, True))
+
+        # dead track_id 처리
+        # for id in tuple(cache.keys()):
+        #     if id in active_track_ids:
+        #         del cache[id]
+
+        frames_output.append(annotated_frame)
+
+    return frames_output
 
 
-def find_people(frames: list):
-    results = _model.track(
-        frames,
-        persist=True,
-        classes=[0],
-        conf=CONFIDENCE,
-        verbose=False,
-        iou=0.5,
-        tracker="botsort.yaml",
-    )
-
-    return results
-
-
-def clamp_box(boundary_origin, clamper):
+def clamp_boundary(boundary_origin, clamper):
     x1, y1, x2, y2 = boundary_origin
     c_x1, c_y1, c_x2, c_y2 = clamper
 
@@ -89,22 +167,23 @@ def crop_frame(frame, boundary):
 if __name__ == "__main__":
     TEST_CASE = 1
 
-    # from app.domains.stream.embedding_manager import build_and_save_face_embeddings
-    # build_and_save_face_embeddings()
     from app.domains.stream import camera
-    from app.domains.stream import face_profiler
 
-    URL1 = "tests/newyork_street_01.mp4"
-    URL2 = "tests/sibuya_street_01.mp4"
+    face_profiler.init_load_all_embeddings()
+
+    # URL1 = "tests/newyork_street_01.mp4"
+    URL1 = "tests/sibuya_street_01.mp4"
+    # URL1 = "http://192.168.137.115:81/stream"
 
     if 1 == TEST_CASE:
-        camera.add_camera(URL1, 0)
-        camera.add_camera(URL2, 1)
+        camera.add_camera(URL1, 0, "stream")
+        # camera.add_camera(URL2, 1)
 
         while True:
             ids = camera.get_all_camera_ids()
             frames = [camera.get_frame_by_id(id) for id in ids]
-            frames = track_all(frames)
+            frames = track_identified(frames, ids)
+            # frames = track_all(frames, ids)
 
             for idx, frame in enumerate(frames):
                 cv2.imshow(str(idx), frame)

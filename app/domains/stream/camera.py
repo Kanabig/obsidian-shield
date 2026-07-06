@@ -20,6 +20,7 @@ class Camera:
     """
     백그라운드(thread)에서 카메라의 최신 프레임을 확보 및 제공하는 클래스.
     최초 생성시 아무런 프레임도 확보하지 못하면 검은 화면 반환
+    반환되는 frame은 레퍼런스
     """
 
     def __init__(self, src_path, src_type):
@@ -82,14 +83,10 @@ class Camera:
 
     def read_frame(self):
         with self.lock:
-            frame = None
-
             if len(self.frame_queue) > 1:
-                frame = self.frame_queue.popleft()
+                return self.frame_queue.popleft()
             else:
-                frame = self.frame_queue[0]
-
-            return frame.copy()
+                return self.frame_queue[0]
 
     def release(self):
         self.on_running = False
@@ -131,8 +128,9 @@ def clear():
 
 
 def get_frame_by_id(id):
+    "반환되는 frame은 레퍼런스 타입"
     if id not in _instances:
-        return BLACK_SCREEN.copy()
+        return BLACK_SCREEN
 
     return _instances[id].read_frame()
 

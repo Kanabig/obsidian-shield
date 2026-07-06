@@ -28,7 +28,7 @@ class FrameAnalyzer:
                 time.sleep(0.1)
 
             frames = [camera.get_frame_by_id(id) for id in camera_ids]
-            tracked_frames = person_tracker.track_all(frames)
+            tracked_frames = person_tracker.track_identified(frames, camera_ids)
 
             temp = {}
             for id, frame in zip(camera_ids, tracked_frames):
@@ -41,7 +41,7 @@ class FrameAnalyzer:
 
     def get_frame(self):
         with self.lock:
-            return self.latest_frames.copy()
+            return self.latest_frames
 
     def release(self):
         self.on_running = False
@@ -60,11 +60,11 @@ def get_latest_frames():
 if __name__ == "__main__":
     import cv2
 
-    URL1 = "tests/newyork_street_01.mp4"
-    URL2 = "tests/sibuya_street_01.mp4"
+    URL1 = "tests/sibuya_street_01.mp4"
+    # URL2 = "tests/newyork_street_01.mp4"
 
     camera.add_camera(URL1, 0)
-    camera.add_camera(URL2, 1)
+    # camera.add_camera(URL2, 1)
 
     while True:
         frames_dict = get_latest_frames()
