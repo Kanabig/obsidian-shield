@@ -1,7 +1,6 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-import cv2
 from ultralytics import YOLO
 from ultralytics.utils import YAML
 from ultralytics.utils.checks import check_yaml
