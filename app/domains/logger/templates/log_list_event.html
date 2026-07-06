@@ -10,17 +10,17 @@
 
 {% block content %}
 
-{% include "include/log_title.html" %}
+{% include "includes/log_title.html" %}
 
-{% include "include/log_button.html" %}
+{% include "includes/log_event_filter.html" %}
 
-{% include "include/log_table_event.html" %}
+{% include "includes/log_button.html" %}
 
-{% include "include/log_list_pagination.html" %}
+{% include "includes/log_table_event.html" %}
 
-{% endblock %}
+{% include "includes/log_list_pagination.html" %}
 
-{% block script %}
 <script src="{{ url_for('event_log.static', filename='js/logger_check_all.js') }}"></script>
 <script src="{{ url_for('event_log.static', filename='js/logger_selected_read.js') }}"></script>
+
 {% endblock %}

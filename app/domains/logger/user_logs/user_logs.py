@@ -1,5 +1,5 @@
 from app.utils.json_manager import (
-    load_json, save_json, USER_LOGS_FILE)
+    load_json, USER_LOGS_FILE)
 
 
 def get_user_log_list():
