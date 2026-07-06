@@ -2,17 +2,16 @@
   "admin": {
     "NAME": "정호띠",
     "ID": "admin",
-    "PW": "11111111@",
+    "PW": "12341234@",
     "EMAIL": "admin@obsidian.com",
     "PHONE": "01011112222",
     "REG_DATE": "2026/06/01, 09:00:00",
-    "MOT_DATE": "2026/06/30, 14:59:50",
+    "MOD_DATE": "2026/07/06, 16:15:53",
     "IS_APPROVE": true,
     "IS_FIRST_LOGIN": false,
     "PERMISSIONS": [
       "관리자"
-    ],
-    "MOD_DATE": "2026/07/02, 15:08:43"
+    ]
   },
   "mina": {
     "NAME": "아아아",
@@ -21,7 +20,7 @@
     "EMAIL": "admin@obsidian.com",
     "PHONE": "01011112222",
     "REG_DATE": "2026/06/01, 09:00:00",
-    "MOT_DATE": "2026/06/30, 14:59:50",
+    "MOD_DATE": "2026/06/30, 14:59:50",
     "IS_APPROVE": false,
     "IS_FIRST_LOGIN": false,
     "PERMISSIONS": [
