@@ -1,17 +1,29 @@
-from flask import Blueprint, Response, render_template, request
-from app.domains.stream import camera
-from app.domains.stream import tracker
 import time
-import cv2
+
+from flask import Blueprint, Response, render_template, request
+from cv2 import imencode
+
+from app.domains.stream import analysis_pipeline
+# from app.domains.stream import face_profiler
+# from app.domains.stream import camera
 
 stream_bp = Blueprint(
-    "stream", __name__, url_prefix="/stream", template_folder="templates"
+    "stream",
+    __name__,
+    url_prefix="/stream",
+    template_folder="templates",
+    static_folder="static",
+    static_url_path="/stream/static",
 )
+
+# app.py로 옮겨야 하는 코드
+# face_profiler.init_load_all_embeddings()
+# camera.add_camera("tests/sibuya_street_01.mp4", 0)
 
 
 @stream_bp.route("/")
 def stream():
-    return render_template("index.html")
+    return render_template("stream_main.html")
 
 
 @stream_bp.route("/video_feed/")
@@ -26,27 +38,21 @@ def video_feed():
 
 
 def generate_frames(cam_id):
-    pass
-    # while True:
-    #     frame = camera.get_frame_by_id(cam_id)
+    while True:
+        frames = analysis_pipeline.get_latest_frames()
+        frame = frames[cam_id]
 
-    #     if frame is None:
-    #         continue
+        if frame is None:
+            time.sleep(0.1)
+            continue
 
-    #     tracked_frame = tracker.track_all(frame)
+        ret, buffer = imencode(".jpg", frame)
 
-    #     if tracked_frame is None:
-    #         time.sleep(0.1)
-    #         continue
+        if not ret:
+            time.sleep(0.1)
+            continue
 
-    #     ret, buffer = cv2.imencode(".jpg", tracked_frame)
+        frame_bytes = buffer.tobytes()
 
-    #     if not ret:
-    #         time.sleep(0.1)
-    #         continue
-
-    #     frame_bytes = buffer.tobytes()
-
-    #     yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
-
-    #     time.sleep(0.03)
+        yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n")
+        time.sleep(0.01)
