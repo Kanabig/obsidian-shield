@@ -8,8 +8,8 @@
     border-collapse:collapse;
 }
 
-.log_table thead{
-    background:#07192e;
+.log_table thead {
+    background: var(--system-panel-light);
 }
 
 .log_table th{
@@ -25,7 +25,7 @@
 }
 
 .log_table tbody tr:hover{
-    background:#06152d;
+    background: var(--system-panel-light);
 }
 
 .empty{
