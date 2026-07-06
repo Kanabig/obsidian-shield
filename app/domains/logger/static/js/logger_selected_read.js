@@ -22,8 +22,7 @@ if (btnSelected) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                ids: ids,
-                viewer_id: "user1"
+                ids: ids
             })
         });
 

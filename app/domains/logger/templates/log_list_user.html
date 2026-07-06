@@ -5,17 +5,19 @@
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('event_log.static', filename='css/logger.css') }}">
+<link rel="stylesheet" href="{{ url_for('user_log.static', filename='css/logger.css') }}">
 {% endblock %}
 
 {% block content %}
 
-{% include "include/log_title.html" %}
+{% include "includes/log_title.html" %}
 
-{% include "include/log_button.html" %}
+{% include "includes/log_user_filter.html" %}
 
-{% include "include/log_table_user.html" %}
+{% include "includes/log_button.html" %}
 
-{% include "include/log_list_pagination.html" %}
+{% include "includes/log_table_user.html" %}
+
+{% include "includes/log_list_pagination.html" %}
 
 {% endblock %}

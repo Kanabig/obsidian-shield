@@ -29,7 +29,7 @@
                 value="{{ event.ID }}" {% if event.IS_READ %}disabled{% endif %}>
                 </td>
 
-                <td>{{ loop.index }}</td>
+                <td>{{ (page - 1) * per_page + loop.index }}</td>
                 <td>{{ event.ID }}</td>
                 <td>{{ event.REG_DATE }}</td>
                 <td>{{ event.latitude }}</td>

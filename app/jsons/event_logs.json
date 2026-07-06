@@ -18,7 +18,7 @@
   "log_id003": {
     "ID": "log_id003",
     "REG_DATE": "2026/06/26, 11:22:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -50,7 +50,7 @@
   "log_id007": {
     "ID": "log_id007",
     "REG_DATE": "2026/06/29, 09:12:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -106,7 +106,7 @@
   "log_id014": {
     "ID": "log_id014",
     "REG_DATE": "2026/06/29, 10:01:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -162,7 +162,7 @@
   "log_id021": {
     "ID": "log_id021",
     "REG_DATE": "2026/06/29, 13:20:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -210,7 +210,7 @@
   "log_id027": {
     "ID": "log_id027",
     "REG_DATE": "2026/06/30, 08:30:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -298,7 +298,7 @@
   "log_id038": {
     "ID": "log_id038",
     "REG_DATE": "2026/06/30, 18:40:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_002",
     "IS_READ": false
@@ -362,7 +362,7 @@
   "log_id046": {
     "ID": "log_id046",
     "REG_DATE": "2026/07/01, 11:18:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -530,7 +530,7 @@
   "log_id067": {
     "ID": "log_id067",
     "REG_DATE": "2026/07/02, 11:20:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_004",
     "IS_READ": false
@@ -610,7 +610,7 @@
   "log_id077": {
     "ID": "log_id077",
     "REG_DATE": "2026/07/02, 19:40:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_001",
     "IS_READ": false
@@ -666,7 +666,7 @@
   "log_id084": {
     "ID": "log_id084",
     "REG_DATE": "2026/07/03, 09:24:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_002",
     "IS_READ": false
@@ -754,7 +754,7 @@
   "log_id095": {
     "ID": "log_id095",
     "REG_DATE": "2026/07/03, 15:33:00",
-    "latitude": 37.5540,
+    "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_002",
     "IS_READ": false

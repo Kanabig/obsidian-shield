@@ -16,7 +16,7 @@
             {% for log in logs %}
 
             <tr>
-                <td>{{ loop.index }}</td>
+                <td>{{ (page - 1) * per_page + loop.index }}</td>
                 <td>{{ log.EVENT_LOG_ID }}</td>
                 <td>{{ log.VIEWER_ID }}</td>
                 <td>{{ log.READ_DATE }}</td>

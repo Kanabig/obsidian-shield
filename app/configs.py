@@ -32,3 +32,17 @@ CAPTCHA_LENGTH = 5
 
 # Email Domains
 ALLOW_EMAIL_DOMAINS = ["gmail.com", "naver.com", "daum.net"]
+
+# Event Logs
+KEY_EVENT_ID = "ID"
+KEY_EVENT_DATE = "REG_DATE"
+KEY_TARGET_ID = "TARGET_ID"
+KEY_EVENT_LAT = "latitude"
+KEY_EVENT_LON = "longitude"
+KEY_IS_READ = "IS_READ"
+
+# User Logs
+KEY_LOG_ID = "ID"
+KEY_EVENT_LOG_ID = "EVENT_LOG_ID"
+KEY_VIEWER_ID = "VIEWER_ID"
+KEY_READ_DATE = "READ_DATE"
