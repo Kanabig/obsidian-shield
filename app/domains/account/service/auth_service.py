@@ -55,7 +55,7 @@ def check_captcha(captcha):
     # CAPTCHA 실패 횟수
     captcha_fail = session.get("captcha_fail", 0)
 
-    # CAPTCHA 불일치
+    # CAPTCHA 불일치    
     if captcha != session.get("captcha", ""):
 
         captcha_fail += 1
@@ -108,6 +108,12 @@ def create_login_session(user):
 # ==========================================================
 def login(id, pw, captcha=""):
 
+    # 공백 검사
+    success, message = validate_login_input(id, pw)
+
+    if not success:
+        return False, message, None
+
     accounts = load_accounts()
 
     # CAPTCHA 먼저 검사
@@ -153,3 +159,18 @@ def change_password(id, oPw, nPw, new_pw_check):
     save_accounts(accounts)
 
     return True, "비밀번호가 변경되었습니다."
+
+
+# ==========================================================
+# 로그인 입력값 공백 검사
+# ==========================================================
+
+def validate_login_input(id, pw):
+    
+    if not id.strip():
+        return False, "아이디를 입력하세요"
+    
+    if not pw.strip():
+        return False, "비밀번호를 입력하세요"
+    
+    return True, None

@@ -60,7 +60,7 @@ def build_account(name, id, pw, email, phone):
         configs.KEY_REG_DATE: get_current_time_stamp_formated(),
 
         # 마지막 수정 날짜
-        configs.KEY_MOT_DATE: get_current_time_stamp_formated(),
+        configs.KEY_MOD_DATE: get_current_time_stamp_formated(),
 
         # 관리자 승인 여부 (기본: 미승인)
         configs.KEY_IS_APPROVE: False,
@@ -154,8 +154,8 @@ def approve_update(accounts, id):
 def delete_account(accounts, id):
 
     # 존재 여부 확인
-    if not is_id_exists(accounts, id):
-        return False, "존재하지 않는 계정입니다."
+    if not is_id_exists:
+        False, "존재하지 않는 계정입니다."
 
     # 삭제 ID 목록 로드
     deleted_ids = load_deleted_ids()

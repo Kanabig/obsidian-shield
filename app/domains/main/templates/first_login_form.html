@@ -69,15 +69,7 @@
                 </div>
 
                 <!-- 버튼 위에 메시지 출력 -->
-                    {% if message %}
-                        <div class="message-box">
-                        {% if success %}
-                            <p style="color:green; text-align:center;">{{ message }}</p>
-                        {% else %}
-                            <p style="color:red; text-align:center;">{{ message }}</p>
-                        {% endif %}
-                    </div>
-                    {% endif %}
+                {% include "includes/message_box.html" %}
 
                 <button type="button" onclick="change_password()"  class="submit-btn">
                     <i class="fa-solid fa-lock"></i> 비밀번호 변경

@@ -102,6 +102,43 @@ def login_result():
         success=False
     )
 
+@main_bp.route("/update_profile")
+def update_profile_form():
+    return render_template("update_profile.html")
+
+
+# # ==========================================================
+# # 회원정보 수정 - 비밀번호 변경
+# # ==========================================================
+# @main_bp.route("/change_password", methods=["POST"])
+# def change_password_form():
+
+#     # # 비밀번호 변경 요청 처리
+#     # success, message = change_password(
+#     #     session["id"],            # 현재 로그인 사용자
+#     #     request.form["oPw"],      # 현재 비밀번호
+#     #     request.form["nPw"],      # 새 비밀번호
+#     #     request.form["nPwCheck"]  # 새 비밀번호 확인
+#     # )
+
+#     # =========================
+#     # 변경 성공
+#     # =========================
+#     if success:
+#         return render_template(
+#             "main_index.html",
+#             message=message,
+#             success=True
+#         )
+
+#     # =========================
+#     # 변경 실패
+#     # =========================
+#     return render_template(
+#         "update_profile.html",
+#         message=message,
+#         success=False
+#     )
 
 # ==========================================================
 # 최초 로그인 비밀번호 변경

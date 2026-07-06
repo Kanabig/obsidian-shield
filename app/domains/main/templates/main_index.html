@@ -26,6 +26,8 @@
 
           <form id="loginForm" class="login-card" action="/login" method="POST">
 
+            <a href="/update_profile">회원정보 수정요청</a>
+
             <div class="input-box">
               <span class="icon">👤</span>
               <strong>ID</strong>
@@ -39,29 +41,9 @@
             </div>
 
             
-            {% if message %}
-              <div class="message-box">
-                <p class="{{ 'ok' if success else 'error' }}">
-                  {{ message }}
-                </p>
-              </div>
-            {% endif %}
-
+            {% include "includes/message_box.html" %}
          
-
-            {% if session.get("login_fail",0) >= 3 %}
-
-              <div class="captcha-box">
-
-                  <img src="{{ url_for('static', filename='captcha.png') }}">
-                  <input
-                        type="text"
-                        name="captcha"
-                        placeholder="보이는 문자를 입력하세요">
-
-              </div>
-
-            {% endif %}
+            {% include "includes/captcha_box.html" %}
 
             <button type="button" onclick="login()">로그인</button>
 
