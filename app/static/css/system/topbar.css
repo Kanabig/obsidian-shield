@@ -1,5 +1,5 @@
 .top_header {
-    min-height: 82px;
+    min-height: 92px;
     padding: 0 28px;
     display: flex;
     justify-content: space-between;
@@ -17,8 +17,14 @@
 
 .logo {
     color: var(--system-blue);
-    font-size: 34px;
-    font-weight: bold;
+    background: transparent;
+}
+
+.logo img {
+    width: 58px;
+    height: 58px;
+    display: block;
+    object-fit: contain;
 }
 
 .brand h1 {
@@ -60,4 +66,16 @@
 .theme_toggle_btn:hover {
     border-color: var(--system-blue);
     color: var(--system-blue);
+}
+
+.system_logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.system_logo img {
+    width: 36px;
+    height: 36px;
+    display: block;
 }
