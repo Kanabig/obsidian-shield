@@ -164,3 +164,7 @@ def identify(person_img) -> tuple[str, float]:
 
     print(f"{_face_ids_cache[best_idx]}, {best_match_ratio}")
     return (_face_ids_cache[best_idx], best_match_ratio)
+
+
+if __name__ == "__main__":
+    print(get_face_app().models["recognition"].session.get_providers())
