@@ -162,31 +162,3 @@ def crop_frame(frame, boundary):
 
     x1, y1, x2, y2 = boundary
     return frame[y1:y2, x1:x2]
-
-
-if __name__ == "__main__":
-    TEST_CASE = 1
-
-    from app.domains.stream import camera
-
-    face_profiler.init_load_all_embeddings()
-
-    # URL1 = "tests/newyork_street_01.mp4"
-    URL1 = "tests/sibuya_street_01.mp4"
-    # URL1 = "http://192.168.137.115:81/stream"
-
-    if 1 == TEST_CASE:
-        camera.add_camera(URL1, 0, "stream")
-        # camera.add_camera(URL2, 1)
-
-        while True:
-            ids = camera.get_all_camera_ids()
-            frames = [camera.get_frame_by_id(id) for id in ids]
-            frames = track_identified(frames, ids)
-            # frames = track_all(frames, ids)
-
-            for idx, frame in enumerate(frames):
-                cv2.imshow(str(idx), frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break

@@ -162,15 +162,5 @@ def identify(person_img) -> tuple[str, float]:
     if IDENTIFY_THREASHOLD > best_match_ratio:
         return NO_MATCH
 
+    print(f"{_face_ids_cache[best_idx]}, {best_match_ratio}")
     return (_face_ids_cache[best_idx], best_match_ratio)
-
-
-if __name__ == "__main__":
-    # add_or_update_face("jungho001", "tests/jungho1.jpg")
-    # add_or_update_face("jungho001", "tests/jungho2.jpg")
-    # add_or_update_face("jungho001", "tests/jungho3.jpg")
-    # add_or_update_face("jungho001", "tests/jungho4.jpg")
-
-    init_load_all_embeddings()
-    id, ratio = identify(imread("tests/jungho.jpg"))
-    print(f"{id}, {ratio}")

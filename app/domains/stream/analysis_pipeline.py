@@ -59,12 +59,15 @@ def get_latest_frames():
 
 if __name__ == "__main__":
     import cv2
+    from app.domains.stream import face_profiler
 
     URL1 = "tests/sibuya_street_01.mp4"
-    # URL2 = "tests/newyork_street_01.mp4"
+    URL2 = "tests/newyork_street_01.mp4"
 
     camera.add_camera(URL1, 0)
-    # camera.add_camera(URL2, 1)
+    camera.add_camera(URL2, 1)
+
+    face_profiler.init_load_all_embeddings()
 
     while True:
         frames_dict = get_latest_frames()

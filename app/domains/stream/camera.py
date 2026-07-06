@@ -137,30 +137,3 @@ def get_frame_by_id(id):
 
 def get_all_camera_ids():
     return tuple(_instances.keys())
-
-
-if __name__ == "__main__":
-    import cv2
-
-    TEST_CASE = 1
-
-    URL1 = "tests/newyork_street_01.mp4"
-    URL2 = "tests/sibuya_street_01.mp4"
-
-    add_camera(URL1, 0)
-    add_camera(URL2, 1)
-
-    if TEST_CASE == 1:
-        while True:
-            ids = get_all_camera_ids()
-
-            for id in ids:
-                frame = get_frame_by_id(id)
-
-                if frame is None:
-                    continue
-
-                cv2.imshow(str(id), frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
