@@ -26,6 +26,7 @@ class FrameAnalyzer:
             if not camera_ids:
                 # 등록된 카메라가 없으면 대기
                 time.sleep(0.1)
+                continue
 
             frames = [camera.get_frame_by_id(id) for id in camera_ids]
             tracked_frames = person_tracker.track_identified(frames, camera_ids)
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     URL2 = "tests/newyork_street_01.mp4"
 
     camera.add_camera(URL1, 0)
-    camera.add_camera(URL2, 1)
+    # camera.add_camera(URL2, 1)
 
     face_profiler.init_load_all_embeddings()
 
