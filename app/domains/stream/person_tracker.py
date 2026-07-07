@@ -17,8 +17,8 @@ _trackers = {}  # camera_id: tracker
 _tracker_caches = {}  # camera_id: { track_id: {...}, ...}
 
 # predictor 강제 생성
-_model.overrides["conf"] = 0.3
-_model.overrides["iou"] = 0.6
+_model.overrides["conf"] = 0.4
+_model.overrides["iou"] = 0.55
 _model.overrides["imgsz"] = 640
 _model.overrides["verbose"] = False
 _model.overrides["classes"] = [0]
