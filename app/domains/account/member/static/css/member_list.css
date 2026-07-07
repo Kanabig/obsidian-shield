@@ -315,3 +315,9 @@
 .cancel_btn:hover {
     background: var(--system-panel-light);
 }
+
+.error{
+    color:red;
+    font-size:13px;
+    margin-top:5px;
+}

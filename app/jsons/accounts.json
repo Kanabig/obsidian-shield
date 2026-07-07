@@ -1,30 +1,30 @@
 {
   "admin": {
-    "NAME": "정호띠",
     "ID": "admin",
     "PW": "12341234@",
-    "EMAIL": "admin@obsidian.com",
+    "NAME": "정호띠",
     "PHONE": "01011112222",
-    "REG_DATE": "2026/06/01, 09:00:00",
-    "MOD_DATE": "2026/07/06, 16:15:53",
+    "EMAIL": "admin@obsidian.com",
+    "PERMISSIONS": [
+      "ADMIN"
+    ],
     "IS_APPROVE": true,
     "IS_FIRST_LOGIN": false,
-    "PERMISSIONS": [
-      "관리자"
-    ]
-  },
-  "mina": {
-    "NAME": "아아아",
-    "ID": "mina",
-    "PW": "11111111@",
-    "EMAIL": "admin@obsidian.com",
-    "PHONE": "01011112222",
     "REG_DATE": "2026/06/01, 09:00:00",
-    "MOD_DATE": "2026/06/30, 14:59:50",
-    "IS_APPROVE": false,
-    "IS_FIRST_LOGIN": false,
+    "MOD_DATE": "2026/07/06, 16:15:53"
+  },
+  "lee": {
+    "ID": "lee",
+    "PW": "123",
+    "NAME": "이잉이",
+    "PHONE": "01055555555",
+    "EMAIL": "reqwe@naver.com",
     "PERMISSIONS": [
-      "관리자"
-    ]
+      "OBSERVER"
+    ],
+    "IS_APPROVE": true,
+    "IS_FIRST_LOGIN": false,
+    "REG_DATE": "2026/07/07, 09:42:06",
+    "MOD_DATE": "2026/07/07, 16:19:51"
   }
 }

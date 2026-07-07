@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from app.utils.account_manager import load_accounts, save_accounts
-from .service import make_member, update_member, delete_member
+from .service import make_member, update_member, delete_member, is_admin
 from .request_data import get_member_list_options, get_member_add_data, get_member_update_data
 from app.utils.member_filter import filter_keyword, filter_permission, filter_approve
 from app.utils.member_sort import sort_accounts
 from app.utils.pagination import paginate
+from app.domains.account.validate.validate import validate_register
+from app import configs
 
 member_bp = Blueprint(
     "member", __name__, template_folder="templates", static_folder="static", static_url_path="/member/static"
@@ -17,18 +19,50 @@ def member_update(member_id):
 
     member_data = get_member_update_data(request)
 
-    if member_id in account_db:
-        update_member(account_db, member_id, member_data["permission"], member_data["approve"])
-        save_accounts(account_db)
+    success, message = update_member(
+    account_db,
+    session["id"],
+    member_id,
+    member_data["permission"],
+    member_data["approve"]
+    )
+    
+    if not success:
+        return f"""
+        <script>
+        alert("{message}");
+        history.back();
+        </script>
+        """
+    
+    save_accounts(account_db)
+
 
     return redirect("/member/list")
 
 @member_bp.route("/member/list")
 def member_list():
 
+
+    # 로그인 안 했으면 로그인 화면으로
+    if "id" not in session:
+        return redirect(url_for("main.main"))
+
     account_db = load_accounts()
 
     accounts = list(account_db.values())
+
+    # ==========================
+    # 권한 이름 변환
+    # ==========================
+    for account in accounts:
+
+        permission = account[configs.KEY_PERMISSIONS][0]
+
+        account["PERMISSION_NAME"] = configs.PERMISSION_NAME.get(
+            permission,
+            "없음"
+        )
 
     options = get_member_list_options(request)
 
@@ -43,8 +77,11 @@ def member_list():
     # 페이지네이션
     accounts, total_pages = paginate(accounts, options["page"], options["per_page"])
 
+
     return render_template(
         "member_list.html",
+        user_permission=configs.PERMISSION_NAME[
+            session["permissions"][0]],
         account_db=accounts,
         keyword=options["keyword"],
         tag=options["tag"],
@@ -63,16 +100,37 @@ def member_add():
 
     account_db = load_accounts()
 
-    member_data = get_member_add_data(request)
-
-    if member_data["id"] in account_db:
+    if not is_admin(session["id"]):
         return """
         <script>
-            alert('이미 존재하는 아이디입니다.');
-            history.back();
+        alert("권한이 없습니다.");
+        history.back();
         </script>
         """
 
+    member_data = get_member_add_data(request)
+
+    success, field, message, phone = validate_register(
+        account_db,
+        member_data["id"],
+        member_data["pw"],
+        member_data["email"],
+        member_data["phone1"],
+        member_data["phone2"],
+        member_data["phone3"]
+    )
+
+    if not success:
+
+        return render_template(
+            "member_list.html",
+            error_field=field,
+            error_message=message,
+            member_data=member_data
+        )
+    
+    member_data["phone"] = phone
+    
     account_db[member_data["id"]] = make_member(member_data)
 
     save_accounts(account_db)
@@ -83,6 +141,14 @@ def member_add():
 def member_delete(member_id):
 
     account_db = load_accounts()
+
+    if not is_admin(session["id"]):
+        return """
+        <script>
+        alert("권한이 없습니다.");
+        history.back();
+        </script>
+        """
 
     delete_member(account_db, member_id)
     save_accounts(account_db)
