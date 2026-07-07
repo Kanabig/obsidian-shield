@@ -1,3 +1,4 @@
+// console.log("카카오맵 객체:", window.kakao);
 // console.log(maps);
 // 1. 지도를 띄울 중심좌표
 const centerlat = maps[0].latitude;
@@ -12,9 +13,6 @@ const options = {
 //3. HTML에서 지도를 담을 컨테이너(div)를 가져와 실제 지도 객체 생성
 var container = document.getElementById("map");
 var map = new kakao.maps.Map(container, options);
-
-
-
 
 //4. 마커 객체 생성
 let openedInfoWindow = null;
@@ -38,7 +36,40 @@ maps.forEach(function(target){
                         target.longitude
                 ),
                 image: markerImage
+
         });
+        
+        // eventlog에 찍힌 좌표들을 담는 linepath라는 배열을 생성
+        const linePath = [];
+
+        target.logs.forEach(function(log){
+            
+                linePath.push(
+                    new kakao.maps.LatLng(
+                        log.latitude,
+                        log.longitude
+                )
+            );
+        });
+        console.log(target.logs);
+        console.log(linePath);
+        
+        //linepath에 담긴 좌표들을 가지고 kakaomap 위에 polyline 생성
+        const polyline = new kakao.maps.Polyline({
+               
+                path: linePath,
+
+                strokeWeight: 3,
+
+                strokeColor: target.color,
+
+                strokeOpacity: 0.8,
+                
+                strokeStyle: 'solid'
+        });
+
+        polyline.setMap(map);
+
 
         // REG_DATE 분리>>날짜/시간
         const[date, time] = target.reg_date.split(",");
@@ -48,7 +79,7 @@ maps.forEach(function(target){
         
             <div class = "info-window">
                 <img class="full_image"
-                src="${imageBaseUrl}${target.full_image}">
+                src="${imageBaseUrl}${target.image}">
                 <h3>${target.name}</h3>
                 <p>나이: ${target.age}</p>
                 <p><strong>${target.short_description}</strong></p>
