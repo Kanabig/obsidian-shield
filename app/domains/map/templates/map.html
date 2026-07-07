@@ -1,33 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBSIDIAIN_SHIELD_KAKAOMAP</title>
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('map.static', filename='css/map.css') }}" />
-    
-    
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=44189775bf7dd7f1446cae3935c832f3"></script>
-</head>
+{% extends "includes/system_layout.html" %}
 
-<body>
-    {% include "includes/header.html" %}
+#css.
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('map.static', filename='css/map.css') }}" />
+{% endblock %}
+
+{% block content %}
 
     <h2>위치추적</h2>
+
     <div id="map"></div>
-    {% include "includes/footer.html" %}
-    
+
+    #js
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=44189775bf7dd7f1446cae3935c832f3"></script>
     <script>
-        const maps = {{ maps | tojson }};
-        const imageBaseUrl = "{{ url_for('map.static', filename= 'images/') }}";
-    </script>
-
-    <script src="{{ url_for('map.static', filename='js/map.js') }}"></script>
-
     
-</body>
-</html>
+        const maps = {{ maps | tojson }};
+    
+        const imageBaseUrl = "{{ url_for('map.static', filename='images/') }}";
+    
+    </script>
+    
+    <script src="{{ url_for('map.static', filename='js/map.js') }}"></script>
+    
+{% endblock %}

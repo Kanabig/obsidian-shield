@@ -18,7 +18,7 @@
             </tr>
         </thead>
 
-        <tbody>
+        <tbody id="event_log_body">
 
             {% for event in events %}
 
@@ -30,7 +30,7 @@
                 </td>
 
                 <td>{{ (page - 1) * per_page + loop.index }}</td>
-                <td>{{ event.ID }}</td>
+                <td class="event_id">{{ event.ID }}</td>
                 <td>{{ event.REG_DATE }}</td>
                 <td>{{ event.latitude }}</td>
                 <td>{{ event.longitude }}</td>
