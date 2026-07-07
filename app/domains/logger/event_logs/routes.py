@@ -1,8 +1,8 @@
 from flask import (Blueprint, render_template, 
-                   url_for, request, session)
+                   url_for, request, Response, session, jsonify)
 from app.domains.logger.event_logs.event_logs import (
-    get_event_list, add_event, format_events,
-    checked_event_logs)
+    get_event_list, add_event, get_new_event_list,
+    format_events,checked_event_logs)
 from app.domains.logger.logger_utils.log_utils import (
     create_excel_file, download_excel_file)
 from app.utils.pagination import paginate
@@ -10,6 +10,8 @@ from app.domains.logger.logger_utils.event_log_filter import (
     filter_keyword, filter_status, sort_logs)
 from app.domains.logger.logger_utils.log_request_filter import(
     get_log_filter_options)
+from app.domains.logger.logger_utils.event_notifier import (
+    wait_new_log)
 
 
 event_log_bp = Blueprint(
@@ -123,3 +125,78 @@ def checked_event():
         viewer_id)
 
     return {"result": "success"}
+
+
+@event_log_bp.route("/stream_log")
+def stream_log():
+
+    def stream_event_log():
+
+        while True:
+            wait_new_log()
+
+            yield "data: new\n\n"
+
+    return Response(
+        stream_event_log(),
+        mimetype = "text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive"
+        }
+    )
+
+
+@event_log_bp.route("/latest")
+def latest_event_log():
+
+    events = get_event_list()
+
+    if not events:
+        return {}
+
+    latest = sorted(
+        events,
+        key = lambda x: x["REG_DATE"],
+        reverse = True
+    )[0]
+
+    return latest
+
+
+@event_log_bp.route("/new")
+def get_new_events():
+
+    after = request.args.get("after")
+
+    new_events = get_new_event_list(after)
+
+    return jsonify(new_events)
+
+# @event_log_bp.route("/new")
+# def get_new_events():
+
+#     after = request.args.get("after")
+
+#     events = get_event_list()
+
+#     if after is None:
+#         return jsonify([])
+
+#     new_events = []
+
+#     found = False
+
+#     for event in events:
+
+#         if found:
+#             new_events.append(event)
+
+#         if event["ID"] == after:
+#             found = True
+
+#         # after_ID가 없는 경우(최초 접속의 경우)
+#         if not found:
+#             new_events = events
+
+#         return jsonify(new_events)

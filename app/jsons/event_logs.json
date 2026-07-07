@@ -725,7 +725,7 @@
     "latitude": 36.3721,
     "longitude": 127.3604,
     "TARGET_ID": "target_003",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id092": {
     "ID": "log_id092",
@@ -733,7 +733,7 @@
     "latitude": 37.5126,
     "longitude": 127.1025,
     "TARGET_ID": "target_003",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id093": {
     "ID": "log_id093",
@@ -741,7 +741,7 @@
     "latitude": 36.3322,
     "longitude": 127.4346,
     "TARGET_ID": "target_001",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id094": {
     "ID": "log_id094",
@@ -749,7 +749,7 @@
     "latitude": 36.3287,
     "longitude": 127.423,
     "TARGET_ID": "target_001",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id095": {
     "ID": "log_id095",
@@ -757,7 +757,7 @@
     "latitude": 37.554,
     "longitude": 126.9707,
     "TARGET_ID": "target_002",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id096": {
     "ID": "log_id096",
@@ -765,7 +765,7 @@
     "latitude": 36.3504,
     "longitude": 127.3848,
     "TARGET_ID": "target_002",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id097": {
     "ID": "log_id097",
@@ -773,7 +773,7 @@
     "latitude": 36.3277,
     "longitude": 127.4272,
     "TARGET_ID": "target_001",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id098": {
     "ID": "log_id098",
@@ -781,7 +781,7 @@
     "latitude": 36.3505,
     "longitude": 127.3848,
     "TARGET_ID": "target_001",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id099": {
     "ID": "log_id099",
@@ -789,7 +789,7 @@
     "latitude": 36.3211,
     "longitude": 127.3657,
     "TARGET_ID": "target_004",
-    "IS_READ": false
+    "IS_READ": true
   },
   "log_id100": {
     "ID": "log_id100",
@@ -797,6 +797,6 @@
     "latitude": 36.3099,
     "longitude": 127.4096,
     "TARGET_ID": "target_004",
-    "IS_READ": false
+    "IS_READ": true
   }
 }
