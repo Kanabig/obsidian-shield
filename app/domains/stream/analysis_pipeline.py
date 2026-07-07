@@ -30,6 +30,7 @@ class FrameAnalyzer:
 
             frames = [camera.get_frame_by_id(id) for id in camera_ids]
             tracked_frames = person_tracker.track_identified(frames, camera_ids)
+            # tracked_frames = person_tracker.track_all(frames, camera_ids)
 
             temp = {}
             for id, frame in zip(camera_ids, tracked_frames):
@@ -62,19 +63,18 @@ if __name__ == "__main__":
     import cv2
     from app.domains.stream import face_profiler
 
-    URL1 = "tests/sibuya_street_01.mp4"
-    URL2 = "tests/newyork_street_01.mp4"
+    face_profiler.init_load_all_embeddings()
+
+    URL1 = "tests/tokyo_street_trim01.mp4"
+    # URL2 = "tests/tokyo_street_trim02.mp4"
 
     camera.add_camera(URL1, 0)
     # camera.add_camera(URL2, 1)
-
-    face_profiler.init_load_all_embeddings()
 
     while True:
         frames_dict = get_latest_frames()
 
         if not frames_dict:
-            time.sleep(0.01)
             continue
 
         for cam_id, frame in frames_dict.items():

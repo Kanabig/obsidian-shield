@@ -1,11 +1,12 @@
 import time
 
-from flask import Blueprint, Response, render_template, request
+from flask import Blueprint, Response, render_template, request, redirect, url_for
 from cv2 import imencode
 
 from app.domains.stream import analysis_pipeline
-# from app.domains.stream import face_profiler
-# from app.domains.stream import camera
+from app.domains.stream import camera as camera_manager
+from app.utils.pagination import paginate
+from app.utils.json_manager import load_json, TARGETS_PROFILES_FILE
 
 stream_bp = Blueprint(
     "stream",
@@ -16,20 +17,68 @@ stream_bp = Blueprint(
     static_url_path="/stream/static",
 )
 
-# app.py로 옮겨야 하는 코드
-# face_profiler.init_load_all_embeddings()
-# camera.add_camera("tests/sibuya_street_01.mp4", 0)
+
+@stream_bp.route("/monitoring")
+def monitoring():
+    camera_ids = camera_manager.get_all_camera_ids()
+    return render_template("stream_main.html", camera_ids=camera_ids)
 
 
-@stream_bp.route("/")
-def stream():
-    return render_template("stream_main.html")
+@stream_bp.route("/camera/", methods=["GET", "POST"])
+def camera():
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "add":
+            cam_id = request.form.get("cam_id")
+            src_path = request.form.get("src_path")
+            src_type = request.form.get("src_type", "video")  # 기본값은 video
+
+            if cam_id and src_path:
+                camera_manager.add_camera(
+                    src_path=src_path, id=cam_id, src_type=src_type
+                )
+
+        elif action == "delete":
+            cam_id = request.form.get("cam_id")
+            if cam_id:
+                camera_manager.delete_camera(cam_id)
+
+        return redirect(url_for("stream.camera"))
+
+    active_cameras = []
+    for cid in camera_manager.get_all_camera_ids():
+        cam_obj = camera_manager.get_camera_by_id(cid)
+        if cam_obj:
+            active_cameras.append(
+                {"id": cid, "src_path": cam_obj.src_path, "is_video": cam_obj.is_video}
+            )
+
+    return render_template("camera_main.html", cameras=active_cameras)
+
+
+@stream_bp.route("/profile/", methods=["GET", "POST"])
+def profile():
+    profiles = list(load_json(TARGETS_PROFILES_FILE).values())
+
+    per_page = int(request.args.get("per_page", 10))
+    page = int(request.args.get("page", 1))
+
+    profiles, total_pages = paginate(profiles, page, per_page)
+
+    return render_template(
+        "profile_main.html",
+        profiles=profiles,
+        page=page,
+        per_page=per_page,
+        total_pages=total_pages,
+    )
 
 
 @stream_bp.route("/video_feed/")
 def video_feed():
 
-    cam_id = request.args.get("cam_id", "0", type=int)
+    cam_id = request.args.get("cam_id", "0")
 
     return Response(
         generate_frames(cam_id),

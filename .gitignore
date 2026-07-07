@@ -5,3 +5,4 @@
 **/yolov8n.pt
 **/.vscode/
 **/tests/
+**/.prettierignore

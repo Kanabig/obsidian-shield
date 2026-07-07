@@ -2,6 +2,7 @@
 {% extends "includes/system_layout.html" %}
 
 {% block css %}
+<link rel="stylesheet" href="{{ url_for('stream.static', filename='css/stream_common.css') }}" />
 <link rel="stylesheet" href="{{ url_for('stream.static', filename='css/stream_main.css') }}" />
 {% endblock %}
 
@@ -17,7 +18,11 @@
 </div>
 
 <div class="camera-grid">
-  <img src="{{ url_for('stream.video_feed', cam_id=0) }}" width="640" height="360" alt="Camera 1" />
-  <!-- <img src="{{ url_for('stream.video_feed', cam_id=1) }}" width="640" height="360" alt="Camera 2" /> -->
+  {% for id in camera_ids %}
+  <img src="{{ url_for('stream.video_feed', cam_id=id) }}" width="640" height="360" />
+  {% else %}
+  <div class="no-camera">등록된 실시간 카메라가 없습니다.</div>
+  {% endfor %}
+</div>
 </div>
 {% endblock %}

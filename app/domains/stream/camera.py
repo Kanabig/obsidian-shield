@@ -8,7 +8,7 @@ from collections import deque
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 24
+FRAME_DEFAULT = 30
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -101,13 +101,12 @@ class Camera:
 # ================================================================
 # 카메라 관리 함수들
 # ================================================================
-
-
 def add_camera(src_path, id, src_type=VIDEO):
     if id in _instances:
         print("이미 등록된 카메라입니다.")
         return
 
+    print(type(id))
     _instances[id] = Camera(src_path, src_type)
 
 
@@ -137,3 +136,7 @@ def get_frame_by_id(id):
 
 def get_all_camera_ids():
     return tuple(_instances.keys())
+
+
+def get_camera_by_id(id):
+    return _instances.get(id)
