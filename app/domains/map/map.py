@@ -27,7 +27,7 @@ def get_map_data():
         logs.sort(key=lambda x: x["REG_DATE"])
 
         # 첫 로그 n개
-        logs = logs[:5]
+        logs = logs[-5:]
         # 가장 마지막 로그 = 현재 위치
         latest_log = logs[-1]
 
