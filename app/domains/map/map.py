@@ -48,12 +48,10 @@ def get_map_data():
                 "short_description" : target["SHORT_DESCRIPTION"], 
                 "description" : target["DESCRIPTION"], 
                 "image" : target.get("IMAGE"), 
-                "full_image" : target.get("FULL_IMAGE"), 
                 
                 #target 별 line색상
                 "color": color_map.get(target["ID"],"#808080"),
                 
-
                 #현재위치
                 "latitude" : latest_log["latitude"], 
                 "longitude" : latest_log["longitude"],
