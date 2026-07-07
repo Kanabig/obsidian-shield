@@ -5,10 +5,9 @@ from ultralytics import YOLO
 from ultralytics.utils import YAML
 from ultralytics.utils.checks import check_yaml
 from ultralytics.utils import IterableSimpleNamespace
-from ultralytics.trackers.byte_tracker import BYTETracker
+from ultralytics.trackers.bot_sort import BOTSORT
 from ultralytics.utils.plotting import Annotator, colors
 
-# from ultralytics.trackers.bot_sort import BOTSORT
 
 from app.domains.stream import face_profiler
 
@@ -28,33 +27,33 @@ IDENTIFY_RETRY_INTERVAL = 1
 # 이미 신원이 확정된 track은 이 주기로만 재확인 (계속 재조회할 필요 없음)
 IDENTIFY_RECHECK_INTERVAL = 30
 
-_executor = ThreadPoolExecutor(max_workers=2)
+_executor = ThreadPoolExecutor(max_workers=3)
 
 
 def get_or_create_tracker(camera_id):
     if camera_id not in _trackers:
-        # tracker_yaml = check_yaml("botsort.yaml")
-        tracker_yaml = check_yaml("bytetrack.yaml")
+        tracker_yaml = check_yaml("botsort.yaml")
         tracker_data = YAML.load(tracker_yaml)  # 딕셔너리로 변환됨
         tracker_data.update(_model.overrides)
         cfg = IterableSimpleNamespace(**tracker_data)
 
-        # _trackers[camera_id] = BOTSORT(args=cfg)
-        _trackers[camera_id] = BYTETracker(args=cfg)
+        _trackers[camera_id] = BOTSORT(args=cfg)
         _tracker_caches[camera_id] = {}
 
     return _trackers[camera_id]
 
 
 def track_all(frames: list, camera_ids):
-    results = _model.predict(frames)
+    results = _model.predict(frames, stream=True)
+    frames_output = [frame.copy() for frame in frames]
 
-    for frame, result, camera_id in zip(frames, results, camera_ids):
+    for frame, result, camera_id in zip(frames_output, results, camera_ids):
         tracker = get_or_create_tracker(camera_id)
 
         # 탐지된 객체가 없는 경우
         if result.boxes is None or len(result.boxes) == 0:
             tracker.update(result.boxes, frame)
+            frames_output.append(frame)
             continue
 
         # tracks: [[x1, y1, x2, y2, track_id, conf, cls_id], ...]
@@ -67,7 +66,7 @@ def track_all(frames: list, camera_ids):
 
             annotator.box_label(box, "", color=colors(int(track_id), True))
 
-    return frames
+    return frames_output
 
 
 def _async_identify(camera_id, track_id, person_img):
