@@ -11,23 +11,25 @@
     <link rel="stylesheet" href="{{ url_for('map.static', filename='css/map.css') }}" />
     
     
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=44189775bf7dd7f1446cae3935c832f3"></script>
 </head>
 
 <body>
-    {% include "includes/header.html" %}
-
+    {% extends "includes/system_layout.html" %}
+    
+    {% block content %}
     <h2>위치추적</h2>
     <div id="map"></div>
-    {% include "includes/footer.html" %}
+    {% endblock %}
     
+    {% block scripts %}
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=44189775bf7dd7f1446cae3935c832f3"></script>
     <script>
         const maps = {{ maps | tojson }};
         const imageBaseUrl = "{{ url_for('map.static', filename= 'images/') }}";
     </script>
 
     <script src="{{ url_for('map.static', filename='js/map.js') }}"></script>
-
+    {% endblock %}
     
 </body>
 </html>

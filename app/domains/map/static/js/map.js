@@ -1,4 +1,4 @@
-// console.log(maps);
+console.log(maps);
 // 1. 지도를 띄울 중심좌표
 const centerlat = maps[0].latitude;
 const centerlng = maps[0].longitude;
@@ -12,7 +12,6 @@ const options = {
 //3. HTML에서 지도를 담을 컨테이너(div)를 가져와 실제 지도 객체 생성
 var container = document.getElementById("map");
 var map = new kakao.maps.Map(container, options);
-
 
 
 
@@ -38,7 +37,38 @@ maps.forEach(function(target){
                         target.longitude
                 ),
                 image: markerImage
+
         });
+
+        const linePath = [];
+
+        target.logs.forEach(function(log){
+            
+                linePath.push(
+                    new kakao.maps.LatLng(
+                        log.latitude,
+                        log.longitude
+                )
+            );
+        });
+        console.log(target.logs);
+        console.log(linePath);
+
+        const polyline = new kakao.maps.Polyline({
+               
+                path: linePath,
+
+                strokeWeight: 3,
+
+                strokeColor: target.color,
+
+                strokeOpacity: 0.5,
+                
+                strokeStyle: 'solid'
+        });
+
+        polyline.setMap(map);
+
 
         // REG_DATE 분리>>날짜/시간
         const[date, time] = target.reg_date.split(",");
