@@ -124,30 +124,58 @@ def validate_change_password(accounts, id, oPw, nPw, new_pw_check):
 # ==========================================================
 def validate_register(accounts, id, pw, email, p1, p2, p3):
 
+    # 입력값 공백 검사
+    success, field, message = validate_register_input(
+        id, pw, email, p1, p2, p3
+    )
+
+    if not success:
+        return False,  field, message, None
+    
     # 1. 아이디 중복 검사
     if is_id_exists(accounts, id):
-        return False, "이미 존재하는 아이디입니다.", None
+        return False, "id", "이미 존재하는 아이디입니다.", None
 
     # 2. 삭제된 아이디 검사
     from app.domains.account.repository.account_repository import load_deleted_ids
     deleted_ids = load_deleted_ids()
 
     if id in deleted_ids:
-        return False, "삭제된 ID는 사용할 수 없습니다.", None
+        return False, "id", "삭제된 ID는 사용할 수 없습니다.", None
 
     # 3. 비밀번호 검사
     if not is_password_valid(pw):
-        return False, "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.", None
+        return False, "pw", "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.", None
 
     # 4. 이메일 검사
     if not is_email_valid(email):
-        return False, "올바른 이메일 형식이 아닙니다.", None
+        return False, "email", "올바른 이메일 형식이 아닙니다.", None
 
     # 5. 전화번호 검사 + 변환
     success, phone = is_phone_valid(p1, p2, p3)
 
     if not success:
-        return False, phone, None
-
+        return False, "phone", phone, None
+    
     # 최종 성공
-    return True, None, phone
+    return True, None, None, phone
+
+
+# ==========================================================
+# 회원가입 입력값 공백 검사
+# ==========================================================
+def validate_register_input(id, pw, email, p1, p2, p3):
+
+    if not id.strip():
+        return False, "id", "아이디를 입력하세요."
+
+    if not pw.strip():
+        return False, "pw", "비밀번호를 입력하세요."
+
+    if not email.strip():
+        return False, "email", "이메일을 입력하세요."
+
+    if not p1.strip() or not p2.strip() or not p3.strip():
+        return False, "phone", "전화번호를 입력하세요."
+
+    return True, None, None

@@ -1,6 +1,7 @@
 from enum import IntEnum, auto
 from app.utils.json_manager import save_json, load_json, ACCOUNT_FILE
 from app.configs import KEY_PERMISSIONS
+from
 
 # 관련성 있는 권한은 백의 자릿수를 통일
 # auto()는 이전에 선언된 상수에서 +1
@@ -22,6 +23,28 @@ class PERMISSON(IntEnum):
 
     EVENT_LOG_ACCESS = 400
     USER_LOG_ACCESS = auto()
+
+    RANK_PERMISSIONS = {
+
+}
+
+# ===========================
+# 권한 묶음
+# ===========================
+ADMIN = (
+    PERMISSON.CREATE_ACCOUNT,
+    PERMISSON.UPDATE_ACCOUNT,
+    PERMISSON.DELETE_ACCOUNT,
+    PERMISSON.APPROVE_ACCOUNT,
+    PERMISSON.CAMERA_ACCESS,
+    PERMISSON.EVENT_LOG_ACCESS,
+    PERMISSON.USER_LOG_ACCESS,
+)
+
+OBSERVER = (
+    PERMISSON.CAMERA_ACCESS,
+    PERMISSON.EVENT_LOG_ACCESS,
+)
 
 
 # 권한 추가 ======
@@ -67,3 +90,5 @@ def has_permissions(id, *permissions: PERMISSON):
             possess_cnt += 1
 
     return possess_cnt == len(permissions)
+
+

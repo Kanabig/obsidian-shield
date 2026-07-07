@@ -23,8 +23,22 @@
                         <form id="update_form_{{ account.ID }}" method="post" action="/member/update/{{ account.ID }}"></form>
 
                         <select name="permission" form="update_form_{{ account.ID }}">
-                            <option value="관리자" {% if "관리자" in account.PERMISSIONS %}selected{% endif %}>관리자</option>
-                            <option value="관제자" {% if "관제자" in account.PERMISSIONS %}selected{% endif %}>관제자</option>
+                            
+                            <option value="ADMIN"
+                            {% if "ADMIN" in account.PERMISSIONS %}
+                                selected
+                            {% endif %}>
+                                관리자
+                            </option>
+
+
+                            <option value="OBSERVER"
+                            {% if "OBSERVER" in account.PERMISSIONS %}
+                                selected
+                            {% endif %}>
+                                관제자
+                            </option>
+
                         </select>
                     </td>
 
@@ -43,7 +57,7 @@
                     </td>
 
                 {% else %}
-                    <td>{{ account.PERMISSIONS | join(', ') }}</td>
+                    <td>{{ account.PERMISSION_NAME }}</td>
 
                     <td>
                         {% if account.IS_APPROVE %}
