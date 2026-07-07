@@ -101,6 +101,7 @@ def create_login_session(user):
     session["id"] = user[configs.KEY_ID]
     session["is_approve"] = user[configs.KEY_IS_APPROVE]
     session["is_first_login"] = user[configs.KEY_IS_FIRST_LOGIN]
+    session["permissions"] = user[configs.KEY_PERMISSIONS]
 
 
 # ==========================================================

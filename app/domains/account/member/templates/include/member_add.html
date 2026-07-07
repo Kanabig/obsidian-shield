@@ -6,12 +6,22 @@
 
         <div class="add_row">
             <label>아이디</label>
-            <input type="text" name="id">
+            <input
+                type="text"
+                name="id"
+                value="{{ member_data.id if member_data else '' }}">
+            
+            {% if error_field == "id" %}
+                <p class="error">{{ error_message }}</p>
+            {% endif %}
         </div>
 
         <div class="add_row">
             <label>비밀번호</label>
             <input type="password" name="pw">
+            {% if error_field == "pw" %}
+                <p class="error">{{ error_message }}</p>
+            {% endif %}
         </div>
 
         <div class="add_row">
@@ -19,14 +29,18 @@
             <input type="text" name="name">
         </div>
 
-        <div class="add_row">
-            <label>전화번호</label>
-            <input type="text" name="phone">
-        </div>
+        {% include "include/member_add_phone.html" %}
+        
 
         <div class="add_row">
             <label>이메일</label>
-            <input type="email" name="email">
+            <input
+                type="text"
+                name="email"
+                value="{{ member_data.email if member_data else '' }}">
+            {% if error_field == "email" %}
+                <p class="error">{{ error_message }}</p>
+            {% endif %}
         </div>
 
         <div class="add_row">
