@@ -42,7 +42,11 @@ def add_event(data):
 
     save_json(EVENT_LOGS_FILE, logs)
 
+    print("로그 저장 완료")
+
     notify_new_log()
+
+    print("notify_new_log 호출")
 
 
 # ===========================================================
@@ -57,20 +61,14 @@ def get_new_event_list(after_id):
     
     new_events = []
 
-    found = False
-
-    for event in reversed(events):
-
-        if found:
-            new_events.append(event)
+    for event in events:
 
         if event["ID"] == after_id:
-            found = True
+            break
 
-    if not found:
-        return events
-    
-    return new_events
+        new_events.append(event)
+
+    return list(reversed(new_events))
 
 # ===========================================================
 # 엑셀 저장용 데이터 변환

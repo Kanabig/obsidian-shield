@@ -133,6 +133,7 @@ def stream_log():
     def stream_event_log():
 
         while True:
+            print("대기중...")
             wait_new_log()
 
             yield "data: new\n\n"
@@ -164,12 +165,25 @@ def latest_event_log():
     return latest
 
 
+# @event_log_bp.route("/new")
+# def get_new_events():
+
+#     after = request.args.get("after")
+
+#     new_events = get_new_event_list(after)
+
+#     return jsonify(new_events)
+
 @event_log_bp.route("/new")
 def get_new_events():
 
     after = request.args.get("after")
 
+    print("after =", after)
+
     new_events = get_new_event_list(after)
+
+    print("new_events =", new_events)
 
     return jsonify(new_events)
 

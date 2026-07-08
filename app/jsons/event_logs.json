@@ -798,5 +798,29 @@
     "longitude": 127.4096,
     "TARGET_ID": "target_004",
     "IS_READ": true
+  },
+  "log999": {
+    "ID": "log999",
+    "REG_DATE": "2026/07/08, 10:16:09",
+    "latitude": 36.351,
+    "longitude": 127.385,
+    "TARGET_ID": "target001",
+    "IS_READ": false
+  },
+  "log1000": {
+    "ID": "log1000",
+    "REG_DATE": "2026/07/08, 10:38:21",
+    "latitude": 36.123,
+    "longitude": 127.456,
+    "TARGET_ID": "target001",
+    "IS_READ": false
+  },
+  "log1001": {
+    "ID": "log1001",
+    "REG_DATE": "2026/07/08, 11:13:02",
+    "latitude": 36.5,
+    "longitude": 127.5,
+    "TARGET_ID": "target001",
+    "IS_READ": false
   }
 }
