@@ -1,7 +1,6 @@
 from enum import IntEnum, auto
 from app.utils.json_manager import save_json, load_json, ACCOUNT_FILE
 from app.configs import KEY_PERMISSIONS
-from
 
 # 관련성 있는 권한은 백의 자릿수를 통일
 # auto()는 이전에 선언된 상수에서 +1
@@ -14,29 +13,27 @@ from
 class PERMISSON(IntEnum):
     """서비스 접근 권한"""
 
-    CREATE_ACCOUNT = 100
-    UPDATE_ACCOUNT = auto()
-    DELETE_ACCOUNT = auto()
+    DASHBOARD_ACCESS = 100
+    STREAM_ACCESS = auto()
+    PROFILE_ACCESS = auto()
+    CAMERA_ACCESS = auto()
 
-    APPROVE_ACCOUNT = 200
-    CAMERA_ACCESS = 300
+    MEMBER_ACCESS = 200 
 
-    EVENT_LOG_ACCESS = 400
+    EVENT_LOG_ACCESS = 300
     USER_LOG_ACCESS = auto()
 
-    RANK_PERMISSIONS = {
-
-}
+   
 
 # ===========================
 # 권한 묶음
 # ===========================
 ADMIN = (
-    PERMISSON.CREATE_ACCOUNT,
-    PERMISSON.UPDATE_ACCOUNT,
-    PERMISSON.DELETE_ACCOUNT,
-    PERMISSON.APPROVE_ACCOUNT,
+    PERMISSON.DASHBOARD_ACCESS,
+    PERMISSON.STREAM_ACCESS,
+    PERMISSON.PROFILE_ACCESS,
     PERMISSON.CAMERA_ACCESS,
+    PERMISSON.MEMBER_ACCESS,
     PERMISSON.EVENT_LOG_ACCESS,
     PERMISSON.USER_LOG_ACCESS,
 )
@@ -56,7 +53,7 @@ def apply_permissions(id, *permissions: PERMISSON):
 
     for perm in permissions:
         if not has_permissions(id, perm):
-            target_account[KEY_PERMISSIONS].append(perm)
+            target_account[KEY_PERMISSIONS].append(perm.value)
 
     save_json(ACCOUNT_FILE, accounts)
 
@@ -72,7 +69,7 @@ def remove_permissions(id, *permissions: PERMISSON):
         if not has_permissions(id, perm):
             continue
 
-        target_account[KEY_PERMISSIONS].remove(perm)
+        target_account[KEY_PERMISSIONS].remove(perm.value)
 
     save_json(ACCOUNT_FILE, accounts)
 
@@ -86,7 +83,7 @@ def has_permissions(id, *permissions: PERMISSON):
     possess_cnt = 0
 
     for perm in permissions:
-        if perm in target_account[KEY_PERMISSIONS]:
+        if perm.value in target_account[KEY_PERMISSIONS]:
             possess_cnt += 1
 
     return possess_cnt == len(permissions)
