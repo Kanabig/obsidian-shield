@@ -18,6 +18,7 @@ user_log_bp = Blueprint(
     static_folder="../static"
 )
 
+
 @user_log_bp.route("/log_list_user")
 def user_log_list():
 

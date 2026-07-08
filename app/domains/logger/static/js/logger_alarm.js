@@ -1,64 +1,127 @@
+// ===========================================================
+// logger_alarm.js
+// 이벤트 로그 실시간 알림(SSE)
+// ===========================================================
+
+
+// ===========================================================
+// 1. 전역 변수
+// ===========================================================
+
 // SSE 연결
-const source = new EventSource("/event_log/stream_log");
+// SSE 연결
+if(!window.eventSource){
+    window.eventSource = null;
+}
 
 // 알림음
-const audio = new Audio("/static/audio/ding.mp3");
+const audio = new Audio("/static/audio/ding.wav");
 
 // 마지막으로 받은 로그 ID
 let lastLogId = null;
 
 
-// 페이지 최초 로드
-window.addEventListener("load", function() {
+// ===========================================================
+// 2. 페이지 최초 로드
+// ===========================================================
+window.addEventListener("load", function () {
 
     const firstEventId = document.querySelector(".event_id");
 
-    if(firstEventId) {
+    if (firstEventId) {
         lastLogId = firstEventId.innerText.trim();
     }
+    connectSSE();
 });
 
 
-// SSE 수신
-source.onmessage = async function() {
+// ===========================================================
+// 3. SSE 연결
+// ===========================================================
+function connectSSE(){
 
-    console.log("새 로그 발생");
-
-    audio.play().catch(function(err) {
-        console.log("알림음 재생 실패", err);
-    });
-
-    showToast("새 로그가 발생했습니다.");
-
-    if(lastLogId === null){
+    // 이미 SSE 연결이 존재하면 생성하지 않음
+    if(window.eventSource !== null) {
         return;
     }
 
-    const response = await fetch(`/event_log/new?after=${lastLogId}`);
+    // SSE 연결 생성
+    window.eventSource =
+        new EventSource(
+            "/event_log/stream_log"
+        );
 
-    if (!response.ok) {
-        return;
-    }
+    // SSE 데이터 수신
+    window.eventSource.onmessage = async function (event) {
 
-    const logs = await response.json();
+        // 알림음
+        audio.play().catch(function (err) {
+            console.log(
+                "알림음 재생 실패",
+                err
+            );
+        });
 
-    logs.forEach(function(log) {
+        // Toast
+        showToast(
+            "새 로그가 발생했습니다."
+        );
 
-        addLogRow(log);
+        // 마지막 로그 확인
+        if(lastLogId === null){
+            return;
+        }
 
-        increaseBadge();
-    });
+        // 새 로그 요청
+        const response =
+            await fetch(
+                `/event_log/new?after=${lastLogId}`
+            );
 
-    if(logs.length > 0) {
-        lastLogId = logs[logs.length-1].ID;
-    }
-};
+        if(!response.ok){
+            return;
+        }
+
+        const logs = await response.json();
+
+        // 화면 추가
+        logs.forEach(function(log) {
+
+            addLogRow(log);
+
+            increaseBadge();
+        });
+
+        // 마지막 ID 갱신
+        if(logs.length > 0) {
+            lastLogId =
+                logs[logs.length - 1].ID;
+        }
+    };
+    
+    // SSE 오류 처리
+    window.eventSource.onerror = function(error) {
+        console.log(
+            "SSE 연결 오류",
+            error
+        );
+    };
+}
 
 
+// ===========================================================
+// 4. 로그 행 추가
+// ===========================================================
 function addLogRow(log) {
+
     const tbody = document.getElementById("event_log_body");
 
-    if(!tbody){
+    if (!tbody) {
+        return;
+    }
+
+    // 이미 존재하면 추가하지 않음
+    if (document.querySelector(`input[value="${log.ID}"]`)) {
         return;
     }
 
@@ -70,19 +133,17 @@ function addLogRow(log) {
         <td>
             <input class="log_check" type="checkbox" value="${log.ID}">
         </td>
+
         <td></td>
 
-        <td class="event_id">
-            {{log.ID}}
-        </td>
+        <td class="event_id">${log.ID}</td>
         <td>${log.REG_DATE}</td>
         <td>${log.latitude}</td>
         <td>${log.longitude}</td>
         <td>${log.TARGET_ID}</td>
+
         <td>
-            <span class="unchecked">
-                읽지 않음
-            </span>        
+            <span class="unchecked">읽지않음</span>
         </td>
     `;
 
@@ -90,18 +151,20 @@ function addLogRow(log) {
 
     refreshRowNumber();
 
-    setTimeout(function() {
-
+    setTimeout(function () {
         tr.classList.remove("new_log");
-
     }, 3000);
 }
 
 
+// ===========================================================
+// 5. Toast 출력
+// ===========================================================
 function showToast(text) {
-    const container = document.getElementById("toast_container");
 
-    if(!container) {
+    const container =  document.getElementById("toast_container");
+
+    if (!container) {
         return;
     }
 
@@ -112,20 +175,23 @@ function showToast(text) {
     div.innerText = text;
 
     container.appendChild(div);
-    
-    setTimeout(function() {
 
+    setTimeout(function () {
         div.remove();
-
-    },3000);
+    }, 3000);
 }
 
 
+// ===========================================================
+// 6. Badge 증가
+// ===========================================================
 function increaseBadge() {
+
     const badge = document.getElementById("log_badge");
 
-    if(!badge)
+    if (!badge) {
         return;
+    }
 
     badge.innerText = Number(badge.innerText) + 1;
 }

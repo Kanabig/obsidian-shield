@@ -22,6 +22,7 @@ event_log_bp = Blueprint(
     static_folder="../static"
 )
 
+
 @event_log_bp.route("/log_list_event")
 def event_list():
 
@@ -92,7 +93,7 @@ def add_event_log():
 
     if not data:
         return {
-            "result": "fail", 
+            # "result": "fail", 
             "message": "Invalid JSON data"
         }, 400
      
@@ -147,23 +148,6 @@ def stream_log():
     )
 
 
-@event_log_bp.route("/latest")
-def latest_event_log():
-
-    events = get_event_list()
-
-    if not events:
-        return {}
-
-    latest = sorted(
-        events,
-        key = lambda x: x["REG_DATE"],
-        reverse = True
-    )[0]
-
-    return latest
-
-
 @event_log_bp.route("/new")
 def get_new_events():
 
@@ -172,31 +156,3 @@ def get_new_events():
     new_events = get_new_event_list(after)
 
     return jsonify(new_events)
-
-# @event_log_bp.route("/new")
-# def get_new_events():
-
-#     after = request.args.get("after")
-
-#     events = get_event_list()
-
-#     if after is None:
-#         return jsonify([])
-
-#     new_events = []
-
-#     found = False
-
-#     for event in events:
-
-#         if found:
-#             new_events.append(event)
-
-#         if event["ID"] == after:
-#             found = True
-
-#         # after_ID가 없는 경우(최초 접속의 경우)
-#         if not found:
-#             new_events = events
-
-#         return jsonify(new_events)

@@ -3,8 +3,6 @@ import os
 import warnings
 
 import numpy as np
-from cv2 import imread
-
 
 from app.utils.mute_print_and_warnings import mute_print_and_warnings
 from app.utils.json_manager import BASE_DIR
@@ -65,12 +63,11 @@ def extract_embedding(face_img) -> np.ndarray | None:
     return None if not faces else faces[0].normed_embedding
 
 
-def add_or_update_face(face_id: str, img_path: str) -> bool:
-    img = imread(img_path)
+def add_or_update_face(face_id: str, img) -> bool:
     new_embedding = extract_embedding(img)
 
     if new_embedding is None:
-        print(f"[{face_id}] 얼굴 인식 실패: {img_path}")
+        print(f"[{face_id}] 얼굴 인식 실패: {img}")
         return False
 
     user_file_path = os.path.join(EMBEDDINGS_DIR, f"{face_id}.npz")

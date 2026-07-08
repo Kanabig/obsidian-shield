@@ -6,7 +6,13 @@
     "PHONE": "01011112222",
     "EMAIL": "admin@obsidian.com",
     "PERMISSIONS": [
-      "ADMIN"
+      100,
+      101,
+      102,
+      200,
+      300,
+      400,
+      401
     ],
     "IS_APPROVE": true,
     "IS_FIRST_LOGIN": false,
@@ -20,11 +26,41 @@
     "PHONE": "01055555555",
     "EMAIL": "reqwe@naver.com",
     "PERMISSIONS": [
-      "OBSERVER"
+      "ADMIN"
     ],
     "IS_APPROVE": true,
     "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/07, 09:42:06",
-    "MOD_DATE": "2026/07/07, 16:19:51"
+    "MOD_DATE": "2026/07/08, 12:03:16"
+  },
+  "hongsu1234": {
+    "ID": "hongsu1234",
+    "PW": "qwer1234@",
+    "NAME": "이홍수",
+    "PHONE": "01012341234",
+    "EMAIL": "hongsu@naver.com",
+    "PERMISSIONS": [
+      300,
+      400
+    ],
+    "IS_APPROVE": true,
+    "IS_FIRST_LOGIN": false,
+    "REG_DATE": "2026/07/08, 12:04:10",
+    "MOD_DATE": "2026/07/08, 12:18:41"
+  },
+  "parkjunho1234": {
+    "ID": "parkjunho1234",
+    "PW": "qwer1234@",
+    "NAME": "박준호",
+    "PHONE": "01011112222",
+    "EMAIL": "park1234@naver.com",
+    "PERMISSIONS": [
+      300,
+      400
+    ],
+    "IS_APPROVE": false,
+    "IS_FIRST_LOGIN": true,
+    "REG_DATE": "2026/07/08, 12:22:00",
+    "MOD_DATE": "2026/07/08, 13:56:59"
   }
 }

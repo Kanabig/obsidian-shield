@@ -77,7 +77,7 @@ def login_result():
             return render_template("first_login_form.html")
 
         # 일반 로그인 성공 → 목록 이동
-        return redirect(url_for("member.member_list"))
+        return redirect(url_for("stream.camera"))
 
     # =========================
     # 로그인 실패 처리
