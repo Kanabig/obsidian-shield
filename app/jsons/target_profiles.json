@@ -6,7 +6,6 @@
     "SHORT_DESCRIPTION": "실종자",
     "DESCRIPTION": "상세 설명",
     "IMAGE": "human01.jpg",
-    "FULL_IMAGE": "human01_full.png",
     "REG_DATE": "2026/06/26, 10:58:00",
     "MOD_DATE": "2026/06/26, 10:58:00"
   },
@@ -18,7 +17,6 @@
     "SHORT_DESCRIPTION": "용의자",
     "DESCRIPTION": "상세 설명",
     "IMAGE": "human02.jpeg",
-    "FULL_IMAGE": "human02_full.png",
     "REG_DATE": "2026/06/27, 11:50:00",
     "MOD_DATE": "2026/06/27, 11:50:00"
   },
@@ -30,7 +28,6 @@
     "SHORT_DESCRIPTION": "실종자",
     "DESCRIPTION": "상세 설명",
     "IMAGE": "human03.jpg",
-    "FULL_IMAGE": "human03_full.png",
     "REG_DATE": "2026/06/28, 12:10:00",
     "MOD_DATE": "2026/06/28, 12:10:00"
   },
@@ -41,8 +38,7 @@
     "AGE": 28,
     "SHORT_DESCRIPTION": "관심 대상",
     "DESCRIPTION": "상세 설명",
-    "IMAGE": "human04.jpeg",
-    "FULL_IMAGE": "human04_full.png",
+    "IMAGE": "human04.png",
     "REG_DATE": "2026/07/01, 13:58:00",
     "MOD_DATE": "2026/07/01, 13:58:00"
   }
