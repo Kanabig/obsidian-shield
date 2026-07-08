@@ -7,7 +7,7 @@ from cv2 import imencode
 from app.domains.stream import analysis_pipeline
 from app.domains.stream import camera as camera_manager
 from app.utils.pagination import paginate
-from app.utils.json_manager import load_json, save_json, TARGETS_PROFILES_FILE, BASE_DIR
+from app.utils.json_manager import load_json, save_json, TARGETS_PROFILES_FILE
 from app.utils.time_stamper import get_current_time_stamp_formated
 
 from app.utils.member_filter import filter_keyword
