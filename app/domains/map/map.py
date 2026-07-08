@@ -3,13 +3,18 @@ from app.utils.json_manager import (
     EVENT_LOGS_FILE, 
     TARGETS_PROFILES_FILE
 )
+import hashlib
+def get_color(target_id):
+        
+        value = int(hashlib.md5(target_id.encode()).hexdigest(), 16)
+        hue = value % 360
+        return f"hsl({hue}, 80%, 45%)"
 
 def get_map_data():
     event_logs = load_json(EVENT_LOGS_FILE) or {}
     target_profiles = load_json(TARGETS_PROFILES_FILE) or {}
     
     target_logs = {}
-
     for log in event_logs.values():
         target_id = log.get("TARGET_ID")
         
@@ -25,30 +30,21 @@ def get_map_data():
     
     for target_id, logs in target_logs.items():
         logs.sort(key=lambda x: x["REG_DATE"])
-        
+
+        # 최근 로그 n개
+        logs = logs[-10:]
+
         # 가장 마지막 로그 = 현재 위치
         latest_log = logs[-1]
 
+        step = max(1, len(logs) // 5)
+        sampled_logs = logs[::step]
+
         target = target_profiles.get(target_id)
 
-        count = len(logs)
-
-        sampled_logs = [
-            logs[0],
-            logs[count // 4],
-            logs[count // 2],
-            logs[(count * 3) // 4],
-            logs[-1]
-        ]
-
-
-        if target:
-            color_map = {
-                "target_001": "#FF0000",
-                "target_002": "#0000FF",
-                "target_003": "#00AA00",
-                "target_004": "#FFA500"
-            }
+        if sampled_logs[-1] != logs[-1]:
+            sampled_logs.append(logs[-1])
+    
 
             map_data.append({
                 "id" : target["ID"],
@@ -59,7 +55,7 @@ def get_map_data():
                 "image" : target.get("IMAGE"), 
                 
                 #target 별 line색상
-                "color": color_map.get(target["ID"],"#808080"),
+                "color": get_color(target["ID"]),
                 
                 #현재위치
                 "latitude" : latest_log["latitude"], 

@@ -51,6 +51,7 @@ maps.forEach(function(target){
                 )
             );
         });
+        console.log(target.id);
         console.log(target.logs);
         console.log(linePath);
         
@@ -59,11 +60,11 @@ maps.forEach(function(target){
                
                 path: linePath,
 
-                strokeWeight: 3,
+                strokeWeight: 2,
 
                 strokeColor: target.color,
 
-                strokeOpacity: 0.8,
+                strokeOpacity: 0.5,
                 
                 strokeStyle: 'solid'
         });
