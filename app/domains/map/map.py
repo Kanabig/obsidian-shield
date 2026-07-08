@@ -3,7 +3,9 @@ from app.utils.json_manager import (
     EVENT_LOGS_FILE, 
     TARGETS_PROFILES_FILE
 )
+from app import configs
 import hashlib
+
 def get_color(target_id):
         
         value = int(hashlib.md5(target_id.encode()).hexdigest(), 16)
@@ -47,8 +49,8 @@ def get_map_data():
     
 
             map_data.append({
-                "id" : target["ID"],
-                "name": target["NAME"],
+                "id" : target[configs.KEY_ID],
+                "name": target[configs.KEY_NAME],
                 "age" : target["AGE"], 
                 "short_description" : target["SHORT_DESCRIPTION"], 
                 "description" : target["DESCRIPTION"], 
