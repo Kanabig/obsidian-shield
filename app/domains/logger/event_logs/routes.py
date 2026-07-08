@@ -133,7 +133,6 @@ def stream_log():
     def stream_event_log():
 
         while True:
-            print("대기중...")
             wait_new_log()
 
             yield "data: new\n\n"
@@ -148,69 +147,11 @@ def stream_log():
     )
 
 
-@event_log_bp.route("/latest")
-def latest_event_log():
-
-    events = get_event_list()
-
-    if not events:
-        return {}
-
-    latest = sorted(
-        events,
-        key = lambda x: x["REG_DATE"],
-        reverse = True
-    )[0]
-
-    return latest
-
-
-# @event_log_bp.route("/new")
-# def get_new_events():
-
-#     after = request.args.get("after")
-
-#     new_events = get_new_event_list(after)
-
-#     return jsonify(new_events)
-
 @event_log_bp.route("/new")
 def get_new_events():
 
     after = request.args.get("after")
 
-    print("after =", after)
-
     new_events = get_new_event_list(after)
 
-    print("new_events =", new_events)
-
     return jsonify(new_events)
-
-# @event_log_bp.route("/new")
-# def get_new_events():
-
-#     after = request.args.get("after")
-
-#     events = get_event_list()
-
-#     if after is None:
-#         return jsonify([])
-
-#     new_events = []
-
-#     found = False
-
-#     for event in events:
-
-#         if found:
-#             new_events.append(event)
-
-#         if event["ID"] == after:
-#             found = True
-
-#         # after_ID가 없는 경우(최초 접속의 경우)
-#         if not found:
-#             new_events = events
-
-#         return jsonify(new_events)

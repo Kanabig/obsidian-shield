@@ -1,7 +1,31 @@
 from app.utils.json_manager import (
-    load_json, USER_LOGS_FILE)
+    load_json, save_json, USER_LOGS_FILE)
+from app.utils.time_stamper import (
+    get_current_time_stamp_formated)
 
 
+# ===========================================================
+# 사용자 로그 저장
+# ===========================================================
+def add_user_log(event_id, viewer_id):
+
+    users = load_json(USER_LOGS_FILE)
+
+    user_id = f"user_{len(users)+1:03d}"
+
+    users[user_id] = {
+
+        "EVENT_LOG_ID": event_id,
+        "VIEWER_ID": viewer_id,
+        "READ_DATE": get_current_time_stamp_formated()
+    }
+
+    save_json(USER_LOGS_FILE, users)
+
+
+# ===========================================================
+# 사용자 로그 전체 조회
+# ===========================================================
 def get_user_log_list():
 
     logs = load_json(USER_LOGS_FILE)
@@ -18,6 +42,9 @@ def get_user_log_list():
     return result
 
 
+# ===========================================================
+# 엑셀 저장용 데이터 변환
+# ===========================================================
 def format_user_logs(user_logs):
     cleaned_user_logs = []
 

@@ -5,6 +5,8 @@ from app.utils.json_manager import (
     USER_LOGS_FILE)
 from app.domains.logger.logger_utils.event_notifier import (
     notify_new_log)
+from app.domains.logger.user_logs.user_logs import (
+    add_user_log)
 
 
 # ===========================================================
@@ -96,7 +98,6 @@ def format_events(events):
 def checked_event_logs(event_ids, viewer_id):
 
     events = load_json(EVENT_LOGS_FILE)
-    users = load_json(USER_LOGS_FILE)
 
     for event_id in event_ids:
 
@@ -108,18 +109,9 @@ def checked_event_logs(event_ids, viewer_id):
 
         events[event_id]["IS_READ"] = True
 
-        read_date = get_current_time_stamp_formated()
-
-        user_id = f"user_{len(users)+1:03d}"
-
-        users[user_id] = {
-            "EVENT_LOG_ID": event_id,
-            "VIEWER_ID": viewer_id,
-            "READ_DATE": read_date
-        }
+    add_user_log(event_id, viewer_id)
 
     save_json(EVENT_LOGS_FILE, events)
-    save_json(USER_LOGS_FILE, users)
 
 
 if __name__ == "__main__":
