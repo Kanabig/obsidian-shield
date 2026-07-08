@@ -128,3 +128,124 @@
   font-size: 13px;
   margin-top: 5px;
 }
+
+/* ============================== */
+
+/* 테이블 행 클릭 스타일 */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.clickable-row:hover {
+  background-color: var(--system-panel-light);
+}
+
+/* 모달 전체 배경 오버레이 */
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* 모달 윈도우 본체 */
+.modal_content {
+  background: var(--system-panel);
+  border: 1px solid var(--system-panel-border);
+  border-radius: 12px;
+  width: 850px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: modalFadeIn 0.25s ease;
+}
+
+.modal_header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--system-panel-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal_header h2 {
+  font-size: 24px;
+  color: var(--system-text);
+  margin: 0;
+}
+.close_x_btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--system-sub-text);
+  cursor: pointer;
+}
+.close_x_btn:hover {
+  color: var(--system-text);
+}
+
+/* 내부 양분 구조 (좌/우) */
+.modal_body {
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+}
+.modal_left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal_right {
+  flex: 1.8;
+}
+
+/* 이미지 및 안면인식 구역 */
+.profile-large {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--system-panel-border);
+  background: #000;
+  margin-bottom: 15px;
+}
+.face_box {
+  width: 100%;
+  padding: 16px;
+  background: var(--system-panel-light);
+  border-radius: 8px;
+  border: 1px dashed var(--system-blue);
+  text-align: center;
+}
+.face_box h3 {
+  font-size: 16px;
+  color: var(--system-blue);
+  margin-bottom: 6px;
+}
+.face_box p {
+  font-size: 12px;
+  color: var(--system-sub-text);
+  margin-bottom: 12px;
+}
+.face_box input[type="file"] {
+  font-size: 12px;
+  width: 100%;
+}
+
+/* 애니메이션 */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
