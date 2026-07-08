@@ -2,11 +2,17 @@ from app.utils.time_stamper import get_current_time_stamp_formated
 from app import configs
 from app.utils.account_manager import load_accounts
 from flask import session   
-
+from app.domains.account.permissions import PERMISSON
+from app.domains.account.permissions import ADMIN, OBSERVER
 
 def make_member(member_data):
 
     now = get_current_time_stamp_formated()
+
+    if member_data["permission"] == "ADMIN":
+        permissions = [perm.value for perm in ADMIN]
+    else:
+        permissions = [perm.value for perm in OBSERVER]
 
     return {
         configs.KEY_ID: member_data["id"],
@@ -14,21 +20,29 @@ def make_member(member_data):
         configs.KEY_NAME: member_data["name"],
         configs.KEY_PHONE: member_data["phone"],
         configs.KEY_EMAIL: member_data["email"],
-        configs.KEY_PERMISSIONS: [member_data["permission"]],
+        configs.KEY_PERMISSIONS: permissions,
         configs.KEY_IS_APPROVE: member_data["approve"] == "승인",
         configs.KEY_IS_FIRST_LOGIN: True,
         configs.KEY_REG_DATE: now,
         configs.KEY_MOD_DATE: now
     }
 
+def update_member(account_db, member_id, permission, approve):
 
-def update_member(account_db, admin_id, member_id, permission, approve):
-
-     # 관리자 권한 확인
+    
     if not is_admin(session["id"]):
         return False, "권한이 없습니다."
 
-    account_db[member_id][configs.KEY_PERMISSIONS] = [permission]
+    # 역할에 따라 권한 저장
+    if permission == "ADMIN":
+        account_db[member_id][configs.KEY_PERMISSIONS] = [
+            perm.value for perm in ADMIN
+        ]
+    else:
+        account_db[member_id][configs.KEY_PERMISSIONS] = [
+            perm.value for perm in OBSERVER
+        ]
+
     account_db[member_id][configs.KEY_IS_APPROVE] = approve == "승인"
     account_db[member_id][configs.KEY_MOD_DATE] = get_current_time_stamp_formated()
 
@@ -42,5 +56,7 @@ def delete_member(account_db, member_id):
 
 
 def is_admin(user_id):
+
     accounts = load_accounts()
-    return configs.PERMISSION_ADMIN in accounts[user_id][configs.KEY_PERMISSIONS]
+
+    return PERMISSON.CREATE_ACCOUNT.value in accounts[user_id][configs.KEY_PERMISSIONS]

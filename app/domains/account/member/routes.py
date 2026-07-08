@@ -7,6 +7,7 @@ from app.utils.member_sort import sort_accounts
 from app.utils.pagination import paginate
 from app.domains.account.validate.validate import validate_register
 from app import configs
+from app.domains.account.permissions import PERMISSON
 
 member_bp = Blueprint(
     "member", __name__, template_folder="templates", static_folder="static", static_url_path="/member/static"
@@ -21,7 +22,6 @@ def member_update(member_id):
 
     success, message = update_member(
     account_db,
-    session["id"],
     member_id,
     member_data["permission"],
     member_data["approve"]
@@ -52,17 +52,15 @@ def member_list():
 
     accounts = list(account_db.values())
 
-    # ==========================
-    # 권한 이름 변환
-    # ==========================
+  
     for account in accounts:
 
-        permission = account[configs.KEY_PERMISSIONS][0]
+        permissions = account[configs.KEY_PERMISSIONS]
 
-        account["PERMISSION_NAME"] = configs.PERMISSION_NAME.get(
-            permission,
-            "없음"
-        )
+        if PERMISSON.CREATE_ACCOUNT.value in permissions:
+            account["PERMISSION_NAME"] = "관리자"
+        else:
+            account["PERMISSION_NAME"] = "관제자"
 
     options = get_member_list_options(request)
 
@@ -77,11 +75,16 @@ def member_list():
     # 페이지네이션
     accounts, total_pages = paginate(accounts, options["page"], options["per_page"])
 
+    if PERMISSON.CREATE_ACCOUNT.value in session["permissions"]:
+        user_permission = "관리자"
+    else:
+        user_permission = "관제자"
+
 
     return render_template(
         "member_list.html",
-        user_permission=configs.PERMISSION_NAME[
-            session["permissions"][0]],
+        user_permission=user_permission,
+        user_id=session["id"],   
         account_db=accounts,
         keyword=options["keyword"],
         tag=options["tag"],
