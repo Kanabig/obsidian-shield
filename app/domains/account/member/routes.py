@@ -57,7 +57,7 @@ def member_list():
 
         permissions = account[configs.KEY_PERMISSIONS]
 
-        if PERMISSON.CREATE_ACCOUNT.value in permissions:
+        if PERMISSON.MEMBER_ACCESS.value in permissions:
             account["PERMISSION_NAME"] = "관리자"
         else:
             account["PERMISSION_NAME"] = "관제자"
@@ -75,7 +75,7 @@ def member_list():
     # 페이지네이션
     accounts, total_pages = paginate(accounts, options["page"], options["per_page"])
 
-    if PERMISSON.CREATE_ACCOUNT.value in session["permissions"]:
+    if PERMISSON.MEMBER_ACCESS.value in session["permissions"]:
         user_permission = "관리자"
     else:
         user_permission = "관제자"

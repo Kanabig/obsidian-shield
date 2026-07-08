@@ -56,7 +56,9 @@ def delete_member(account_db, member_id):
 
 
 def is_admin(user_id):
-
     accounts = load_accounts()
 
-    return PERMISSON.CREATE_ACCOUNT.value in accounts[user_id][configs.KEY_PERMISSIONS]
+    return (
+        PERMISSON.MEMBER_ACCESS.value
+        in accounts[user_id][configs.KEY_PERMISSIONS]
+    )
