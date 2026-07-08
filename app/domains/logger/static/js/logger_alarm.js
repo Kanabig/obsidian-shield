@@ -9,7 +9,10 @@
 // ===========================================================
 
 // SSE 연결
-const source = new EventSource("/event_log/stream_log");
+// SSE 연결
+if(!window.eventSource){
+    window.eventSource = null;
+}
 
 // 알림음
 const audio = new Audio("/static/audio/ding.wav");
@@ -23,58 +26,87 @@ let lastLogId = null;
 // ===========================================================
 window.addEventListener("load", function () {
 
-    // const tbody = document.getElementById("event_log_body");
-
     const firstEventId = document.querySelector(".event_id");
 
     if (firstEventId) {
         lastLogId = firstEventId.innerText.trim();
     }
+    connectSSE();
 });
 
 
 // ===========================================================
-// 3. SSE 수신
+// 3. SSE 연결
 // ===========================================================
-source.onmessage = async function (event) {
+function connectSSE(){
 
-    // 알림음----------------------------
-    audio.play().catch(function (err) {
-        console.log("알림음 재생 실패", err);
-    });
-
-    // Toast----------------------------
-    showToast("새 로그가 발생했습니다.");
-
-    // 마지막 로그 확인----------------------------
-    if (lastLogId === null) {
+    // 이미 SSE 연결이 존재하면 생성하지 않음
+    if(window.eventSource !== null) {
         return;
     }
 
-    // 서버에서 새 로그 요청----------------------------
-    const response = await fetch(`/event_log/new?after=${lastLogId}`);
+    // SSE 연결 생성
+    window.eventSource =
+        new EventSource(
+            "/event_log/stream_log"
+        );
 
-    if(!response.ok){
-        return;
-    }
+    // SSE 데이터 수신
+    window.eventSource.onmessage = async function (event) {
 
-    const logs = await response.json();
+        // 알림음
+        audio.play().catch(function (err) {
+            console.log(
+                "알림음 재생 실패",
+                err
+            );
+        });
 
-    // 화면에 추가----------------------------
-    logs.forEach(function (log) {
+        // Toast
+        showToast(
+            "새 로그가 발생했습니다."
+        );
 
-        addLogRow(log);
+        // 마지막 로그 확인
+        if(lastLogId === null){
+            return;
+        }
 
-        increaseBadge();
+        // 새 로그 요청
+        const response =
+            await fetch(
+                `/event_log/new?after=${lastLogId}`
+            );
 
-    });
+        if(!response.ok){
+            return;
+        }
 
+        const logs = await response.json();
 
-    // 마지막 로그 ID 갱신----------------------------
-    if (logs.length > 0) {
-        lastLogId = logs[logs.length - 1].ID;
-    }
-};
+        // 화면 추가
+        logs.forEach(function(log) {
+
+            addLogRow(log);
+
+            increaseBadge();
+        });
+
+        // 마지막 ID 갱신
+        if(logs.length > 0) {
+            lastLogId =
+                logs[logs.length - 1].ID;
+        }
+    };
+    
+    // SSE 오류 처리
+    window.eventSource.onerror = function(error) {
+        console.log(
+            "SSE 연결 오류",
+            error
+        );
+    };
+}
 
 
 // ===========================================================
@@ -117,13 +149,10 @@ function addLogRow(log) {
 
     tbody.prepend(tr);
 
-
     refreshRowNumber();
 
     setTimeout(function () {
-
         tr.classList.remove("new_log");
-
     }, 3000);
 }
 
@@ -148,11 +177,8 @@ function showToast(text) {
     container.appendChild(div);
 
     setTimeout(function () {
-
         div.remove();
-
     }, 3000);
-
 }
 
 

@@ -22,6 +22,7 @@ event_log_bp = Blueprint(
     static_folder="../static"
 )
 
+
 @event_log_bp.route("/log_list_event")
 def event_list():
 
@@ -92,7 +93,7 @@ def add_event_log():
 
     if not data:
         return {
-            "result": "fail", 
+            # "result": "fail", 
             "message": "Invalid JSON data"
         }, 400
      
