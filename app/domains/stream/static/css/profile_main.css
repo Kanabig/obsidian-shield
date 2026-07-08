@@ -48,3 +48,83 @@
   padding: 40px 0;
   font-size: 18px;
 }
+
+/* ============================== */
+#item_add_box {
+  margin-top: 20px;
+  padding: 30px;
+  border: 1px solid var(--system-panel-border);
+  border-radius: 10px;
+  background: var(--system-panel);
+}
+
+#item_add_box h2 {
+  margin-bottom: 24px;
+  color: var(--system-text);
+}
+
+.add_row {
+  margin-bottom: 22px;
+}
+
+.add_row label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.add_row input,
+.add_row select {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--system-input-border);
+  border-radius: 7px;
+  background: var(--system-input-bg);
+  color: var(--system-text);
+  font-size: 16px;
+}
+
+.btn_area {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 35px;
+}
+
+.save_btn,
+.cancel_btn {
+  width: 120px;
+  height: 46px;
+  border-radius: 7px;
+  color: #ffffff;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.save_btn {
+  border: none;
+  background: var(--system-blue);
+  font-weight: bold;
+}
+
+.cancel_btn {
+  border: 1px solid var(--system-input-border);
+  background: var(--system-input-bg);
+  color: var(--system-text);
+}
+
+.cancel_btn:hover {
+  background: var(--system-panel-light);
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}

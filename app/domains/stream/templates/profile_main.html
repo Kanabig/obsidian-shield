@@ -18,25 +18,25 @@
 <form class="filter_box" method="get" action="#">
   <div class="filter_row">
     <div class="search_box">
-      <input type="text" name="keyword" placeholder="검색어를 입력하세요" value="{{ keyword }}" />
+      <input type="text" name="search_keyword" placeholder="검색어를 입력하세요" value="{{ keyword }}" />
       <button type="submit">🔍</button>
     </div>
 
     <label>태그</label>
-    <select name="tag">
+    <select name="search_tag">
       <option value="전체" {% if tag=="전체" %}selected{% endif %}>전체</option>
       <option value="아이디" {% if tag=="아이디" %}selected{% endif %}>아이디</option>
       <option value="이름" {% if tag=="이름" %}selected{% endif %}>이름</option>
     </select>
 
     <div class="right_btn">
-      <a href="#" class="add_item_btn">+ 대상 추가</a>
+      <button type="button" class="add_item_btn" onclick="showAddForm()">+ 대상 추가</button>
     </div>
   </div>
 
   <div class="filter_row">
     <label>정렬</label>
-    <select name="sort">
+    <select name="sort_order">
       <option value="최신등록순" {% if sort=="최신등록순" %}selected{% endif %}>최신등록순</option>
       <option value="오래된순" {% if sort=="오래된순" %}selected{% endif %}>오래된순</option>
       <option value="아이디순" {% if sort=="아이디순" %}selected{% endif %}>아이디순</option>
@@ -54,41 +54,74 @@
   </div>
 </form>
 
-<div class="table_box">
-  <table>
-    <thead>
-      <tr>
-        <th>프로필</th>
-        <th>고유 ID</th>
-        <th>이름</th>
-        <th>등록사유</th>
-        <th>등록일</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><img src="#" class="profile-thumb" /></td>
-        <td>gildong001</td>
-        <td>홍길동</td>
-        <td>빈집털이 현상수배</td>
-        <td>등록일</td>
-      </tr>
-    </tbody>
-  </table>
+<div id="item_add_box" id="itemAddBox" style="display: none;">
+    <h2>회원 등록</h2>
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('stream.profile') }}">
+        <input type="hidden" name="action" value="add" />
+        <div class="add_row"><label>등록된 고유 ID</label><input type="text" name="id" /></div>
+        <div class="add_row"><label>이름</label><input type="text" name="name"></div>
+        <div class="add_row"><label>나이</label><input type="text" name="age"></div>
+        <div class="add_row"><label>등록사유</label><input type="text" name="description_short"></div>
+        <div class="add_row"><label>등록사유 상세</label><input type="text" name="description_long"></div>
+        <div class="form-group" style="flex: 3">
+          <label>프로필 사진 파일 (JPG / PNG)</label>
+          <input type="file" name="profile_img" accept="image/*" required />
+        </div>
+
+        <div class="btn_area">
+            <button class="save_btn" type="submit">등록</button>
+            <button type="button" class="cancel_btn" onclick="hideAddForm()">취소</button>
+        </div>
+    </form>
 </div>
 
-<div class="pagination">
-  {% if page > 1 %}
-  <a href="/stream/profile?page={{ page - 1 }}&per_page={{ per_page }}">‹</a>
-  {% endif %} 
-  <!-- prettier-ignore -->
-  {% for p in range(1, total_pages + 1) %}
-  <a class="{% if p == page %}current{% endif %}" href="/stream/profile?page={{ p }}&per_page={{ per_page }}"> {{ p }} </a>
-  {% endfor %} 
-  <!-- prettier-ignore -->
-  {% if page < total_pages %}
-  <a href="/stream/profile?page={{ page + 1 }}&per_page={{ per_page }}">›</a>
-  {% endif %}
+<div id="table_box_container">
+  <div class="table_box">
+    <table>
+      <thead>
+        <tr><th>프로필</th><th>고유 ID</th><th>이름</th><th>등록사유</th><th>등록일</th></tr>
+      </thead>
+      <tbody>
+        {% for p in profiles %}
+        <tr>
+          <td><img src="{{ url_for('stream.static', filename='uploaded_profiles/' + p.IMAGE) }}" class="profile-thumb" /></td>
+          <td>{{ p.ID }}</td>
+          <td>{{ p.NAME }}</td>
+          <td>{{ p.SHORT_DESCRIPTION }}</td>
+          <td>{{ p.REG_DATE }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="{{ url_for('stream.profile', page=page - 1, per_page=per_page) }}">‹</a>
+    {% endif %} 
+    {% for p in range(1, total_pages + 1) %}
+    <a class="{% if p == page %}current{% endif %}" href="{{ url_for('stream.profile', page=p, per_page=per_page) }}"> {{ p }} </a>
+    {% endfor %} 
+    {% if page < total_pages %}
+    <a href="{{ url_for('stream.profile', page=page + 1, per_page=per_page) }}">›</a>
+    {% endif %}
+  </div>
 </div>
 
+<script>
+  const itemAddBox = document.getElementById('item_add_box');
+  const tableBoxContainer = document.getElementById('table_box_container');
+
+  // 등록 폼 보여주고, 테이블 및 페이지네이션 숨기기
+  function showAddForm() {
+    itemAddBox.style.display = 'block';
+    tableBoxContainer.style.display = 'none';
+  }
+
+  // 등록 폼 숨기고, 테이블 및 페이지네이션 보여주기
+  function hideAddForm() {
+    itemAddBox.style.display = 'none';
+    tableBoxContainer.style.display = 'block';
+  }
+</script>
 {% endblock %}
