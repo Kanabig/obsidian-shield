@@ -798,5 +798,61 @@
     "longitude": 127.4096,
     "TARGET_ID": "target_004",
     "IS_READ": true
+  },
+  "log999": {
+    "ID": "log999",
+    "REG_DATE": "2026/07/08, 10:16:09",
+    "latitude": 36.351,
+    "longitude": 127.385,
+    "TARGET_ID": "target001",
+    "IS_READ": false
+  },
+  "log1000": {
+    "ID": "log1000",
+    "REG_DATE": "2026/07/08, 10:38:21",
+    "latitude": 36.123,
+    "longitude": 127.456,
+    "TARGET_ID": "target001",
+    "IS_READ": false
+  },
+  "log1001": {
+    "ID": "log1001",
+    "REG_DATE": "2026/07/08, 11:13:02",
+    "latitude": 36.5,
+    "longitude": 127.5,
+    "TARGET_ID": "target001",
+    "IS_READ": false
+  },
+  "test001": {
+    "ID": "test001",
+    "REG_DATE": "2026/07/08, 16:40:39",
+    "latitude": 36.35,
+    "longitude": 127.38,
+    "TARGET_ID": "person001",
+    "IS_READ": false
+  },
+  "test002": {
+    "ID": "test002",
+    "REG_DATE": "2026/07/08, 17:01:14",
+    "latitude": 36.35,
+    "longitude": 127.38,
+    "TARGET_ID": "person002",
+    "IS_READ": false
+  },
+  "test003": {
+    "ID": "test003",
+    "REG_DATE": "2026/07/08, 17:05:05",
+    "latitude": 36.35,
+    "longitude": 127.38,
+    "TARGET_ID": "person003",
+    "IS_READ": false
+  },
+  "test004": {
+    "ID": "test004",
+    "REG_DATE": "2026/07/08, 17:13:03",
+    "latitude": 36.35,
+    "longitude": 127.38,
+    "TARGET_ID": "person003",
+    "IS_READ": false
   }
 }

@@ -20,37 +20,36 @@
 
         <tbody id="event_log_body">
 
-            {% for event in events %}
+        {% for event in events %}
 
-            <tr>
+        <tr>
 
-                <td>
-                <input class="log_check" type="checkbox"
-                value="{{ event.ID }}" {% if event.IS_READ %}disabled{% endif %}>
-                </td>
+            <td>
+            <input class="log_check" type="checkbox" value="{{ event.ID }}" {% if event.IS_READ %}disabled{% endif %}>
+            </td>
 
-                <td>{{ (page - 1) * per_page + loop.index }}</td>
-                <td class="event_id">{{ event.ID }}</td>
-                <td>{{ event.REG_DATE }}</td>
-                <td>{{ event.latitude }}</td>
-                <td>{{ event.longitude }}</td>
-                <td>{{ event.TARGET_ID }}</td>
+            <td>{{ (page - 1) * per_page + loop.index }}</td>
+            <td class="event_id">{{ event.ID }}</td>
+            <td>{{ event.REG_DATE }}</td>
+            <td>{{ event.latitude }}</td>
+            <td>{{ event.longitude }}</td>
+            <td>{{ event.TARGET_ID }}</td>
 
-                <td>
-                {% if event.IS_READ %}
+            <td>
+            {% if event.IS_READ %}
 
-                <span class="checked">읽음</span>
+            <span class="checked">읽음</span>
 
-                {% else %}
+            {% else %}
 
-                <span class="unchecked">읽지않음</span>
+            <span class="unchecked">읽지않음</span>
 
-                {% endif %}
+            {% endif %}
 
-                </td>
-            </tr>
+            </td>
+        </tr>
 
-            {% endfor %}
+        {% endfor %}
 
         </tbody>
 
