@@ -31,6 +31,17 @@ def get_map_data():
 
         target = target_profiles.get(target_id)
 
+        count = len(logs)
+
+        sampled_logs = [
+            logs[0],
+            logs[count // 4],
+            logs[count // 2],
+            logs[(count * 3) // 4],
+            logs[-1]
+        ]
+
+
         if target:
             color_map = {
                 "target_001": "#FF0000",
@@ -55,7 +66,7 @@ def get_map_data():
                 "longitude" : latest_log["longitude"],
                 
                 #이동 경로
-                "logs": logs,
+                "logs": sampled_logs,
                 
                 #등록 일시
                 "reg_date" : latest_log["REG_DATE"],
