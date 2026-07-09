@@ -2,6 +2,9 @@ from app.configs import (
     KEY_EVENT_LOG_ID, KEY_VIEWER_ID, KEY_READ_DATE)
 
 
+# ===========================================================
+# 사용자 로그 리스트의 필터에서 태그를 설정하고, 키워드를 검색 
+# ===========================================================
 def filter_keyword(logs, keyword, tag):
 
     if not keyword:
@@ -41,6 +44,9 @@ def filter_keyword(logs, keyword, tag):
     return result
 
 
+# ===========================================================
+# 이벤트 로그 리스트의 데이터 나열 순서: 최신순 vs 오래된순 / 이벤트ID순
+# ===========================================================
 def sort_logs(logs, sort):
 
     if sort == "최신순":

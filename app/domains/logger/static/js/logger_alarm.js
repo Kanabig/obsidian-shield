@@ -3,16 +3,17 @@
 // 이벤트 로그 실시간 알림(SSE)
 // ===========================================================
 
+// ===========================================================
+// 각각의 html에서 '로그 알림'을 받기 위한 방법 -> 각각 html에 script를 넣기
+// <script src="{{ url_for('event_log.static', filename='js/logger_alarm.js') }}"></script>
+// ===========================================================
 
 // ===========================================================
 // 1. 전역 변수
 // ===========================================================
 
 // SSE 연결
-// SSE 연결
-if(!window.eventSource){
-    window.eventSource = null;
-}
+window.eventSource = window.eventSource || null;
 
 // 알림음
 const audio = new Audio("/static/audio/ding.wav");
@@ -31,17 +32,20 @@ window.addEventListener("load", function () {
     if (firstEventId) {
         lastLogId = firstEventId.innerText.trim();
     }
-    connectSSE();
+    if(!window.eventSource){
+        connectSSE();
+    }
 });
 
 
 // ===========================================================
 // 3. SSE 연결
 // ===========================================================
-function connectSSE(){
+function connectSSE() {
 
     // 이미 SSE 연결이 존재하면 생성하지 않음
-    if(window.eventSource !== null) {
+    if(window.eventSource) {
+        console.log("이미 SSE 연결 존재");
         return;
     }
 
@@ -68,7 +72,7 @@ function connectSSE(){
         );
 
         // 마지막 로그 확인
-        if(lastLogId === null){
+        if(lastLogId === null) {
             return;
         }
 
@@ -78,7 +82,7 @@ function connectSSE(){
                 `/event_log/new?after=${lastLogId}`
             );
 
-        if(!response.ok){
+        if(!response.ok) {
             return;
         }
 
@@ -105,6 +109,9 @@ function connectSSE(){
             "SSE 연결 오류",
             error
         );
+        window.eventSource.close();
+
+        window.eventSource = null;
     };
 }
 
@@ -195,3 +202,16 @@ function increaseBadge() {
 
     badge.innerText = Number(badge.innerText) + 1;
 }
+
+
+// ===========================================================
+// 7. 페이지 종료 시 SSE 연결 종료
+// ===========================================================
+window.addEventListener("beforeunload", function () {
+
+    if (window.eventSource) {
+        window.eventSource.close();
+
+        window.eventSource = null;
+    }
+});

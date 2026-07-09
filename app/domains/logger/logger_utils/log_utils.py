@@ -3,6 +3,9 @@ import pandas as pd
 import io
 
 
+# ===========================================================
+# json(db)의 로그 리스트를 엑셀 파일로 변환해 메모리에 생성
+# ===========================================================
 def create_excel_file(cleaned_data, sheet_name):
 
     data_frame = pd.DataFrame(cleaned_data)
@@ -21,6 +24,9 @@ def create_excel_file(cleaned_data, sheet_name):
     return output
 
 
+# ===========================================================
+# 만들어 놓은 엑셀 파일 로컬로 다운로드
+# ===========================================================
 def download_excel_file(output, file_name):
 
     return send_file(
