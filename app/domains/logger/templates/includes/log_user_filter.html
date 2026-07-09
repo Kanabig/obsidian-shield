@@ -2,6 +2,12 @@
 
     <div class="filter_row">
 
+        <!-- 검색 -->
+        <div class="search_box">
+            <input type="text" name="keyword" value="{{ keyword }}" placeholder="검색어 입력">
+            <button type="submit">🔍</button>
+        </div>
+        
         <!-- 검색 대상 -->
         <label>태그</label>
         <select name="tag">
@@ -45,10 +51,6 @@
             {% endif %}
 
         </select>
-
-        <!-- 검색 -->
-        <label>검색</label>
-        <input type="text" name="keyword" value="{{ keyword }}" placeholder="검색어 입력">
 
         <!-- 정렬 -->
         <label>정렬</label>

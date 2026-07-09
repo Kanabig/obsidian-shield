@@ -2,6 +2,12 @@
 
     <div class="filter_row">
 
+        <!-- 검색 -->
+        <div class="search_box">
+            <input type="text" name="keyword" value="{{ keyword }}" placeholder="검색어 입력">
+            <button type="submit">🔍</button>
+        </div>
+
         <!-- 검색 대상 -->
         <label>태그</label>
         <select name="tag">
@@ -21,12 +27,6 @@
                 발생시간
             </option>
         </select>
-
-
-        <!-- 검색 -->
-        <label>검색</label>
-        <input type="text" name="keyword" value="{{ keyword }}" placeholder="검색어 입력">
-
 
         <!-- 읽음 여부 -->
         <label>읽음 여부</label>
