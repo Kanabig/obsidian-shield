@@ -123,20 +123,21 @@ def login(id, pw, captcha=""):
 
     accounts = load_accounts()
 
-    # 로그인 검증
-    success, message, user = check_login(accounts, id, pw)
-
     # CAPTCHA 먼저 검사
-    success, message = check_captcha(captcha, id, accounts)
+    captcha_success, captcha_message = check_captcha(captcha, id, accounts)
+    # 로그인 검증
+    login_success, login_message, user = check_login(accounts, id, pw)
 
-    if not success:
-        return False, message, None
+    if not captcha_success:
+        return False, captcha_message, None
+
+    if not login_success:
+        return False, login_message, None
 
     # 성공 시 실패 기록 초기화
-    if success:
-        reset_login_fail()
 
-    return success, message, user
+    reset_login_fail()
+    return True, login_message, user
 
 
 # ==========================================================
