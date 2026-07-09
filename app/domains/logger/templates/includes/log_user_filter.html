@@ -3,6 +3,7 @@
     <div class="filter_row">
 
         <!-- 검색 대상 -->
+        <label>태그</label>
         <select name="tag">
 
             {% if mode == "event" %}
@@ -46,28 +47,11 @@
         </select>
 
         <!-- 검색 -->
+        <label>검색</label>
         <input type="text" name="keyword" value="{{ keyword }}" placeholder="검색어 입력">
 
-        <!-- Event 전용 -->
-        {% if mode=="event" %}
-
-        <select name="status">
-            <option value="전체" {% if status=="전체" %}selected{% endif %}>
-                전체
-            </option>
-
-            <option value="읽음" {% if status=="읽음" %}selected{% endif %}>
-                읽음
-            </option>
-
-            <option value="읽지않음" {% if status=="읽지않음" %}selected{% endif %}>
-                읽지않음
-            </option>
-        </select>
-
-        {% endif %}
-
         <!-- 정렬 -->
+        <label>정렬</label>
         <select name="sort">
             <option value="최신순" {% if sort=="최신순" %}selected{% endif %}>
                 최신순
@@ -79,6 +63,7 @@
         </select>
 
         <!-- 보기 -->
+        <label>보기</label>
         <select name="per_page">
             <option value="10" {% if per_page==10 %}selected{% endif %}>
                 10개
