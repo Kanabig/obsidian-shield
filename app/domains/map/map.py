@@ -4,6 +4,7 @@ from app.utils.json_manager import (
     TARGETS_PROFILES_FILE
 )
 from app import configs
+from app import configs
 import hashlib
 
 def get_color(target_id):
@@ -18,7 +19,7 @@ def get_map_data():
     
     target_logs = {}
     for log in event_logs.values():
-        target_id = log.get("TARGET_ID")
+        target_id = log.get(configs.KEY_TARGET_ID)
         
         if not target_id:
             continue
@@ -31,7 +32,7 @@ def get_map_data():
     map_data = []
     
     for target_id, logs in target_logs.items():
-        logs.sort(key=lambda x: x["REG_DATE"])
+        logs.sort(key=lambda x: x[configs.KEY_REG_DATE])
 
         # 최근 로그 n개
         logs = logs[-10:]
@@ -44,29 +45,32 @@ def get_map_data():
 
         target = target_profiles.get(target_id)
 
+        if not target:
+             continue
+
         if sampled_logs[-1] != logs[-1]:
             sampled_logs.append(logs[-1])
     
 
-            map_data.append({
-                "id" : target[configs.KEY_ID],
-                "name": target[configs.KEY_NAME],
-                "age" : target["AGE"], 
-                "short_description" : target["SHORT_DESCRIPTION"], 
-                "description" : target["DESCRIPTION"], 
-                "image" : target.get("IMAGE"), 
-                
-                #target 별 line색상
-                "color": get_color(target["ID"]),
-                
-                #현재위치
-                "latitude" : latest_log["latitude"], 
-                "longitude" : latest_log["longitude"],
-                
-                #이동 경로
-                "logs": sampled_logs,
-                
-                #등록 일시
-                "reg_date" : latest_log["REG_DATE"],
-            })
+        map_data.append({
+            "id" : target[configs.KEY_ID],
+            "name": target[configs.KEY_NAME],
+            "age" : target[configs.KEY_AGE], 
+            "short_description" : target[configs.KEY_SHORT_DESC], 
+            "description" : target[configs.KEY_DESC], 
+            "image" : target.get(configs.KEY_IMAGE), 
+            
+            #target 별 line색상
+            "color": get_color(target_id),
+            
+            #현재위치
+            "latitude" : latest_log[configs.KEY_EVENT_LAT], 
+            "longitude" : latest_log[configs.KEY_EVENT_LON],
+            
+            #이동 경로
+            "logs": sampled_logs,
+            
+            #등록 일시
+            "reg_date" : latest_log[configs.KEY_REG_DATE],
+        })
     return map_data
