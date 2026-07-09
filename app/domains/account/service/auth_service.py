@@ -6,7 +6,7 @@
 
 from app.domains.account.repository.account_repository import (
     load_accounts,
-    save_accounts
+    save_accounts,
 )
 
 from app.utils.time_stamper import get_current_time_stamp_formated
@@ -14,10 +14,7 @@ from app import configs
 from flask import session
 from app.domains.account.permissions import PERMISSON
 
-from app.domains.account.validate.validate import (
-    is_id_exists,
-    validate_change_password
-)
+from app.domains.account.validate.validate import is_id_exists, validate_change_password
 
 
 # ==========================================================
@@ -44,7 +41,7 @@ def check_login(accounts, id, pw):
 # ==========================================================
 # CAPTCHA 검사
 # ==========================================================
-def check_captcha(captcha):
+def check_captcha(captcha, accounts, id):
 
     # 로그인 실패 횟수 확인
     login_fail = session.get("login_fail", 0)
@@ -56,13 +53,15 @@ def check_captcha(captcha):
     # CAPTCHA 실패 횟수
     captcha_fail = session.get("captcha_fail", 0)
 
-    # CAPTCHA 불일치    
+    # CAPTCHA 불일치
     if captcha != session.get("captcha", ""):
-
         captcha_fail += 1
         session["captcha_fail"] = captcha_fail
 
         if captcha_fail >= configs.LOGIN_FAIL_LIMIT:
+            accounts[id][configs.KEY_IS_APPROVE] = False
+
+            save_accounts(accounts)
             return False, "자동입력 방지를 3회 실패하여 계정이 비활성화되었습니다."
 
         return False, f"자동문자 입력이 틀렸습니다. ({captcha_fail}/3)"
@@ -110,6 +109,7 @@ def create_login_session(user):
     else:
         session["user_permission"] = "관제자"
 
+
 # ==========================================================
 # 로그인 처리 (메인 흐름)
 # ==========================================================
@@ -123,14 +123,14 @@ def login(id, pw, captcha=""):
 
     accounts = load_accounts()
 
+    # 로그인 검증
+    success, message, user = check_login(accounts, id, pw)
+
     # CAPTCHA 먼저 검사
-    success, message = check_captcha(captcha)
+    success, message = check_captcha(captcha, id, accounts)
 
     if not success:
         return False, message, None
-
-    # 로그인 검증
-    success, message, user = check_login(accounts, id, pw)
 
     # 성공 시 실패 기록 초기화
     if success:
@@ -147,13 +147,7 @@ def change_password(id, oPw, nPw, new_pw_check):
     accounts = load_accounts()
 
     # 비밀번호 변경 검증
-    success, message = validate_change_password(
-        accounts,
-        id,
-        oPw,
-        nPw,
-        new_pw_check
-    )
+    success, message = validate_change_password(accounts, id, oPw, nPw, new_pw_check)
 
     if not success:
         return False, message
@@ -161,7 +155,7 @@ def change_password(id, oPw, nPw, new_pw_check):
     # 비밀번호 업데이트
     accounts[id][configs.KEY_PW] = nPw
     accounts[id][configs.KEY_IS_FIRST_LOGIN] = False
-    accounts[id][configs.KEY_MOT_DATE] = get_current_time_stamp_formated()
+    accounts[id][configs.KEY_MOD_DATE] = get_current_time_stamp_formated()
 
     save_accounts(accounts)
 

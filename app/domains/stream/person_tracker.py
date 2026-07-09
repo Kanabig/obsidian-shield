@@ -84,7 +84,7 @@ def _async_identify(camera_id, track_id, person_img):
 
         if user_id != "":
             coord = get_camera_coordinate(camera_id)
-            create_event_data(0, coord[0], coord[1], user_id)
+            create_event_data(coord[0], coord[1], user_id)
 
     finally:
         cache = _tracker_caches.get(camera_id)

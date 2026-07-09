@@ -973,7 +973,7 @@
     "latitude": 36.35,
     "longitude": 127.38,
     "TARGET_ID": "person009",
-    "IS_READ": false
+    "IS_READ": true
   },
   "ec6a24d8-2155-45e8-855e-ec1eeb950b6a": {
     "ID": "ec6a24d8-2155-45e8-855e-ec1eeb950b6a",
@@ -981,7 +981,7 @@
     "latitude": 36.35,
     "longitude": 127.38,
     "TARGET_ID": "person009",
-    "IS_READ": false
+    "IS_READ": true
   },
   "b8dc060f-9eb9-4a54-8029-39f9a90d3bff": {
     "ID": "b8dc060f-9eb9-4a54-8029-39f9a90d3bff",
@@ -989,7 +989,7 @@
     "latitude": 36.35,
     "longitude": 127.38,
     "TARGET_ID": "person009",
-    "IS_READ": false
+    "IS_READ": true
   },
   "2f1c94db-ec93-4123-81a3-d802062dcf0a": {
     "ID": "2f1c94db-ec93-4123-81a3-d802062dcf0a",
@@ -1029,7 +1029,7 @@
     "latitude": 36.35,
     "longitude": 127.38,
     "TARGET_ID": "person009",
-    "IS_READ": false
+    "IS_READ": true
   },
   "cd45d9da-d166-4f84-af4a-8ceef8f6f15f": {
     "ID": "cd45d9da-d166-4f84-af4a-8ceef8f6f15f",
@@ -1037,6 +1037,70 @@
     "latitude": 36.35,
     "longitude": 127.38,
     "TARGET_ID": "person009",
+    "IS_READ": true
+  },
+  "0ca4e5ca-fe89-4638-a0bf-db3d276f26d3": {
+    "ID": "0ca4e5ca-fe89-4638-a0bf-db3d276f26d3",
+    "REG_DATE": "2026/07/09, 14:12:18",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false
+  },
+  "e7be42ea-b536-4299-b72e-f9a4f5a3f39e": {
+    "ID": "e7be42ea-b536-4299-b72e-f9a4f5a3f39e",
+    "REG_DATE": "2026/07/09, 14:12:20",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false
+  },
+  "d43f7f36-58a1-464e-a500-c2242b344120": {
+    "ID": "d43f7f36-58a1-464e-a500-c2242b344120",
+    "REG_DATE": "2026/07/09, 14:12:21",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false
+  },
+  "4de08bb8-cacb-45b6-990b-2fab030911f9": {
+    "ID": "4de08bb8-cacb-45b6-990b-2fab030911f9",
+    "REG_DATE": "2026/07/09, 14:12:22",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "faul001",
+    "IS_READ": false
+  },
+  "69289bd1-18d3-41da-b001-008892df49b9": {
+    "ID": "69289bd1-18d3-41da-b001-008892df49b9",
+    "REG_DATE": "2026/07/09, 14:12:41",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "chris001",
+    "IS_READ": false
+  },
+  "a4506e37-0260-4554-aa4f-4a76e3ba6828": {
+    "ID": "a4506e37-0260-4554-aa4f-4a76e3ba6828",
+    "REG_DATE": "2026/07/09, 14:14:06",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false
+  },
+  "f81abaa6-22ea-41af-b11b-c7c12b2ac5dc": {
+    "ID": "f81abaa6-22ea-41af-b11b-c7c12b2ac5dc",
+    "REG_DATE": "2026/07/09, 14:14:13",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "faul001",
+    "IS_READ": false
+  },
+  "30db3bcd-b2c1-440c-9715-651d3a963535": {
+    "ID": "30db3bcd-b2c1-440c-9715-651d3a963535",
+    "REG_DATE": "2026/07/09, 14:14:27",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "chris001",
     "IS_READ": false
   }
 }
