@@ -9,6 +9,8 @@ from app.domains.logger.user_logs.user_logs import (
 from app.configs import (
     KEY_EVENT_ID, KEY_EVENT_DATE, KEY_EVENT_LAT,
     KEY_EVENT_LON, KEY_TARGET_ID, KEY_IS_READ)
+from uuid import uuid4
+import logging
 
 
 # ===========================================================
@@ -29,17 +31,36 @@ def get_event_list():
 
 
 # ===========================================================
+# 새로운 이벤트 아이디 uuid로 입력
+# ===========================================================
+def create_event_id():
+
+    return str(uuid4())
+
+
+# ===========================================================
 # 새로운 이벤트 데이터 불러오기
 # ===========================================================
-def create_event_data(event_id, latitude, longitude, target_id):
+def create_event_data(latitude, longitude, target_id):
     data = {
-        KEY_EVENT_ID: event_id,
         KEY_EVENT_LAT: latitude,
         KEY_EVENT_LON: longitude,
         KEY_TARGET_ID: target_id
     }
 
     add_event(data)
+
+# 이벤트 로그에 데이터 전송하는법---------------------------------
+'''
+from app.domains.logger.event_logs.event_logs import (
+    create_event_data)
+
+create_event_data(
+    target_id="target001",
+    latitude=36.35,
+    longitude=127.38
+)
+'''
 
 
 # ===========================================================
@@ -48,23 +69,27 @@ def create_event_data(event_id, latitude, longitude, target_id):
 def add_event(data):
 
     logs = load_json(EVENT_LOGS_FILE)
+    event_id = create_event_id()
 
-    logs[data[KEY_EVENT_ID]] = {
-        KEY_EVENT_ID: data[KEY_EVENT_ID],
+    logs[event_id] = {
+        KEY_EVENT_ID: event_id,
         KEY_EVENT_DATE: get_current_time_stamp_formated(),
         KEY_EVENT_LAT: data[KEY_EVENT_LAT],
         KEY_EVENT_LON: data[KEY_EVENT_LON],
         KEY_TARGET_ID: data[KEY_TARGET_ID],
         KEY_IS_READ: False
     }
+    try:
+        save_json(EVENT_LOGS_FILE, logs)
 
-    save_json(EVENT_LOGS_FILE, logs)
+    except Exception as e:
 
-    print("로그 저장 완료")
+        logging.exception(e)
+        raise
+
+    logging.info("Target=%s", data[KEY_TARGET_ID])
 
     notify_new_log()
-
-    print("notify_new_log 호출")
 
 
 # ===========================================================
