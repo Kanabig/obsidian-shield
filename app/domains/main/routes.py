@@ -95,6 +95,12 @@ def login_result():
     return render_template("main_index.html", message=message, success=False)
 
 
+@main_bp.route("/signout_confirm", methods=["GET"])
+def signout_confirm():
+    session.clear()
+    return redirect(url_for("main.main"))
+
+
 # ==========================================================
 # 최초 로그인 비밀번호 변경
 # ==========================================================
@@ -119,3 +125,5 @@ def first_login_form():
     # 변경 실패
     # =========================
     return render_template("first_login_form.html", message=message, success=False)
+
+

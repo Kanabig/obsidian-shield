@@ -46,13 +46,18 @@
     "PHONE": "01011112222",
     "EMAIL": "park1234@naver.com",
     "PERMISSIONS": [
+      100,
+      101,
+      102,
       103,
-      300
+      200,
+      300,
+      301
     ],
-    "IS_APPROVE": true,
+    "IS_APPROVE": false,
     "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/08, 12:22:00",
-    "MOD_DATE": "2026/07/09, 14:32:23"
+    "MOD_DATE": "2026/07/09, 18:30:48"
   },
   "nayoug1234": {
     "ID": "nayoug1234",

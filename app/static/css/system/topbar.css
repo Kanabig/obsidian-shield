@@ -79,3 +79,32 @@
     height: 36px;
     display: block;
 }
+
+#log_out {
+    width: 90px;
+    height: 36px;
+
+    background-color: #e74c3c;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* 마우스 올렸을 때 */
+#log_out:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* 클릭할 때 */
+#log_out:active {
+    transform: scale(0.95);
+}
