@@ -26,28 +26,33 @@
     "PHONE": "01012341234",
     "EMAIL": "hongsu@naver.com",
     "PERMISSIONS": [
+      100,
+      101,
+      102,
+      103,
+      200,
       300,
-      400
+      301
     ],
-    "IS_APPROVE": true,
+    "IS_APPROVE": false,
     "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/08, 12:04:10",
-    "MOD_DATE": "2026/07/08, 12:18:41"
+    "MOD_DATE": "2026/07/09, 14:31:08"
   },
   "parkjunho1234": {
     "ID": "parkjunho1234",
-    "PW": "qwer1234@",
+    "PW": "qwer1234@@",
     "NAME": "박준호",
     "PHONE": "01011112222",
     "EMAIL": "park1234@naver.com",
     "PERMISSIONS": [
-      300,
-      400
+      103,
+      300
     ],
-    "IS_APPROVE": false,
-    "IS_FIRST_LOGIN": true,
+    "IS_APPROVE": true,
+    "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/08, 12:22:00",
-    "MOD_DATE": "2026/07/08, 13:56:59"
+    "MOD_DATE": "2026/07/09, 14:32:23"
   },
   "nayoug1234": {
     "ID": "nayoug1234",
