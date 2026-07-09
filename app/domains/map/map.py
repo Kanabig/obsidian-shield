@@ -13,25 +13,29 @@ def get_color(target_id):
         hue = value % 360
         return f"hsl({hue}, 80%, 45%)"
 
-def get_map_data():
+def get_map_data(target_id=None):
     event_logs = load_json(EVENT_LOGS_FILE) or {}
     target_profiles = load_json(TARGETS_PROFILES_FILE) or {}
     
     target_logs = {}
     for log in event_logs.values():
-        target_id = log.get(configs.KEY_TARGET_ID)
-        
-        if not target_id:
-            continue
+        log_target_id = log.get(configs.KEY_TARGET_ID)
 
-        if target_id not in target_logs:
-            target_logs[target_id] = []
+        if not log_target_id:
+             continue
         
-        target_logs[target_id].append(log)
+        # target_id가 넘어온 경우에만 필터
+        if target_id is not None and log_target_id != target_id:
+             continue
+
+        if log_target_id not in target_logs:
+            target_logs[log_target_id] = []
+        
+        target_logs[log_target_id].append(log)
    
     map_data = []
     
-    for target_id, logs in target_logs.items():
+    for log_target_id, logs in target_logs.items():
         logs.sort(key=lambda x: x[configs.KEY_REG_DATE])
 
         # 최근 로그 n개
@@ -43,7 +47,7 @@ def get_map_data():
         step = max(1, len(logs) // 5)
         sampled_logs = logs[::step]
 
-        target = target_profiles.get(target_id)
+        target = target_profiles.get(log_target_id)
 
         if not target:
              continue
@@ -61,7 +65,7 @@ def get_map_data():
             "image" : target.get(configs.KEY_IMAGE), 
             
             #target 별 line색상
-            "color": get_color(target_id),
+            "color": get_color(log_target_id),
             
             #현재위치
             "latitude" : latest_log[configs.KEY_EVENT_LAT], 
