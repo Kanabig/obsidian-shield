@@ -118,59 +118,32 @@ def register_user(accounts, name, id, pw, email, p1, p2, p3):
     return True, "회원가입이 완료되었습니다."
 
 
+
 # ==========================================================
-# 정보 수정 승인 (관리자 기능)
+# 회원 삭제 및 삭제 ID 저장
 #
-# 수정 요청 데이터를 실제 계정에 반영
-# ==========================================================
-def approve_update(accounts, id):
-
-    # 수정 요청 존재 여부 확인
-    if "REQUEST_UPDATE" not in accounts[id]:
-        return False, "수정 요청이 없습니다."
-
-    # 요청 데이터 가져오기
-    request = accounts[id]["REQUEST_UPDATE"]
-
-    # 실제 계정 데이터에 반영
-    accounts[id][configs.KEY_PW] = request[configs.KEY_PW]
-    accounts[id][configs.KEY_EMAIL] = request[configs.KEY_EMAIL]
-    accounts[id][configs.KEY_PHONE] = request[configs.KEY_PHONE]
-
-    # 요청 데이터 삭제
-    del accounts[id]["REQUEST_UPDATE"]
-
-    # 저장
-    save_accounts(accounts)
-
-    return True, "정보 수정이 완료되었습니다."
-
-
-# ==========================================================
-# 계정 삭제
-#
-# 계정 삭제 + 삭제 ID 기록 (재사용 방지)
+# 회원 정보를 삭제하고 삭제된 ID를 별도 파일에 저장하여
+# 동일한 ID로 재가입하는 것을 방지
 # ==========================================================
 def delete_account(accounts, id):
 
     # 존재 여부 확인
-    if not is_id_exists:
-        False, "존재하지 않는 계정입니다."
+    if not is_id_exists(accounts, id):
+        return False, "존재하지 않는 계정입니다."
 
-    # 삭제 ID 목록 로드
+    # 삭제 아이디 목록 불러오기
     deleted_ids = load_deleted_ids()
 
-    # 없으면 추가
-    if id not in deleted_ids:
-        deleted_ids.append(id)
+    # 딕셔너리에 추가
+    deleted_ids[id] = True
 
-    # 삭제 목록 저장
+    # 삭제 아이디 목록 저장
     save_deleted_ids(deleted_ids)
 
     # 계정 삭제
     del accounts[id]
 
-    # 저장
+    # 계정 저장
     save_accounts(accounts)
 
     return True, "계정이 삭제되었습니다."

@@ -5,8 +5,9 @@
 # ===========================================================================
 
 
+
+
 from app.utils import json_manager
-from app import configs
 
 # ==========================================================
 # 계정(JSON) 파일 불러오기
@@ -26,7 +27,7 @@ def save_accounts(accounts):
 # 삭제된 아이디 목록 불러오기
 # ==========================================================
 def load_deleted_ids():
-    return json_manager.load_json(configs.DELETED_ID_FILE)
+    return json_manager.load_json(json_manager.DELETED_ID_FILE)
 
 
 # ==========================================================
@@ -34,6 +35,6 @@ def load_deleted_ids():
 # ==========================================================
 def save_deleted_ids(deleted_ids):
     json_manager.save_json(
-        configs.DELETED_ID_FILE,
+        json_manager.DELETED_ID_FILE,
         deleted_ids
     )

@@ -12,6 +12,7 @@ from app.domains.account.repository.account_repository import (
 from app.utils.time_stamper import get_current_time_stamp_formated
 from app import configs
 from flask import session
+from app.domains.account.permissions import PERMISSON
 
 from app.domains.account.validate.validate import (
     is_id_exists,
@@ -103,6 +104,11 @@ def create_login_session(user):
     session["is_first_login"] = user[configs.KEY_IS_FIRST_LOGIN]
     session["permissions"] = user[configs.KEY_PERMISSIONS]
 
+    # 사용자 권한명 저장
+    if PERMISSON.MEMBER_ACCESS.value in user[configs.KEY_PERMISSIONS]:
+        session["user_permission"] = "관리자"
+    else:
+        session["user_permission"] = "관제자"
 
 # ==========================================================
 # 로그인 처리 (메인 흐름)
@@ -165,13 +171,15 @@ def change_password(id, oPw, nPw, new_pw_check):
 # ==========================================================
 # 로그인 입력값 공백 검사
 # ==========================================================
-
 def validate_login_input(id, pw):
-    
+
+    # 아이디 입력 여부 확인
     if not id.strip():
         return False, "아이디를 입력하세요"
-    
+
+    # 비밀번호 입력 여부 확인
     if not pw.strip():
         return False, "비밀번호를 입력하세요"
-    
+
+    # 모든 입력값이 존재하면 성공
     return True, None

@@ -6,12 +6,20 @@
 
 from app import configs
 import string
+from app.domains.account.repository.account_repository import load_deleted_ids
 
 # ==========================================================
 # 아이디 존재 여부 확인
 # ==========================================================
 def is_id_exists(accounts, id):
     return id in accounts
+
+# ==========================================================
+# 삭제한 아이디 존재 여부 확인
+# ==========================================================
+def is_deleted_id(id):
+    deleted_ids = load_deleted_ids()
+    return id in deleted_ids
 
 
 # ==========================================================
@@ -124,40 +132,44 @@ def validate_change_password(accounts, id, oPw, nPw, new_pw_check):
 # ==========================================================
 def validate_register(accounts, id, pw, email, p1, p2, p3):
 
-    # 입력값 공백 검사
+    # 1. 입력값 공백 검사
+    # (아이디, 비밀번호, 이메일, 전화번호가 비어있는지 확인)
     success, field, message = validate_register_input(
         id, pw, email, p1, p2, p3
     )
 
     if not success:
-        return False,  field, message, None
-    
-    # 1. 아이디 중복 검사
+        return False, field, message, None
+
+    # 2. 현재 사용 중인 아이디인지 검사
     if is_id_exists(accounts, id):
         return False, "id", "이미 존재하는 아이디입니다.", None
 
-    # 2. 삭제된 아이디 검사
-    from app.domains.account.repository.account_repository import load_deleted_ids
-    deleted_ids = load_deleted_ids()
+    # 3. 삭제된 아이디인지 검사
+    # 삭제된 아이디는 재사용할 수 없음
+    if is_deleted_id(id):
+        return False, "id", "이미 존재하는 아이디입니다.", None
 
-    if id in deleted_ids:
-        return False, "id", "삭제된 ID는 사용할 수 없습니다.", None
-
-    # 3. 비밀번호 검사
+    # 4. 비밀번호 유효성 검사
+    # 8자 이상 + 특수문자 포함 여부 확인
     if not is_password_valid(pw):
-        return False, "pw", "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.", None
+        return False, "pw", \
+            "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.", None
 
-    # 4. 이메일 검사
+    # 5. 이메일 형식 검사
+    # @ 포함 여부 및 허용된 도메인인지 확인
     if not is_email_valid(email):
-        return False, "email", "올바른 이메일 형식이 아닙니다.", None
+        return False, "email", \
+            "올바른 이메일 형식이 아닙니다.", None
 
-    # 5. 전화번호 검사 + 변환
+    # 6. 전화번호 검사 및 변환
+    # 숫자만 입력되었는지 확인 후 하나의 문자열로 합침
     success, phone = is_phone_valid(p1, p2, p3)
 
     if not success:
         return False, "phone", phone, None
-    
-    # 최종 성공
+
+    # 7. 모든 검증 통과
     return True, None, None, phone
 
 
@@ -166,16 +178,22 @@ def validate_register(accounts, id, pw, email, p1, p2, p3):
 # ==========================================================
 def validate_register_input(id, pw, email, p1, p2, p3):
 
+    # 1. 아이디 입력 여부 검사
     if not id.strip():
         return False, "id", "아이디를 입력하세요."
 
+    # 2. 비밀번호 입력 여부 검사
     if not pw.strip():
         return False, "pw", "비밀번호를 입력하세요."
 
+    # 3. 이메일 입력 여부 검사
     if not email.strip():
         return False, "email", "이메일을 입력하세요."
 
+    # 4. 전화번호 입력 여부 검사
+    # 전화번호 세 칸 중 하나라도 비어 있으면 실패
     if not p1.strip() or not p2.strip() or not p3.strip():
         return False, "phone", "전화번호를 입력하세요."
 
+    # 5. 모든 입력값이 존재하면 성공
     return True, None, None
