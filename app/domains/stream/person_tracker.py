@@ -10,6 +10,8 @@ from ultralytics.utils.plotting import Annotator, colors
 
 
 from app.domains.stream import face_profiler
+from app.domains.stream.camera import get_camera_coordinate
+from app.domains.logger.event_logs.event_logs import create_event_data
 
 _model = YOLO("yolov8n.pt")
 _trackers = {}  # camera_id: tracker
@@ -70,10 +72,6 @@ def track_all(frames: list, camera_ids):
 
 
 def _async_identify(camera_id, track_id, person_img):
-    """
-    백그라운드 스레드에서 실행됨.
-    반드시 finally에서 in_flight를 해제해야 다음 재시도가 가능함.
-    """
     try:
         user_id, match_ratio = face_profiler.identify(person_img)
 
@@ -83,6 +81,10 @@ def _async_identify(camera_id, track_id, person_img):
 
         cache[track_id]["user_id"] = user_id
         cache[track_id]["match_ratio"] = match_ratio
+
+        if user_id != "":
+            coord = get_camera_coordinate(camera_id)
+            create_event_data(0, coord[0], coord[1], user_id)
 
     finally:
         cache = _tracker_caches.get(camera_id)

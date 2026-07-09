@@ -14,6 +14,7 @@ UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
 
 _instances = {}
+_camera_coordinates = {}
 
 
 class Camera:
@@ -106,8 +107,13 @@ def add_camera(src_path, id, src_type=VIDEO):
         print("이미 등록된 카메라입니다.")
         return
 
-    print(type(id))
     _instances[id] = Camera(src_path, src_type)
+
+    match src_path:
+        case "tests/tokyo_street_trim01.mp4" | "tests/tokyo_street_trim02.mp4":
+            _camera_coordinates[id] = (37.527420, 127.028330)
+        case _:
+            _camera_coordinates[id] = (0.0, 0.0)
 
 
 def delete_camera(id):
@@ -140,3 +146,7 @@ def get_all_camera_ids():
 
 def get_camera_by_id(id):
     return _instances.get(id)
+
+
+def get_camera_coordinate(id):
+    return _camera_coordinates.get(id)

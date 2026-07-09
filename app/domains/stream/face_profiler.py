@@ -159,7 +159,6 @@ def identify(person_img) -> tuple[str, float]:
     if IDENTIFY_THREASHOLD > best_match_ratio:
         return NO_MATCH
 
-    print(f"{_face_ids_cache[best_idx]}, {best_match_ratio}")
     return (_face_ids_cache[best_idx], best_match_ratio)
 
 
