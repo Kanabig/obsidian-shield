@@ -111,7 +111,7 @@ def add_camera(src_path, id, src_type=VIDEO):
 
     match src_path:
         case "tests/tokyo_street_trim01.mp4" | "tests/tokyo_street_trim02.mp4":
-            _camera_coordinates[id] = (35.6636, 139.6977)
+            _camera_coordinates[id] = (37.527420, 127.028330)
         case _:
             _camera_coordinates[id] = (0.0, 0.0)
 
