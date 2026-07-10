@@ -1,5 +1,5 @@
-from flask import (Blueprint, render_template, 
-                   url_for, request, Response, session, jsonify)
+from flask import (Blueprint, render_template, url_for, 
+                   request, Response, session, jsonify)
 from app.domains.logger.event_logs.event_logs import (
     get_event_list, add_event, get_new_event_list,
     format_events,checked_event_logs)
@@ -156,7 +156,7 @@ def stream_log():
     return Response(
         stream_event_log(),
         mimetype = "text/event-stream",
-        headers={
+        headers = {
             "Cache-Control": "no-cache",
             "Connection": "keep-alive"
         }

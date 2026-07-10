@@ -2,14 +2,8 @@ from app.utils.time_stamper import get_current_time_stamp_formated
 from app.utils.json_manager import load_json, save_json, EVENT_LOGS_FILE
 from app.domains.logger.logger_utils.event_notifier import notify_new_log
 from app.domains.logger.user_logs.user_logs import add_user_log
-from app.configs import (
-    KEY_EVENT_ID,
-    KEY_EVENT_DATE,
-    KEY_EVENT_LAT,
-    KEY_EVENT_LON,
-    KEY_TARGET_ID,
-    KEY_IS_READ,
-)
+from app.configs import (KEY_EVENT_ID, KEY_EVENT_DATE,
+    KEY_EVENT_LAT, KEY_EVENT_LON, KEY_TARGET_ID, KEY_IS_READ)
 from uuid import uuid4
 import logging
 

@@ -1,6 +1,5 @@
-from app.configs import (
-    KEY_EVENT_ID, KEY_EVENT_DATE,
-    KEY_TARGET_ID, KEY_IS_READ)
+from app.configs import (KEY_EVENT_ID, 
+    KEY_EVENT_DATE, KEY_TARGET_ID, KEY_IS_READ)
 
 
 # ===========================================================

@@ -1,5 +1,6 @@
-/* ===== 다운로드 버튼 ===== */
-
+/* ===========================
+   다운로드 버튼
+=========================== */
 .btn_download {
     display: inline-flex;
     align-items: center;
@@ -15,17 +16,26 @@
     transition: all 0.2s ease-in-out;
 }
 
+/* ===========================
+   다운로드 버튼에 커서있을 때
+=========================== */
 .btn_download:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.18);
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 }
 
+/* ===========================
+   다운로드 버튼 활성화
+=========================== */
 .btn_download:active {
     transform: translateY(0px);
     box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
 
+/* ===========================
+   선택 읽음 처리 버튼
+=========================== */
 .btn_read {
     display: inline-flex;
     align-items: center;
@@ -41,14 +51,23 @@
     transition: .2s;
 }
 
+/* ===========================
+   선택 읽음 처리 버튼에 커서있을 때
+=========================== */
 .btn_read:hover {
     background: #157347;
 }
 
+/* ===========================
+   선택 읽음 처리 버튼 활성화
+=========================== */
 .btn_read:active {
     transform: translateY(0);
 }
 
+/* ===========================
+   버튼 그룹(다운로드, 선택 읽음 처리)
+=========================== */
 .button_group {
     display: flex;
     gap: 10px;
