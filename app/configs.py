@@ -40,7 +40,7 @@ KEY_EVENT_LON = "longitude"
 KEY_IS_READ = "IS_READ"
 KEY_EVENT_CAPTURE = "EVENT_CAPTURE"
 KEY_CAPTURE_DATE = "capture_date"
-KEY_EVENT_IMG_ROOT = "event_img_root"
+KEY_EVENT_IMG_ROOT = "IMG_ROOT"
 
 # Target profiles Logs
 KEY_AGE = "AGE"
