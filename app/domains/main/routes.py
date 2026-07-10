@@ -53,6 +53,8 @@ def main():
 @main_bp.route("/login", methods=["POST"])
 def login_result():
 
+
+
     # 사용자 입력값으로 로그인 검증
     success, message, user = login(
         request.form["uId"], request.form["uPw"], request.form.get("captcha", "")
@@ -74,7 +76,7 @@ def login_result():
             return render_template("first_login_form.html")
 
         # 일반 로그인 성공 → 목록 이동
-        return redirect(url_for("stream.camera"))
+        return redirect(url_for("member.member_list"))
 
     # =========================
     # 로그인 실패 처리
@@ -95,9 +97,16 @@ def login_result():
     return render_template("main_index.html", message=message, success=False)
 
 
+# ==========================================================
+# 로그아웃 처리
+# ==========================================================
 @main_bp.route("/signout_confirm", methods=["GET"])
 def signout_confirm():
+
+    # 세션 삭제
     session.clear()
+
+    # 메인으로 이동
     return redirect(url_for("main.main"))
 
 

@@ -54,7 +54,7 @@
       300,
       301
     ],
-    "IS_APPROVE": false,
+    "IS_APPROVE": true,
     "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/08, 12:22:00",
     "MOD_DATE": "2026/07/09, 18:30:48"
@@ -136,7 +136,7 @@
   },
   "heejun1234": {
     "ID": "heejun1234",
-    "PW": "12341234@",
+    "PW": "12341234@@",
     "NAME": "김희준",
     "PHONE": "01032143215",
     "EMAIL": "12313@naver.com",
@@ -145,13 +145,13 @@
       300
     ],
     "IS_APPROVE": false,
-    "IS_FIRST_LOGIN": true,
+    "IS_FIRST_LOGIN": false,
     "REG_DATE": "2026/07/09, 09:20:01",
-    "MOD_DATE": "2026/07/09, 09:20:01"
+    "MOD_DATE": "2026/07/10, 12:36:55"
   },
   "park123": {
     "ID": "park123",
-    "PW": "12341234@",
+    "PW": "11111111@",
     "NAME": "박원식",
     "PHONE": "01045655785",
     "EMAIL": "parkjun@naver.com",
@@ -159,9 +159,9 @@
       103,
       300
     ],
-    "IS_APPROVE": false,
+    "IS_APPROVE": true,
     "IS_FIRST_LOGIN": true,
     "REG_DATE": "2026/07/09, 09:21:01",
-    "MOD_DATE": "2026/07/09, 09:21:01"
+    "MOD_DATE": "2026/07/10, 09:59:59"
   }
 }
