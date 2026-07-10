@@ -105,7 +105,9 @@
       </thead>
       <tbody>
         {% for p in profiles %}
-        <tr class="clickable-row" onclick="openDetailModal('{{ p.ID }}')" style="cursor: pointer">
+        <!-- <tr class="clickable-row" onclick="openDetailModal('{{ p.ID }}')" style="cursor: pointer"> -->
+        <!-- prettier-ignore -->
+        <tr class="clickable-row" data-profile='{{ p | tojson | safe }}' onclick="openDetailModal(this)">
           <td><img src="{{ url_for('stream.static', filename='uploaded_profiles/' + p.IMAGE) }}" class="profile-thumb" /></td>
           <td>{{ p.ID }}</td>
           <td>{{ p.NAME }}</td>
@@ -198,12 +200,13 @@
 
   const detailModal = document.getElementById("detail_modal");
   const staticUrlRoot = "{{ url_for('stream.static', filename='uploaded_profiles/') }}";
-  const profilesList = {{ profiles | tojson | safe }};
+  // const profilesList = {{ profiles | tojson | safe }};
 
-  function openDetailModal(profileId) {
-    // const profileData = JSON.parse(profileId.getAttribute('data-profile'));
+  function openDetailModal(rowElement) {
     // 2. 전달받은 고유 ID를 이용해 배열에서 일치하는 프로필 데이터를 찾습니다.
-    const profileData = profilesList.find(p => p.ID === profileId);
+    // const profileData = profilesList.find(p => p.ID === profileId);
+    // prettier-ignore
+    const profileData = JSON.parse(rowElement.getAttribute('data-profile'));
 
     if (!profileData) {
       alert("프로필 데이터를 찾을 수 없습니다.");
