@@ -43,5 +43,95 @@
     "TARGET_ID": "person009",
     "IS_READ": false,
     "IMG_ROOT": "img/event_img/ferrari.jpg"
+  },
+  "e3bb8690-6475-4abd-b512-1342d201e484": {
+    "ID": "e3bb8690-6475-4abd-b512-1342d201e484",
+    "REG_DATE": "2026/07/10, 16:17:33",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_170.jpg"
+  },
+  "c6ea5479-21e9-4d99-8e32-94db142e3ca2": {
+    "ID": "c6ea5479-21e9-4d99-8e32-94db142e3ca2",
+    "REG_DATE": "2026/07/10, 16:17:34",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_146.jpg"
+  },
+  "c2be9b6b-e8f4-4c38-8e7f-fdf843fbc560": {
+    "ID": "c2be9b6b-e8f4-4c38-8e7f-fdf843fbc560",
+    "REG_DATE": "2026/07/10, 16:17:38",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_182.jpg"
+  },
+  "d034ad2e-cea8-4f27-98e5-57f7fd6a0cf1": {
+    "ID": "d034ad2e-cea8-4f27-98e5-57f7fd6a0cf1",
+    "REG_DATE": "2026/07/10, 16:17:38",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_69.jpg"
+  },
+  "e7a1a084-213e-4491-a1c0-4c77b75b5ec8": {
+    "ID": "e7a1a084-213e-4491-a1c0-4c77b75b5ec8",
+    "REG_DATE": "2026/07/10, 16:17:39",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/faul001_108.jpg"
+  },
+  "cf567e0e-d7c4-4621-b447-8e2660ee5588": {
+    "ID": "cf567e0e-d7c4-4621-b447-8e2660ee5588",
+    "REG_DATE": "2026/07/10, 16:19:53",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_119.jpg"
+  },
+  "7426ab3d-e157-443f-9665-3566808b98f1": {
+    "ID": "7426ab3d-e157-443f-9665-3566808b98f1",
+    "REG_DATE": "2026/07/10, 16:19:56",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_174.jpg"
+  },
+  "de0df8fe-87d5-41d7-b7d2-1e7e85b467ad": {
+    "ID": "de0df8fe-87d5-41d7-b7d2-1e7e85b467ad",
+    "REG_DATE": "2026/07/10, 16:19:56",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/dongja001_119.jpg"
+  },
+  "6802ab64-2e12-4135-82e4-0eee6394fdf2": {
+    "ID": "6802ab64-2e12-4135-82e4-0eee6394fdf2",
+    "REG_DATE": "2026/07/10, 16:19:58",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/faul001_85.jpg"
+  },
+  "2dadaf3b-7844-447e-b219-c4919acd6e9b": {
+    "ID": "2dadaf3b-7844-447e-b219-c4919acd6e9b",
+    "REG_DATE": "2026/07/10, 16:20:17",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "chris001",
+    "IS_READ": false,
+    "event_img_root": "img/event_img/chris001_202.jpg"
   }
 }
