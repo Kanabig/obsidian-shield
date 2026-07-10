@@ -1,5 +1,5 @@
-from flask import (Blueprint, render_template, 
-                   url_for, request, Response, session, jsonify)
+from flask import (Blueprint, render_template, url_for, 
+                   request, Response, session, jsonify)
 from app.domains.logger.event_logs.event_logs import (
     get_event_list, add_event, get_new_event_list,
     format_events,checked_event_logs)
@@ -12,6 +12,7 @@ from app.domains.logger.logger_utils.log_request_filter import(
     get_log_filter_options)
 from app.domains.logger.logger_utils.event_notifier import (
     wait_new_log)
+from app.utils.json_manager import (load_json, EVENT_LOGS_FILE)
 
 
 event_log_bp = Blueprint(
@@ -112,6 +113,40 @@ def add_event_log():
 
 
 # ===========================================================
+# 이벤트 캡처 로그 추가하기
+# ===========================================================
+@event_log_bp.route("/detail/<event_id>")
+def event_capture_detail(event_id):
+
+    event_logs = load_json(EVENT_LOGS_FILE)
+    event_captures = load_json(EVENT_LOGS_FILE)
+
+    event = event_logs.get(event_id)
+
+    if event is None:
+        return jsonify({
+            "result": "fail",
+            "message": "존재하지 않는 이벤트입니다."
+        }), 404
+
+    capture = event_captures.get(event_id)
+
+    if capture is None:
+        return jsonify({
+            "result": "fail",
+            "message": "이미지가 없습니다."
+        }), 404
+    
+    return jsonify({
+        "result": "success",
+        "image": url_for(
+        "static",
+        filename = capture["IMG_ROOT"]
+        )
+    })
+
+
+# ===========================================================
 # 이벤트 로그 선택해서 읽음 처리하기 
 # ===========================================================
 @event_log_bp.route("/checked_event_log", methods=["POST"])
@@ -156,7 +191,7 @@ def stream_log():
     return Response(
         stream_event_log(),
         mimetype = "text/event-stream",
-        headers={
+        headers = {
             "Cache-Control": "no-cache",
             "Connection": "keep-alive"
         }

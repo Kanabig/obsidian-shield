@@ -1,7 +1,6 @@
 /* ===========================
-   Filter Area
+   필터 구역
 =========================== */
-
 .filter_box {
     margin-top: 26px;
     padding: 16px;
@@ -17,22 +16,18 @@
     flex-wrap: wrap;
 }
 
-
 /* ===========================
-   Label
+   필터 박스: 라벨
 =========================== */
-
 .filter_box label {
     color: var(--system-blue);
     font-size: 17px;
     font-weight: bold;
 }
 
-
 /* ===========================
-   Input
+   필터 박스: 검색어 입력 -1
 =========================== */
-
 .filter_row input {
     flex: 1;
     min-width: 260px;
@@ -50,11 +45,9 @@
     border-color: var(--system-blue);
 }
 
-
 /* ===========================
-   Select
+   필터 박스: 선택자
 =========================== */
-
 .filter_box select {
     height: 48px;
     min-width: 150px;
@@ -71,11 +64,9 @@
     border-color: var(--system-blue);
 }
 
-
 /* ===========================
-   Button
+   필터 박스: 버튼
 =========================== */
-
 .filter_btn {
     width: 80px;
     height: 48px;
@@ -105,9 +96,8 @@
     outline: none;
 }
 
-
 /* ===========================
-   search_box
+   필터 박스: 검색어 입력 -2
 =========================== */
 .search_box {
   flex: 1;

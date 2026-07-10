@@ -14,6 +14,10 @@ from app.domains.stream.face_profiler import add_or_update_face
 def handle_add_profile(form_data, files, static_folder):
     profiles = load_json(TARGETS_PROFILES_FILE)
     pid = form_data.get("id")
+
+    if pid in profiles:
+        return False
+
     name = form_data.get("name")
     age = form_data.get("age")
     desc_short = form_data.get("description_short")
@@ -37,6 +41,7 @@ def handle_add_profile(form_data, files, static_folder):
         "MOD_DATE": time_formatted,
     }
     save_json(TARGETS_PROFILES_FILE, profiles)
+    return True
 
 
 def handle_update_profile(form_data, files, static_folder):
