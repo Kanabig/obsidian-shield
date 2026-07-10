@@ -51,7 +51,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_170.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_170.jpg"
   },
   "c6ea5479-21e9-4d99-8e32-94db142e3ca2": {
     "ID": "c6ea5479-21e9-4d99-8e32-94db142e3ca2",
@@ -60,7 +60,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_146.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_146.jpg"
   },
   "c2be9b6b-e8f4-4c38-8e7f-fdf843fbc560": {
     "ID": "c2be9b6b-e8f4-4c38-8e7f-fdf843fbc560",
@@ -69,7 +69,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_182.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_182.jpg"
   },
   "d034ad2e-cea8-4f27-98e5-57f7fd6a0cf1": {
     "ID": "d034ad2e-cea8-4f27-98e5-57f7fd6a0cf1",
@@ -78,7 +78,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_69.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_69.jpg"
   },
   "e7a1a084-213e-4491-a1c0-4c77b75b5ec8": {
     "ID": "e7a1a084-213e-4491-a1c0-4c77b75b5ec8",
@@ -87,7 +87,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "faul001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/faul001_108.jpg"
+    "IMG_ROOT": "img/event_img/faul001_108.jpg"
   },
   "cf567e0e-d7c4-4621-b447-8e2660ee5588": {
     "ID": "cf567e0e-d7c4-4621-b447-8e2660ee5588",
@@ -96,7 +96,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_119.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_119.jpg"
   },
   "7426ab3d-e157-443f-9665-3566808b98f1": {
     "ID": "7426ab3d-e157-443f-9665-3566808b98f1",
@@ -105,7 +105,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_174.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_174.jpg"
   },
   "de0df8fe-87d5-41d7-b7d2-1e7e85b467ad": {
     "ID": "de0df8fe-87d5-41d7-b7d2-1e7e85b467ad",
@@ -114,7 +114,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "dongja001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/dongja001_119.jpg"
+    "IMG_ROOT": "img/event_img/dongja001_119.jpg"
   },
   "6802ab64-2e12-4135-82e4-0eee6394fdf2": {
     "ID": "6802ab64-2e12-4135-82e4-0eee6394fdf2",
@@ -123,7 +123,7 @@
     "longitude": 127.02833,
     "TARGET_ID": "faul001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/faul001_85.jpg"
+    "IMG_ROOT": "img/event_img/faul001_85.jpg"
   },
   "2dadaf3b-7844-447e-b219-c4919acd6e9b": {
     "ID": "2dadaf3b-7844-447e-b219-c4919acd6e9b",
@@ -132,6 +132,51 @@
     "longitude": 127.02833,
     "TARGET_ID": "chris001",
     "IS_READ": false,
-    "event_img_root": "img/event_img/chris001_202.jpg"
+    "IMG_ROOT": "img/event_img/chris001_202.jpg"
+  },
+  "ab5e1b9f-14d8-47fc-a717-3a6fa4f75435": {
+    "ID": "ab5e1b9f-14d8-47fc-a717-3a6fa4f75435",
+    "REG_DATE": "2026/07/10, 16:43:20",
+    "latitude": 36.3288,
+    "longitude": 127.423,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/dongja001_140.jpg"
+  },
+  "19e0a8b2-37f1-4b73-9589-9a383afa3f4b": {
+    "ID": "19e0a8b2-37f1-4b73-9589-9a383afa3f4b",
+    "REG_DATE": "2026/07/10, 16:43:22",
+    "latitude": 36.3288,
+    "longitude": 127.423,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_88.jpg"
+  },
+  "66b0ee83-5db9-4ef1-97d0-8023657b5c73": {
+    "ID": "66b0ee83-5db9-4ef1-97d0-8023657b5c73",
+    "REG_DATE": "2026/07/10, 16:44:01",
+    "latitude": 36.3288,
+    "longitude": 127.423,
+    "TARGET_ID": "dongja001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/dongja001_414.jpg"
+  },
+  "4e4e6a69-47e4-445b-ad9d-a0f85b3f2bb0": {
+    "ID": "4e4e6a69-47e4-445b-ad9d-a0f85b3f2bb0",
+    "REG_DATE": "2026/07/10, 16:44:02",
+    "latitude": 36.3288,
+    "longitude": 127.423,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_382.jpg"
+  },
+  "de4197f2-1360-45a7-8943-238596b086aa": {
+    "ID": "de4197f2-1360-45a7-8943-238596b086aa",
+    "REG_DATE": "2026/07/10, 16:44:10",
+    "latitude": 36.3288,
+    "longitude": 127.423,
+    "TARGET_ID": "chris001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/chris001_484.jpg"
   }
 }

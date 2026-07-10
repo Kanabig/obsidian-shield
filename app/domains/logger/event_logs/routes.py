@@ -141,7 +141,7 @@ def event_capture_detail(event_id):
         "result": "success",
         "image": url_for(
         "static",
-        filename = capture["event_img_root"]
+        filename = capture["IMG_ROOT"]
         )
     })
 
