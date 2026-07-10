@@ -9,7 +9,7 @@ maps.forEach(target => {
         const option = document.createElement('option');
 
         option.value = target.id;
-        option.textContent = target.name;
+        option.textContent = target.id;
 
         select.appendChild(option);
 
@@ -73,13 +73,17 @@ maps.forEach(function(target){
                         )
                 );
         });
+        console.log(target);
         console.log(target.id);
         console.log(target.logs);
+        console.log(linePath.length);
         console.log(linePath);
+        console.log(polyline);
         
         //linepath에 담긴 좌표들을 가지고 kakaomap 위에 polyline 생성
         // (타겟의 이동 경로를 선으로 표시)
-        const polyline = new kakao.maps.Polyline({
+        console.log("array created polyline coordinate:", linePath);
+        var polyline = new kakao.maps.Polyline({
                 
                 path: linePath,
                 
@@ -92,6 +96,7 @@ maps.forEach(function(target){
                 strokeStyle: 'solid'
         });
         polyline.setMap(map);
+        console.log("set polyline on map")
 
         // 생성한 마커/폴리라인을 타겟 id와 묶어서 배열에 저장
         // (나중에 드롭다운에서 특정 타겟만 보이게/숨기게 하기 위함)
@@ -110,9 +115,10 @@ maps.forEach(function(target){
         const content = `
         
             <div class = "info-window">
-                <img class="full_image"
+                <img class="image"
                 src="${imageBaseUrl}${target.image}">
-                <h3>${target.name}</h3>
+                <h3>${target.id}</h3>
+                <h4>${target.name}</h3>
                 <p>나이: ${target.age}</p>
                 <p><strong>${target.short_description}</strong></p>
                 
