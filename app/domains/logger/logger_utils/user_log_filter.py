@@ -1,5 +1,6 @@
 from app.configs import (
-    KEY_EVENT_LOG_ID, KEY_VIEWER_ID, KEY_READ_DATE)
+    KEY_EVENT_LOG_ID, KEY_VIEWER_ID, 
+    KEY_READ_DATE)
 
 
 # ===========================================================
@@ -49,7 +50,7 @@ def filter_keyword(logs, keyword, tag):
 # ===========================================================
 def sort_logs(logs, sort):
 
-    if sort == "최신순":
+    if sort == "오래된순":
         return sorted(
             logs,
             key=lambda x: x.get(KEY_READ_DATE, "")
