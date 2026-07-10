@@ -105,7 +105,7 @@ class Camera:
 def add_camera(src_path, id, src_type=VIDEO):
     if id in _instances:
         print("이미 등록된 카메라입니다.")
-        return
+        return False
 
     _instances[id] = Camera(src_path, src_type)
 
@@ -113,7 +113,9 @@ def add_camera(src_path, id, src_type=VIDEO):
         case "tests/tokyo_street_trim01.mp4" | "tests/tokyo_street_trim02.mp4":
             _camera_coordinates[id] = (37.527420, 127.028330)
         case _:
-            _camera_coordinates[id] = (0.0, 0.0)
+            _camera_coordinates[id] = (36.3288, 127.4230)
+
+    return True
 
 
 def delete_camera(id):
