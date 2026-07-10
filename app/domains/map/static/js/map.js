@@ -118,7 +118,7 @@ maps.forEach(function(target){
                 <img class="image"
                 src="${imageBaseUrl}${target.image}">
                 <h3>${target.id}</h3>
-                <h4>${target.name}</h3>
+                <h4>${target.name}</h4>
                 <p>나이: ${target.age}</p>
                 <p><strong>${target.short_description}</strong></p>
                 
