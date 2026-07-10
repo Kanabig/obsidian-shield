@@ -59,7 +59,8 @@ def check_captcha(captcha, accounts, id):
         session["captcha_fail"] = captcha_fail
 
         if captcha_fail >= configs.LOGIN_FAIL_LIMIT:
-            accounts[id][configs.KEY_IS_APPROVE] = False
+            if id in accounts:
+                accounts[id][configs.KEY_IS_APPROVE] = False
 
             save_accounts(accounts)
             return False, "자동입력 방지를 3회 실패하여 계정이 비활성화되었습니다."
@@ -124,7 +125,8 @@ def login(id, pw, captcha=""):
     accounts = load_accounts()
 
     # CAPTCHA 먼저 검사
-    captcha_success, captcha_message = check_captcha(captcha, id, accounts)
+    captcha_success, captcha_message = check_captcha(captcha, accounts, id)
+
     # 로그인 검증
     login_success, login_message, user = check_login(accounts, id, pw)
 
@@ -137,6 +139,7 @@ def login(id, pw, captcha=""):
     # 성공 시 실패 기록 초기화
 
     reset_login_fail()
+
     return True, login_message, user
 
 
