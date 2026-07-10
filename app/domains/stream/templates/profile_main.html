@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ url_for('stream.static', filename='css/profile_main.css') }}" />
 <link rel="stylesheet" href="{{ url_for('stream.static', filename='css/pagination.css') }}" />
 <link rel="stylesheet" href="{{ url_for('stream.static', filename='css/filterbox.css') }}" />
+<link rel="stylesheet" href="{{ url_for('stream.static', filename='css/toast.css') }}" />
 {% endblock %}
 
 <!-- prettier-ignore -->
@@ -184,6 +185,10 @@
   </div>
 </div>
 
+<div id="toast_message" class="toast_alert" style="display: none">
+  <span id="toast_text"></span>
+</div>
+
 <script>
   const itemAddBox = document.getElementById("item_add_box");
   const tableBoxContainer = document.getElementById("table_box_container");
@@ -267,4 +272,19 @@
     }
   };
 </script>
-{% endblock %}
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+<script>
+  window.addEventListener("DOMContentLoaded", (event) => {
+    const toast = document.getElementById("toast_message");
+    const toastText = document.getElementById("toast_text");
+    toastText.innerText = "{{ message }}";
+    toast.style.display = "block";
+
+    // 3초 뒤에 자동으로 사라지게 설정
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 3000);
+  });
+</script>
+{% endfor %} {% endif %} {% endwith %} {% endblock %}
