@@ -84,12 +84,17 @@ def profile():
         profile_service.get_paginated_profiles(request.args)
     )
 
+    search_keyword = request.args.get("search_keyword")
+
     return render_template(
         "profile_main.html",
         profiles=profiles_paginated,
         page=page,
         per_page=per_page,
         total_pages=total_pages,
+        search_tag=request.args.get("search_tag"),
+        search_keyword=search_keyword if search_keyword else "",
+        sort_order=request.args.get("sort_order"),
     )
 
 
