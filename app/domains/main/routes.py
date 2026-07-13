@@ -20,6 +20,7 @@ from app.domains.account.service.auth_service import (
 
 # 전역 설정값
 from app import configs
+from app.domains.main.dashboard_service import get_dashboard_data
 
 
 # ==========================================================
@@ -73,8 +74,8 @@ def login_result():
         # if user[configs.KEY_IS_FIRST_LOGIN]:
         #     return render_template("first_login_form.html")
 
-        # 일반 로그인 성공 → 목록 이동
-        return redirect(url_for("stream.monitoring"))
+        # 일반 로그인 성공 → 대시보드 이동
+        return redirect(url_for("main.dashboard"))
 
     # =========================
     # 로그인 실패 처리
@@ -137,3 +138,21 @@ def first_login_form():
 @main_bp.route("/createaccount", methods=["GET", "POST"])
 def create_account():
     return render_template("create_account.html")
+
+
+# ==========================================================
+# 시스템 대시보드
+# ==========================================================
+@main_bp.route("/dashboard")
+def dashboard():
+
+    # 로그인하지 않은 사용자는 로그인 화면으로 이동
+    if "id" not in session:
+        return redirect(url_for("main.main"))
+
+    dashboard_data = get_dashboard_data()
+
+    return render_template(
+        "dashboard.html",
+        **dashboard_data,
+    )
