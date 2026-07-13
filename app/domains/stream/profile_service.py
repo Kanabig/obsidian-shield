@@ -26,7 +26,7 @@ def handle_add_profile(form_data, files, static_folder):
     file = files.get("profile_img")
     upload_path = os.path.join(static_folder, "uploaded_profiles")
     os.makedirs(upload_path, exist_ok=True)
-    file_name = secure_filename(f"{pid}_{file.filename}")
+    file_name = secure_filename(f"{pid}")
     file.save(os.path.join(upload_path, file_name))
 
     time_formatted = get_current_time_stamp_formated()
@@ -58,7 +58,7 @@ def handle_update_profile(form_data, files, static_folder):
         if file and file.filename != "":
             upload_path = os.path.join(static_folder, "uploaded_profiles")
             os.makedirs(upload_path, exist_ok=True)
-            file_name = secure_filename(f"{pid}_{file.filename}")
+            file_name = secure_filename(f"{pid}")
             profiles[pid]["IMAGE"] = file_name
             file.save(os.path.join(upload_path, file_name))
 
@@ -74,7 +74,7 @@ def handle_face_encode(form_data, files):
         add_or_update_face(pid, img)
 
 
-def handle_delete_profile(form_data):
+def handle_delete_profile(form_data, static_folder):
     profiles = load_json(TARGETS_PROFILES_FILE)
     pid = form_data.get("id")
     if pid in profiles:
@@ -84,6 +84,8 @@ def handle_delete_profile(form_data):
     file_path = os.path.join(BASE_DIR, "face_embeddings", pid)
     if os.path.exists(file_path):
         os.remove(file_path)
+
+    os.remove(os.path.join(static_folder, "uploaded_profiles", pid))
 
 
 def get_paginated_profiles(args):
