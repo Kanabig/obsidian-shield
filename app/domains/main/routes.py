@@ -151,6 +151,24 @@ def dashboard():
         return redirect(url_for("main.main"))
 
     dashboard_data = get_dashboard_data()
+    camera_ids = dashboard_data.get("camera_ids", [])
+    requested_camera_id = request.args.get("camera_id")
+
+    selected_camera_id = None
+    if requested_camera_id is not None:
+        for camera_id in camera_ids:
+            if str(camera_id) == str(requested_camera_id):
+                selected_camera_id = camera_id
+                break
+
+    if selected_camera_id is None:
+        previous_primary_camera_id = dashboard_data.get("primary_camera_id")
+        if previous_primary_camera_id in camera_ids:
+            selected_camera_id = previous_primary_camera_id
+        elif camera_ids:
+            selected_camera_id = camera_ids[0]
+
+    dashboard_data["primary_camera_id"] = selected_camera_id
 
     return render_template(
         "dashboard.html",
