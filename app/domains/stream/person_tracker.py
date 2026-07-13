@@ -24,12 +24,11 @@ _model.overrides["imgsz"] = 640
 _model.overrides["verbose"] = False
 _model.overrides["classes"] = [0]
 
-# 아직 신원이 확정되지 않은 track에 대한 재시도 주기
 IDENTIFY_RETRY_INTERVAL = 1
-# 이미 신원이 확정된 track은 이 주기로만 재확인 (계속 재조회할 필요 없음)
 IDENTIFY_RECHECK_INTERVAL = 30
+LOGGING_INTERVAL = 10
 
-_executor = ThreadPoolExecutor(max_workers=3)
+_executor = ThreadPoolExecutor(max_workers=8)
 
 
 def get_or_create_tracker(camera_id):

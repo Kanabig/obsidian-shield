@@ -4,7 +4,6 @@
             <tr>
                 <th>아이디</th>
                 <th>이름</th>
-                <th>역할</th>
                 <th>승인 상태</th>
                 <th>등록일</th>
                 <th>관리</th>
@@ -18,26 +17,7 @@
                 <td>{{ account.NAME }}</td>
 
                 {% if edit_id == account.ID %}
-
-                    <td>
-                        <form id="update_form_{{ account.ID }}" method="post" action="/member/update/{{ account.ID }}"></form>
-
-                        <select name="permission" form="update_form_{{ account.ID }}">
-                            
-                            <option value="ADMIN"
-                                {% if account.PERMISSION_NAME == "관리자" %}selected{% endif %}>
-                                관리자
-                            </option>
-
-
-                            <option value="OBSERVER"
-                                {% if account.PERMISSION_NAME == "관제자" %}selected{% endif %}>
-                                관제자
-                            </option>
-
-                        </select>
-                    </td>
-
+                <form id="update_form_{{ account.ID }}" method="post" action="/member/update/{{ account.ID }}"></form>
                     <td>
                         <select name="approve" form="update_form_{{ account.ID }}">
                             <option value="승인" {% if account.IS_APPROVE %}selected{% endif %}>승인</option>
@@ -53,8 +33,6 @@
                     </td>
 
                 {% else %}
-                    <td>{{ account.PERMISSION_NAME }}</td>
-
                     <td>
                         {% if account.IS_APPROVE %}
                             <span class="badge approve">승인</span>

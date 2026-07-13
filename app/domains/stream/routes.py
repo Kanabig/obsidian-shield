@@ -92,7 +92,7 @@ def profile():
             profile_service.handle_face_encode(request.form, request.files)
 
         elif action == "delete":
-            profile_service.handle_delete_profile(request.form)
+            profile_service.handle_delete_profile(request.form, stream_bp.static_folder)
 
         return redirect(url_for("stream.profile"))
 

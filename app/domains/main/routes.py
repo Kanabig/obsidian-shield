@@ -53,8 +53,6 @@ def main():
 @main_bp.route("/login", methods=["POST"])
 def login_result():
 
-
-
     # 사용자 입력값으로 로그인 검증
     success, message, user = login(
         request.form["uId"], request.form["uPw"], request.form.get("captcha", "")
@@ -72,11 +70,11 @@ def login_result():
             return render_template("pending.html")
 
         # 최초 로그인 (비밀번호 변경 필요)
-        if user[configs.KEY_IS_FIRST_LOGIN]:
-            return render_template("first_login_form.html")
+        # if user[configs.KEY_IS_FIRST_LOGIN]:
+        #     return render_template("first_login_form.html")
 
         # 일반 로그인 성공 → 목록 이동
-        return redirect(url_for("member.member_list"))
+        return redirect(url_for("stream.monitoring"))
 
     # =========================
     # 로그인 실패 처리
@@ -136,3 +134,6 @@ def first_login_form():
     return render_template("first_login_form.html", message=message, success=False)
 
 
+@main_bp.route("/createaccount", methods=["GET", "POST"])
+def create_account():
+    return render_template("create_account.html")

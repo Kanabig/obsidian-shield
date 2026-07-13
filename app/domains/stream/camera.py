@@ -3,12 +3,13 @@ import time
 import numpy as np
 from cv2 import VideoCapture
 from cv2 import CAP_PROP_POS_FRAMES
+from cv2 import CAP_PROP_FPS
 from collections import deque
 
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 30
+FRAME_DEFAULT = 24
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -52,6 +53,14 @@ class Camera:
             self.thread.start()
 
     def _capture_loop(self):
+        fps = 0
+
+        if self.is_video:
+            fps = self.camera.get(CAP_PROP_FPS)
+
+        if fps <= 0:
+            fps = FRAME_DEFAULT
+
         frame_delay = 1.0 / FRAME_DEFAULT
 
         while self.on_running:
@@ -85,6 +94,7 @@ class Camera:
     def read_frame(self):
         with self.lock:
             if len(self.frame_queue) > 1:
+                # return self.frame_queue[-1]
                 return self.frame_queue.popleft()
             else:
                 return self.frame_queue[0]
