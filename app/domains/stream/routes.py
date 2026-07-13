@@ -35,10 +35,10 @@ def monitoring():
 @stream_bp.route("/camera/", methods=["GET", "POST"])
 def camera():
     if request.method == "POST":
+        cam_id = request.form.get("cam_id")
         action = request.form.get("action")
 
         if action == "add":
-            cam_id = request.form.get("cam_id")
             src_path = request.form.get("src_path")
             src_type = request.form.get("src_type", "video")  # 기본값은 video
 
@@ -52,8 +52,15 @@ def camera():
                         "이미 존재하는 고유 ID입니다. 다른 ID를 입력해주세요.", "error"
                     )
 
+        elif action == "start":
+            camera_manager.start_camera(cam_id)
+
+        elif action == "stop":
+            camera_manager.stop_camera(cam_id)
+            print("stop!")
+            print(camera_manager.is_paused_camera(cam_id))
+
         elif action == "delete":
-            cam_id = request.form.get("cam_id")
             if cam_id:
                 camera_manager.delete_camera(cam_id)
 
@@ -64,7 +71,12 @@ def camera():
         cam_obj = camera_manager.get_camera_by_id(cid)
         if cam_obj:
             active_cameras.append(
-                {"id": cid, "src_path": cam_obj.src_path, "is_video": cam_obj.is_video}
+                {
+                    "id": cid,
+                    "src_path": cam_obj.src_path,
+                    "is_video": camera_manager.is_video_camera(cid),
+                    "is_paused": camera_manager.is_paused_camera(cid),
+                }
             )
 
     return render_template("camera_main.html", cameras=active_cameras)
