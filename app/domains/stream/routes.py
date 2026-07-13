@@ -126,9 +126,19 @@ def video_feed():
 
 
 def generate_frames(cam_id):
+    # URL 쿼리 값은 문자열이므로 숫자 ID로 등록된 카메라도 찾을 수 있게 한다.
+    camera_key = int(cam_id) if str(cam_id).isdigit() else cam_id
+
     while True:
         frames = analysis_pipeline.get_latest_frames()
-        frame = frames[cam_id]
+        frame = frames.get(cam_id)
+
+        if frame is None:
+            frame = frames.get(camera_key)
+
+        # AI 분석 스레드가 준비되는 동안에는 카메라 원본 프레임을 사용한다.
+        if frame is None:
+            frame = camera_manager.get_frame_by_id(camera_key)
 
         if frame is None:
             time.sleep(0.1)
