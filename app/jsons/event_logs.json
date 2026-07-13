@@ -5,7 +5,7 @@
     "latitude": 37.52742,
     "longitude": 127.02833,
     "TARGET_ID": "faul001",
-    "IS_READ": false,
+    "IS_READ": true,
     "IMG_ROOT": "img/event_img/faul001_87.jpg"
   }
 }
