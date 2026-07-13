@@ -136,7 +136,7 @@ def member_add():
     account_db = load_accounts()
 
     # 관리자 권한 확인
-    # if not is_admin(session["id"]):
+    # if not is_admin(session.get("id")):
     #     return """
     #     <script>
     #     alert("권한이 없습니다.");
@@ -177,7 +177,11 @@ def member_add():
     save_accounts(account_db)
 
     # 회원 목록 이동
-    return redirect(url_for("main.main"))
+    return render_template(
+        "main_index.html",
+        message="회원가입 요청이 완료되었습니다. 승인을 기다려주세요.",
+        success=True,
+    )
 
 
 # ==========================================================
