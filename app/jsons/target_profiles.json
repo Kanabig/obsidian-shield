@@ -8,5 +8,15 @@
     "IMAGE": "faul001_faul_03.png",
     "REG_DATE": "2026/07/10, 17:09:06",
     "MOD_DATE": "2026/07/10, 17:09:06"
+  },
+  "park_jungho": {
+    "ID": "park_jungho",
+    "NAME": "정호팍",
+    "AGE": "27",
+    "SHORT_DESCRIPTION": "도둑",
+    "DESCRIPTION": "빈집털이",
+    "IMAGE": "park_jungho",
+    "REG_DATE": "2026/07/13, 16:03:49",
+    "MOD_DATE": "2026/07/13, 16:03:56"
   }
 }
