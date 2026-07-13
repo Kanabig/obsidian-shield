@@ -10,6 +10,8 @@
 <script>
   const dashboardMapData = JSON.parse(document.getElementById("dashboard-map-data").textContent);
   const dashboardMapImageBaseUrl = "{{ url_for('stream.static', filename='uploaded_profiles/') }}";
+  window.dashboardMapData = dashboardMapData;
+  window.dashboardMapViewMode = "all";
 </script>
 <script src="{{ url_for('main.static', filename='js/dashboard_map.js') }}"></script>
 <script>
@@ -19,6 +21,41 @@
     let refreshTimer = null;
     let lastSeenMtime = {{ event_logs_mtime | tojson }};
 
+    function updateDashboardMapViewButtons() {
+      const buttons = document.querySelectorAll("[data-dashboard-map-view]");
+      const activeMode = window.dashboardMapViewMode || "all";
+
+      buttons.forEach(function (button) {
+        const isActive = button.getAttribute("data-dashboard-map-view") === activeMode;
+        button.classList.toggle("is_active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
+    function bindDashboardMapViewButtons() {
+      const buttons = document.querySelectorAll("[data-dashboard-map-view]");
+      buttons.forEach(function (button) {
+        button.onclick = function (event) {
+          event.preventDefault();
+          const selectedMode = button.getAttribute("data-dashboard-map-view") === "recent" ? "recent" : "all";
+          window.dashboardMapViewMode = selectedMode;
+          updateDashboardMapViewButtons();
+          if (typeof window.renderDashboardMap === "function") {
+            window.renderDashboardMap(window.dashboardMapData || [], {
+              autoFocus: true,
+              viewMode: selectedMode,
+            });
+          }
+        };
+      });
+    }
+
+    function setDashboardMapViewMode(mode) {
+      const selectedMode = mode === "recent" ? "recent" : "all";
+      window.dashboardMapViewMode = selectedMode;
+      updateDashboardMapViewButtons();
+    }
+
     function renderMapFromPayload(payload, options) {
       const mapData = payload.map_data || [];
       const mapScript = document.getElementById("dashboard-map-data");
@@ -27,8 +64,12 @@
       }
 
       window.dashboardMapData = mapData;
+      updateDashboardMapViewButtons();
       if (typeof window.renderDashboardMap === "function") {
-        window.renderDashboardMap(mapData, { autoFocus: options && options.autoFocus === true });
+        window.renderDashboardMap(mapData, {
+          autoFocus: options && options.autoFocus === true,
+          viewMode: window.dashboardMapViewMode || "all",
+        });
       }
     }
 
@@ -57,7 +98,10 @@
 
           if (!payload.changed) {
             if (typeof window.renderDashboardMap === "function") {
-              window.renderDashboardMap(window.dashboardMapData || [], { autoFocus: false });
+              window.renderDashboardMap(window.dashboardMapData || [], {
+                autoFocus: false,
+                viewMode: window.dashboardMapViewMode || "all",
+              });
             }
             return;
           }
@@ -68,6 +112,8 @@
           }
 
           container.innerHTML = payload.html;
+          bindDashboardMapViewButtons();
+          setDashboardMapViewMode(window.dashboardMapViewMode || "all");
 
           const unreadElement = document.querySelector(".summary_card_alert .summary_text strong");
           if (unreadElement && payload.stats) {
@@ -99,6 +145,9 @@
     }
 
     window.addEventListener("load", function () {
+      bindDashboardMapViewButtons();
+      setDashboardMapViewMode(window.dashboardMapViewMode || "all");
+
       const cachedMapData = sessionStorage.getItem("dashboardMapData");
       if (cachedMapData) {
         try {

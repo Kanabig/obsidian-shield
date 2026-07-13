@@ -162,7 +162,11 @@
           <span class="panel_label">DETECTION MAP</span>
           <h3>탐지 지도</h3>
         </div>
-        <a href="{{ url_for('map.map_page') }}">전체 지도 보기</a>
+        <div class="map_view_controls">
+          <button type="button" class="map_view_btn is_active" data-dashboard-map-view="all" aria-pressed="true">전체 보기</button>
+          <button type="button" class="map_view_btn" data-dashboard-map-view="recent" aria-pressed="false">최근 1인 보기</button>
+          <a href="{{ url_for('map.map_page') }}">전체 지도 보기</a>
+        </div>
       </div>
 
       <div class="dashboard_map_wrap">

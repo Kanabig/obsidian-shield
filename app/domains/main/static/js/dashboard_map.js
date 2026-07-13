@@ -50,16 +50,51 @@
     return currentMap;
   }
 
+  function getMapViewData(data, viewMode) {
+    const safeData = Array.isArray(data) ? data : [];
+
+    if (viewMode !== "recent") {
+      return safeData;
+    }
+
+    if (safeData.length === 0) {
+      return [];
+    }
+
+    const latestTarget = safeData.reduce(function (currentTarget, candidateTarget) {
+      const currentDate = currentTarget && currentTarget.reg_date ? Date.parse(currentTarget.reg_date) : NaN;
+      const candidateDate = candidateTarget && candidateTarget.reg_date ? Date.parse(candidateTarget.reg_date) : NaN;
+
+      if (Number.isNaN(candidateDate) && Number.isNaN(currentDate)) {
+        return currentTarget;
+      }
+
+      if (Number.isNaN(candidateDate)) {
+        return currentTarget;
+      }
+
+      if (Number.isNaN(currentDate) || candidateDate > currentDate) {
+        return candidateTarget;
+      }
+
+      return currentTarget;
+    }, safeData[0]);
+
+    return latestTarget ? [latestTarget] : [];
+  }
+
   function renderDashboardMap(data, options) {
     const container = document.getElementById("dashboardMap");
     const renderOptions = options || {};
     const autoFocus = renderOptions.autoFocus === true;
+    const viewMode = renderOptions.viewMode === "recent" ? "recent" : "all";
+    const viewData = getMapViewData(data, viewMode);
 
     if (!container) {
       return;
     }
 
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!Array.isArray(viewData) || viewData.length === 0) {
       showEmptyState(container);
       return;
     }
@@ -72,11 +107,11 @@
     }
 
     const map = ensureMapInstance(container);
-    const firstTarget = data[0];
+    const firstTarget = viewData[0];
     const bounds = new kakao.maps.LatLngBounds();
     let openedInfoWindow = null;
 
-    data.forEach(function (target) {
+    viewData.forEach(function (target) {
       const currentPosition = new kakao.maps.LatLng(target.latitude, target.longitude);
       bounds.extend(currentPosition);
 
@@ -137,7 +172,7 @@
       });
     });
 
-    if (autoFocus && data.length > 1) {
+    if (autoFocus && viewData.length > 1) {
       map.setBounds(bounds, 38, 38, 38, 38);
     } else if (autoFocus) {
       map.setCenter(new kakao.maps.LatLng(firstTarget.latitude, firstTarget.longitude));
