@@ -7,11 +7,16 @@
 <script id="dashboard-map-data" type="application/json">
   {{ map_data | tojson | safe }}
 </script>
+<script id="dashboard-initial-data" type="application/json">
+  {"event_logs_mtime": {{ event_logs_mtime | tojson | safe }}}
+</script>
 <script>
   const dashboardMapData = JSON.parse(document.getElementById("dashboard-map-data").textContent);
+  const dashboardInitialData = JSON.parse(document.getElementById("dashboard-initial-data").textContent);
   const dashboardMapImageBaseUrl = "{{ url_for('stream.static', filename='uploaded_profiles/') }}";
   window.dashboardMapData = dashboardMapData;
   window.dashboardMapViewMode = "all";
+  window.dashboardInitialData = dashboardInitialData;
 </script>
 <script src="{{ url_for('main.static', filename='js/dashboard_map.js') }}"></script>
 <script>
@@ -19,7 +24,7 @@
     const refreshUrl = "{{ url_for('main.dashboard_refresh') }}";
     const refreshIntervalMs = 5000;
     let refreshTimer = null;
-    let lastSeenMtime = {{ event_logs_mtime | tojson }};
+    let lastSeenMtime = window.dashboardInitialData && window.dashboardInitialData.event_logs_mtime !== undefined ? window.dashboardInitialData.event_logs_mtime : null;
 
     function updateDashboardMapViewButtons() {
       const buttons = document.querySelectorAll("[data-dashboard-map-view]");
