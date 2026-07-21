@@ -280,7 +280,11 @@ def get_frame_by_id(id):
     return _instances[id].read_frame()
 
 
-def get_all_camera_ids():
+def get_all_camera_ids(on_activated=True):
+
+    if on_activated:
+        return tuple([id for id in _instances if not is_paused_camera(id)])
+
     return tuple(_instances.keys())
 
 
