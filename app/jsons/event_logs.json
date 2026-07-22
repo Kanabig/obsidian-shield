@@ -1,1 +1,11 @@
-{}
+{
+  "936b3d03-cd85-4d94-9437-7513e777de76": {
+    "ID": "936b3d03-cd85-4d94-9437-7513e777de76",
+    "REG_DATE": "2026/07/22, 10:36:45",
+    "latitude": 37.52742,
+    "longitude": 127.02833,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_533.png"
+  }
+}

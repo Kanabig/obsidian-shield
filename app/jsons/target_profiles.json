@@ -1,12 +1,12 @@
 {
-  "jungho001": {
-    "ID": "jungho001",
-    "NAME": "박정호",
-    "AGE": "27",
-    "SHORT_DESCRIPTION": "집",
-    "DESCRIPTION": "집에 가고 싶어",
-    "IMAGE": "jungho001",
-    "REG_DATE": "2026/07/14, 01:03:16",
-    "MOD_DATE": "2026/07/14, 01:03:16"
+  "faul001": {
+    "ID": "faul001",
+    "NAME": "폴 피닉스",
+    "AGE": "40",
+    "SHORT_DESCRIPTION": "폭력",
+    "DESCRIPTION": "무차별 폭행",
+    "IMAGE": "faul001",
+    "REG_DATE": "2026/07/22, 10:33:20",
+    "MOD_DATE": "2026/07/22, 10:33:20"
   }
 }
