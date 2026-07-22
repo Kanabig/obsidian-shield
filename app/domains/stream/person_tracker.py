@@ -161,11 +161,11 @@ def track_identified(frames: list, camera_ids) -> list:
                     user_id = user_cache["user_id"]
                     coord = get_camera_coordinate(camera_id)
                     imwrite(
-                        f"app/static/img/event_img/{user_id}_{track_id}.jpg",
+                        f"app/static/img/event_img/{user_id}_{track_id}.png",
                         annotated_frame,
                     )
                     create_event_data(
-                        coord[0], coord[1], user_id, f"{user_id}_{track_id}.jpg"
+                        coord[0], coord[1], user_id, f"{user_id}_{track_id}.png"
                     )
 
                     user_cache["last_logging"] = current_time
