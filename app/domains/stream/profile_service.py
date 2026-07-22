@@ -58,7 +58,7 @@ def handle_update_profile(form_data, files, static_folder):
         if file and file.filename != "":
             upload_path = os.path.join(static_folder, "uploaded_profiles")
             os.makedirs(upload_path, exist_ok=True)
-            file_name = secure_filename(f"{pid}")
+            file_name = secure_filename(f"{pid}.png")
             profiles[pid]["IMAGE"] = file_name
             file.save(os.path.join(upload_path, file_name))
 
