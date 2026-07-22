@@ -5,6 +5,7 @@ from cv2 import VideoCapture
 from cv2 import CAP_PROP_POS_FRAMES
 from cv2 import CAP_PROP_FPS
 from collections import deque
+from app.utils import json_manager
 
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
@@ -228,6 +229,7 @@ def add_camera(src_path, id, src_type=VIDEO):
         case _:
             _camera_coordinates[id] = (36.3288, 127.4230)
 
+    save_cameras()
     return True
 
 
@@ -240,6 +242,7 @@ def delete_camera(id):
 
     # 안전 release
     threading.Thread(target=cam.release, daemon=True).start()
+    save_cameras()
 
 
 def start_camera(id):
@@ -247,6 +250,7 @@ def start_camera(id):
         return
 
     _instances[id].start()
+    save_cameras()
 
 
 def stop_camera(id):
@@ -260,6 +264,8 @@ def stop_camera(id):
 
     elif isinstance(cam, VideoCamera):
         cam.pause()
+
+    save_cameras()
 
 
 def is_paused_camera(id):
@@ -287,6 +293,8 @@ def clear():
     for id in tuple(_instances.keys()):
         delete_camera(id)
 
+    save_cameras()
+
 
 def get_frame_by_id(id):
     "반환되는 frame은 레퍼런스 타입"
@@ -310,3 +318,33 @@ def get_camera_by_id(id):
 
 def get_camera_coordinate(id):
     return _camera_coordinates.get(id)
+
+
+def init_cameras():
+    load_cameras()
+
+
+def load_cameras():
+    loaded_cameras = json_manager.load_json(json_manager.CAMERAS_FILES)
+
+    for camera_id in loaded_cameras:
+        camera = loaded_cameras[camera_id]
+
+        add_camera(camera["src_path"], camera_id, camera["src_type"])
+
+        if camera["is_paused"]:
+            stop_camera(camera_id)
+
+
+def save_cameras():
+    camera_json = {}
+
+    for camera_id in get_all_camera_ids(on_activated=False):
+        camera_json[camera_id] = {
+            "id": camera_id,
+            "src_path": get_camera_by_id(camera_id).src_path,
+            "src_type": "video" if is_video_camera(camera_id) else "stream",
+            "is_paused": is_paused_camera(camera_id),
+        }
+
+    json_manager.save_json(json_manager.CAMERAS_FILES, camera_json)
