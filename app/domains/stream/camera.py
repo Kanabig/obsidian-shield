@@ -9,7 +9,7 @@ from collections import deque
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 24
+FRAME_DEFAULT = 15
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -25,10 +25,11 @@ class StreamCamera:
     반환되는 frame은 레퍼런스
     """
 
-    def __init__(self, src_path):
+    def __init__(self, src_path, is_decoy=False):
         self.src_path = src_path
         self.camera = None
         self.is_paused = False
+        self.is_decoy = is_decoy
 
         self.frame_queue = deque(maxlen=3)
         self.frame_queue.append(BLACK_SCREEN.copy())
@@ -106,13 +107,11 @@ class VideoCamera:
     반환되는 frame은 레퍼런스
     """
 
-    def __init__(
-        self,
-        src_path,
-    ):
+    def __init__(self, src_path, is_decoy=False):
         self.src_path = src_path
         self.camera = None
         self.is_paused = False
+        self.is_decoy = is_decoy
 
         self.frame_queue = deque(maxlen=3)
         self.frame_queue.append(BLACK_SCREEN.copy())
@@ -209,12 +208,22 @@ def add_camera(src_path, id, src_type=VIDEO):
         print("이미 등록된 카메라입니다.")
         return False
 
+    decoy = False
+
+    match id:
+        case "0" | "1":
+            pass
+        case _:
+            decoy = True
+
     _instances[id] = (
-        VideoCamera(src_path) if src_type == VIDEO else StreamCamera(src_path)
+        VideoCamera(src_path, is_decoy=decoy)
+        if src_type == VIDEO
+        else StreamCamera(src_path, is_decoy=decoy)
     )
 
     match src_path:
-        case "tests/tokyo_street_trim01.mp4" | "tests/tokyo_street_trim02.mp4":
+        case "tests/tokyo.mp4" | "tests/jungho.mp4":
             _camera_coordinates[id] = (37.527420, 127.028330)
         case _:
             _camera_coordinates[id] = (36.3288, 127.4230)
@@ -258,6 +267,13 @@ def is_paused_camera(id):
         return False
 
     return _instances[id].is_paused
+
+
+def is_decoy_camera(id):
+    if id not in _instances:
+        return False
+
+    return _instances[id].is_decoy
 
 
 def is_video_camera(id):

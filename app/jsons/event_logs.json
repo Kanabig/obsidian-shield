@@ -7,5 +7,14 @@
     "TARGET_ID": "faul001",
     "IS_READ": false,
     "IMG_ROOT": "img/event_img/faul001_533.png"
+  },
+  "931a72b3-a69e-4d41-96a0-cfeb939cf46b": {
+    "ID": "936b3d03-cd85-4d94-9437-7513e777de76",
+    "REG_DATE": "2026/07/22, 10:37:31",
+    "latitude": 37.52763,
+    "longitude": 127.04063,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_101.png"
   }
 }

@@ -9,6 +9,7 @@ from app.utils.member_filter import filter_keyword
 from app.utils.member_sort import sort_accounts
 from app.utils.pagination import paginate
 from app.domains.stream.face_profiler import add_or_update_face
+from app.domains.stream.face_profiler import init_load_all_embeddings
 
 
 def handle_add_profile(form_data, files, static_folder):
@@ -26,7 +27,7 @@ def handle_add_profile(form_data, files, static_folder):
     file = files.get("profile_img")
     upload_path = os.path.join(static_folder, "uploaded_profiles")
     os.makedirs(upload_path, exist_ok=True)
-    file_name = secure_filename(f"{pid}")
+    file_name = secure_filename(f"{pid}.png")
     file.save(os.path.join(upload_path, file_name))
 
     time_formatted = get_current_time_stamp_formated()
@@ -81,11 +82,12 @@ def handle_delete_profile(form_data, static_folder):
         del profiles[pid]
     save_json(TARGETS_PROFILES_FILE, profiles)
 
-    file_path = os.path.join(BASE_DIR, "face_embeddings", pid)
+    file_path = os.path.join(BASE_DIR, "face_embeddings", f"{pid}.npz")
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    os.remove(os.path.join(static_folder, "uploaded_profiles", pid))
+    os.remove(os.path.join(static_folder, "uploaded_profiles", f"{pid}.png"))
+    init_load_all_embeddings()
 
 
 def get_paginated_profiles(args):
