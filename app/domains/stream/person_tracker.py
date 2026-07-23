@@ -11,7 +11,6 @@ from cv2 import imwrite
 
 from app.domains.stream import face_profiler
 from app.domains.stream.camera import get_camera_coordinate
-from app.domains.stream.camera import is_decoy_camera
 from app.domains.logger.event_logs.event_logs import create_event_data
 
 _model = YOLO("yolov8n.pt")
@@ -90,15 +89,12 @@ def _async_identify(camera_id, track_id, person_img):
 
 def track_identified(frames: list, camera_ids) -> list:
     """프레임을 리스트로 받아서 각 프레임들을 분석 후 db에 등록된 사람에게만 주석을 달아서 반환"""
+    print(f"camera_ids: {camera_ids}")
     results = _model.predict(frames, stream=True)
     frames_output = []
 
     for frame, result, camera_id in zip(frames, results, camera_ids):
         annotated_frame = frame.copy()
-
-        if is_decoy_camera(camera_id):
-            frames_output.append(annotated_frame)
-            continue
 
         tracker = get_or_create_tracker(camera_id)
         cache = _tracker_caches[camera_id]

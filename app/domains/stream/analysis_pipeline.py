@@ -28,13 +28,27 @@ class FrameAnalyzer:
                 time.sleep(0.1)
                 continue
 
-            frames = [camera.get_frame_by_id(id) for id in camera_ids]
-            tracked_frames = person_tracker.track_identified(frames, camera_ids)
-            # tracked_frames = person_tracker.track_all(frames, camera_ids)
+            frames_all = {}
+            frames_real = {}
+            for id in camera_ids:
+                frame = camera.get_frame_by_id(id)
+                frames_all[id] = frame
+
+                if not camera.is_decoy_camera(id):
+                    frames_real[id] = frame
+
+            if frames_real:
+                tracked_frames = person_tracker.track_identified(
+                    list(frames_real.values()), frames_real.keys()
+                )
 
             temp = {}
-            for id, frame in zip(camera_ids, tracked_frames):
-                temp[id] = frame
+
+            for id in camera_ids:
+                if camera.is_decoy_camera(id):
+                    temp[id] = frames_all[id]
+                else:
+                    temp[id] = tracked_frames.pop(0)
 
             with self.lock:
                 self.latest_frames = temp

@@ -10,7 +10,7 @@ from app.utils import json_manager
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 15
+FRAME_DEFAULT = 24
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -212,7 +212,7 @@ def add_camera(src_path, id, src_type=VIDEO):
     decoy = False
 
     match id:
-        case "0" | "1":
+        case "0" | "1" | "2":
             pass
         case _:
             decoy = True

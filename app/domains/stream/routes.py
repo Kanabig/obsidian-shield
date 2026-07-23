@@ -57,8 +57,6 @@ def camera():
 
         elif action == "stop":
             camera_manager.stop_camera(cam_id)
-            print("stop!")
-            print(camera_manager.is_paused_camera(cam_id))
 
         elif action == "delete":
             if cam_id:
