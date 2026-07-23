@@ -89,7 +89,6 @@ def _async_identify(camera_id, track_id, person_img):
 
 def track_identified(frames: list, camera_ids) -> list:
     """프레임을 리스트로 받아서 각 프레임들을 분석 후 db에 등록된 사람에게만 주석을 달아서 반환"""
-    print(f"camera_ids: {camera_ids}")
     results = _model.predict(frames, stream=True)
     frames_output = []
 
