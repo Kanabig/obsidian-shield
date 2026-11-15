@@ -11,6 +11,7 @@ from cv2 import imwrite
 
 from app.domains.stream import face_profiler
 from app.domains.stream.camera import get_camera_coordinate
+from app.domains.stream.camera import is_decoy_camera
 from app.domains.logger.event_logs.event_logs import create_event_data
 
 _model = YOLO("yolov8n.pt")
@@ -25,10 +26,10 @@ _model.overrides["verbose"] = False
 _model.overrides["classes"] = [0]
 
 IDENTIFY_RETRY_INTERVAL = 1
-IDENTIFY_RECHECK_INTERVAL = 30
+IDENTIFY_RECHECK_INTERVAL = 15
 LOGGING_INTERVAL = 15
 
-_executor = ThreadPoolExecutor(max_workers=8)
+_executor = ThreadPoolExecutor(max_workers=4)
 
 
 def get_or_create_tracker(camera_id):
@@ -94,6 +95,10 @@ def track_identified(frames: list, camera_ids) -> list:
 
     for frame, result, camera_id in zip(frames, results, camera_ids):
         annotated_frame = frame.copy()
+
+        if is_decoy_camera(camera_id):
+            frames_output.append(annotated_frame)
+            continue
 
         tracker = get_or_create_tracker(camera_id)
         cache = _tracker_caches[camera_id]
@@ -161,11 +166,11 @@ def track_identified(frames: list, camera_ids) -> list:
                     user_id = user_cache["user_id"]
                     coord = get_camera_coordinate(camera_id)
                     imwrite(
-                        f"app/static/img/event_img/{user_id}_{track_id}.jpg",
+                        f"app/static/img/event_img/{user_id}_{track_id}.png",
                         annotated_frame,
                     )
                     create_event_data(
-                        coord[0], coord[1], user_id, f"{user_id}_{track_id}.jpg"
+                        coord[0], coord[1], user_id, f"{user_id}_{track_id}.png"
                     )
 
                     user_cache["last_logging"] = current_time

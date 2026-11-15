@@ -1,1 +1,20 @@
-{}
+{
+  "936b3d03-cd85-4d94-9437-7513e777de76": {
+    "ID": "936b3d03-cd85-4d94-9437-7513e777de76",
+    "REG_DATE": "2026/07/22, 10:36:45",
+    "latitude": 37.5217,
+    "longitude": 127.0397,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_101.png"
+  },
+  "751fe6ba-ed72-4762-a62c-d48d97b1a41e": {
+    "ID": "751fe6ba-ed72-4762-a62c-d48d97b1a41e",
+    "REG_DATE": "2026/07/22, 10:37:31",
+    "latitude": 37.523,
+    "longitude": 127.0393,
+    "TARGET_ID": "faul001",
+    "IS_READ": false,
+    "IMG_ROOT": "img/event_img/faul001_101.png"
+  }
+}

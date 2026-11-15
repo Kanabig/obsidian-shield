@@ -5,11 +5,12 @@ from cv2 import VideoCapture
 from cv2 import CAP_PROP_POS_FRAMES
 from cv2 import CAP_PROP_FPS
 from collections import deque
+from app.utils import json_manager
 
 VIDEO = "video"
 BLACK_SCREEN = np.zeros((1080, 1920, 3), np.uint8)
 
-FRAME_DEFAULT = 24
+FRAME_DEFAULT = 15
 CONNECT_DELAY = 0.5
 UNSTABLE_STREAMING_DELAY = 0.1
 CPU_USAGE_DELAY = 0.001
@@ -25,10 +26,11 @@ class StreamCamera:
     반환되는 frame은 레퍼런스
     """
 
-    def __init__(self, src_path):
+    def __init__(self, src_path, is_decoy=False):
         self.src_path = src_path
         self.camera = None
         self.is_paused = False
+        self.is_decoy = is_decoy
 
         self.frame_queue = deque(maxlen=3)
         self.frame_queue.append(BLACK_SCREEN.copy())
@@ -106,13 +108,11 @@ class VideoCamera:
     반환되는 frame은 레퍼런스
     """
 
-    def __init__(
-        self,
-        src_path,
-    ):
+    def __init__(self, src_path, is_decoy=False):
         self.src_path = src_path
         self.camera = None
         self.is_paused = False
+        self.is_decoy = is_decoy
 
         self.frame_queue = deque(maxlen=3)
         self.frame_queue.append(BLACK_SCREEN.copy())
@@ -209,16 +209,29 @@ def add_camera(src_path, id, src_type=VIDEO):
         print("이미 등록된 카메라입니다.")
         return False
 
+    decoy = False
+
+    match id:
+        case "0" | "1":
+            pass
+        case _:
+            decoy = True
+
     _instances[id] = (
-        VideoCamera(src_path) if src_type == VIDEO else StreamCamera(src_path)
+        VideoCamera(src_path, is_decoy=decoy)
+        if src_type == VIDEO
+        else StreamCamera(src_path, is_decoy=decoy)
     )
 
     match src_path:
-        case "tests/tokyo_street_trim01.mp4" | "tests/tokyo_street_trim02.mp4":
-            _camera_coordinates[id] = (37.527420, 127.028330)
+        case "tests/tokyo.mp4":
+            _camera_coordinates[id] = (37.5235, 127.0430)
+        case "tests/jungho.mp4":
+            _camera_coordinates[id] = (37.5070, 127.0379)
         case _:
             _camera_coordinates[id] = (36.3288, 127.4230)
 
+    save_cameras()
     return True
 
 
@@ -231,6 +244,7 @@ def delete_camera(id):
 
     # 안전 release
     threading.Thread(target=cam.release, daemon=True).start()
+    save_cameras()
 
 
 def start_camera(id):
@@ -238,6 +252,7 @@ def start_camera(id):
         return
 
     _instances[id].start()
+    save_cameras()
 
 
 def stop_camera(id):
@@ -252,12 +267,21 @@ def stop_camera(id):
     elif isinstance(cam, VideoCamera):
         cam.pause()
 
+    save_cameras()
+
 
 def is_paused_camera(id):
     if id not in _instances:
         return False
 
     return _instances[id].is_paused
+
+
+def is_decoy_camera(id):
+    if id not in _instances:
+        return False
+
+    return _instances[id].is_decoy
 
 
 def is_video_camera(id):
@@ -271,6 +295,8 @@ def clear():
     for id in tuple(_instances.keys()):
         delete_camera(id)
 
+    save_cameras()
+
 
 def get_frame_by_id(id):
     "반환되는 frame은 레퍼런스 타입"
@@ -280,7 +306,11 @@ def get_frame_by_id(id):
     return _instances[id].read_frame()
 
 
-def get_all_camera_ids():
+def get_all_camera_ids(on_activated=True):
+
+    if on_activated:
+        return tuple([id for id in _instances if not is_paused_camera(id)])
+
     return tuple(_instances.keys())
 
 
@@ -290,3 +320,33 @@ def get_camera_by_id(id):
 
 def get_camera_coordinate(id):
     return _camera_coordinates.get(id)
+
+
+def init_cameras():
+    load_cameras()
+
+
+def load_cameras():
+    loaded_cameras = json_manager.load_json(json_manager.CAMERAS_FILES)
+
+    for camera_id in loaded_cameras:
+        camera = loaded_cameras[camera_id]
+
+        add_camera(camera["src_path"], camera_id, camera["src_type"])
+
+        if camera["is_paused"]:
+            stop_camera(camera_id)
+
+
+def save_cameras():
+    camera_json = {}
+
+    for camera_id in get_all_camera_ids(on_activated=False):
+        camera_json[camera_id] = {
+            "id": camera_id,
+            "src_path": get_camera_by_id(camera_id).src_path,
+            "src_type": "video" if is_video_camera(camera_id) else "stream",
+            "is_paused": is_paused_camera(camera_id),
+        }
+
+    json_manager.save_json(json_manager.CAMERAS_FILES, camera_json)
